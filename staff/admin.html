@@ -1,0 +1,815 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Administration - Hotel Club de Kipe</title>
+  <style>
+    :root {
+      --bg: #0b1118;
+      --panel: #111a24;
+      --panel-soft: #162230;
+      --line: #2a3848;
+      --text: #f4f0e8;
+      --muted: #aeb8c4;
+      --gold: #C9A84C;
+      --gold-dark: #8f702c;
+      --danger: #e06c63;
+      --ok: #5cc08a;
+      --shadow: rgba(0, 0, 0, 0.38);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: linear-gradient(135deg, #081018 0%, #111820 50%, #15110b 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 58px;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px;
+      background: rgba(9, 15, 22, 0.96);
+      border-bottom: 1px solid var(--line);
+      z-index: 30;
+    }
+    .hamburger {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--gold);
+      border-radius: 8px;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .mobile-title { font-weight: 700; letter-spacing: 0; }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: #0d151f;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      transition: transform 0.25s ease;
+      box-shadow: 10px 0 30px var(--shadow);
+    }
+    .sidebar-logo {
+      padding: 24px 22px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .sidebar-logo img {
+      display: block;
+      max-width: 154px;
+      height: auto;
+      filter: brightness(0) saturate(100%) invert(70%) sepia(55%) saturate(500%) hue-rotate(2deg) brightness(100%) contrast(95%);
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px 14px;
+      flex: 1;
+    }
+    .sidebar-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      min-height: 42px;
+      border: 1px solid transparent;
+    }
+    .sidebar-nav a.active {
+      color: #14100a;
+      background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+      border-color: var(--gold-dark);
+      font-weight: 700;
+    }
+    .sidebar-nav a:hover:not(.active) {
+      color: var(--text);
+      border-color: var(--gold);
+    }
+    .sidebar-footer {
+      border-top: 1px solid var(--line);
+      padding: 16px 14px 18px;
+      display: grid;
+      gap: 10px;
+    }
+    #sidebar-username { color: var(--muted); font-size: 14px; }
+    .logout-btn,
+    .secondary-btn,
+    .danger-btn,
+    .gold-btn {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 9px 12px;
+      color: var(--text);
+      background: var(--panel-soft);
+    }
+    .gold-btn {
+      background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+      border-color: var(--gold-dark);
+      color: #14100a;
+      font-weight: 700;
+    }
+    .danger-btn { color: #ffe7e4; border-color: rgba(224,108,99,0.45); }
+    .logout-btn:hover,
+    .secondary-btn:hover { border-color: var(--gold); }
+    .sidebar-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.62);
+      z-index: 35;
+    }
+    .admin-only { display: flex; }
+    .main {
+      margin-left: 260px;
+      min-height: 100vh;
+      padding: 34px;
+    }
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 30px; letter-spacing: 0; }
+    .subtitle { margin: 0; color: var(--muted); }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+      overflow-x: auto;
+    }
+    .tab-button {
+      background: transparent;
+      color: var(--muted);
+      border: 0;
+      border-bottom: 3px solid transparent;
+      padding: 12px 14px;
+      white-space: nowrap;
+    }
+    .tab-button.active {
+      color: var(--text);
+      border-bottom-color: var(--gold);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .panel {
+      background: rgba(17, 26, 36, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 18px 45px var(--shadow);
+    }
+    .panel-pad { padding: 18px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: middle;
+    }
+    th {
+      color: var(--gold);
+      font-size: 13px;
+      text-transform: uppercase;
+      background: rgba(12, 20, 29, 0.88);
+    }
+    tr:hover td { background: rgba(255,255,255,0.025); }
+    input,
+    select,
+    textarea {
+      background: #0d1620;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      outline: none;
+      width: 100%;
+    }
+    textarea { min-height: 86px; resize: vertical; }
+    input:focus,
+    select:focus,
+    textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(215,173,87,0.12); }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .field { display: grid; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { color: var(--muted); font-size: 13px; }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .toolbar input,
+    .toolbar select { width: auto; min-width: 180px; }
+    .role-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #0d1620;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .role-admin {
+      color: #14100a;
+      background: var(--gold);
+      border-color: var(--gold-dark);
+      font-weight: 800;
+    }
+    .note {
+      margin: 0 0 18px;
+      color: var(--muted);
+      line-height: 1.5;
+    }
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 80;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal-overlay.open { display: flex; }
+    .credit {
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    @media (max-width: 900px) {
+      .mobile-topbar { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-scrim.open { display: block; }
+      .main { margin-left: 0; padding: 82px 14px 24px; }
+      .page-header { display: grid; }
+      .panel { overflow-x: auto; }
+      .form-grid { grid-template-columns: 1fr; }
+      .toolbar input,
+      .toolbar select { width: 100%; }
+      th, td { white-space: nowrap; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-topbar">
+    <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu">☰</button>
+    <span class="mobile-title">Administration</span>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="../public/images/logo-transparent.png" alt="Hotel Club de Kipe">
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">Tableau de bord</a>
+      <a href="calendar.html">Calendrier</a>
+      <a href="clients.html">Clients</a>
+      <a href="invoices.html">Factures</a>
+      <a href="admin.html" class="active admin-only">Administration</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="sidebar-username">Personnel</span>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </aside>
+  <div class="sidebar-scrim" id="sidebar-scrim"></div>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1>Administration</h1>
+        <p class="subtitle">Tarifs, paramètres, utilisateurs et journal d'activité.</p>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-button active" data-tab="pricing-tab" type="button">Tarifs</button>
+      <button class="tab-button" data-tab="settings-tab" type="button">Paramètres</button>
+      <button class="tab-button" data-tab="users-tab" type="button">Utilisateurs</button>
+      <button class="tab-button" data-tab="activity-tab" type="button">Journal activité</button>
+    </div>
+
+    <section class="tab-content active" id="pricing-tab">
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Type</th>
+              <th>Tarif GNF</th>
+              <th>Tarif EUR</th>
+              <th>Modifier</th>
+            </tr>
+          </thead>
+          <tbody id="pricing-body">
+            <tr><td colspan="4">Chargement des tarifs...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab-content" id="settings-tab">
+      <div class="panel panel-pad">
+        <form id="settings-form" onsubmit="saveSettings(event)">
+          <div class="form-grid">
+            <div class="field full">
+              <label for="hotel-name">Nom hôtel</label>
+              <input id="hotel-name" name="hotel_name">
+            </div>
+            <div class="field full">
+              <label for="hotel-address1">Adresse 1</label>
+              <input id="hotel-address1" name="address_line1">
+            </div>
+            <div class="field full">
+              <label for="hotel-address2">Adresse 2</label>
+              <input id="hotel-address2" name="address_line2">
+            </div>
+            <div class="field">
+              <label for="hotel-phone">Téléphone</label>
+              <input id="hotel-phone" name="phone">
+            </div>
+            <div class="field">
+              <label for="hotel-email">Email</label>
+              <input id="hotel-email" name="email" type="email">
+            </div>
+            <div class="field">
+              <label for="hotel-rccm">RCCM</label>
+              <input id="hotel-rccm" name="rccm">
+            </div>
+            <div class="field">
+              <label for="default-tax-rate">Taux taxe défaut %</label>
+              <input id="default-tax-rate" name="default_tax_rate" type="number" min="0" step="0.01">
+            </div>
+            <div class="field">
+              <label for="default-currency">Devise défaut</label>
+              <select id="default-currency" name="default_currency">
+                <option value="GNF">GNF</option>
+                <option value="EUR">EUR</option>
+              </select>
+            </div>
+            <div class="field full">
+              <button class="gold-btn" type="submit">Enregistrer paramètres</button>
+            </div>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <section class="tab-content" id="users-tab">
+      <p class="note">Les nouveaux utilisateurs doivent être créés depuis le tableau de bord Supabase avant d'apparaître ici.</p>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Email</th>
+              <th>Role</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="users-body">
+            <tr><td colspan="4">Chargement des utilisateurs...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab-content" id="activity-tab">
+      <div class="toolbar">
+        <select id="activity-user-filter" aria-label="Filtrer utilisateur">
+          <option value="">Tous utilisateurs</option>
+        </select>
+        <input id="activity-from" type="date" aria-label="Date début">
+        <input id="activity-to" type="date" aria-label="Date fin">
+        <input id="activity-search" type="search" placeholder="Rechercher action ou détail">
+        <button class="secondary-btn" type="button" onclick="loadActivityLog(getActivityFilters())">Filtrer</button>
+      </div>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Date-Heure</th>
+              <th>Utilisateur</th>
+              <th>Action</th>
+              <th>Détails</th>
+            </tr>
+          </thead>
+          <tbody id="activity-body">
+            <tr><td colspan="4">Chargement du journal...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="credit">Catalyst Works</p>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=20260507"></script>
+  <script src="js/auth.js?v=20260507"></script>
+  <script src="js/api.js?v=20260507"></script>
+  <script>
+    var pricingRows = [];
+    var settings = {};
+    var users = [];
+    var activityRows = [];
+    var activityTimer = null;
+
+    document.addEventListener('DOMContentLoaded', initPage);
+
+    function initPage() {
+      var hamburger = document.getElementById('hamburger');
+      var sidebar = document.getElementById('sidebar');
+      var scrim = document.getElementById('sidebar-scrim');
+      hamburger.addEventListener('click', function() {
+        sidebar.classList.toggle('open');
+        scrim.classList.toggle('open');
+      });
+      scrim.addEventListener('click', function() {
+        sidebar.classList.remove('open');
+        scrim.classList.remove('open');
+      });
+      initTabs();
+      document.getElementById('activity-search').addEventListener('input', function() { renderActivity(filterActivity(activityRows)); });
+      requireAuth(function(profile) {
+        if (!profile || !profile.is_admin) { window.location.href = 'dashboard.html'; return; }
+        var username = document.getElementById('sidebar-username');
+        username.textContent = (profile && profile.full_name) || (profile && profile.email) || 'Administrateur';
+        forEachElement(document.querySelectorAll('.admin-only'), function(el) { el.style.display = 'flex'; });
+        loadPricing();
+        loadSettings();
+        loadUsers();
+        loadActivityLog(getActivityFilters());
+        startAutoRefresh();
+      });
+    }
+
+    function initTabs() {
+      forEachElement(document.querySelectorAll('.tab-button'), function(button) {
+        button.addEventListener('click', function() {
+          forEachElement(document.querySelectorAll('.tab-button'), function(b) { b.classList.remove('active'); });
+          forEachElement(document.querySelectorAll('.tab-content'), function(content) { content.classList.remove('active'); });
+          button.classList.add('active');
+          document.getElementById(button.getAttribute('data-tab')).classList.add('active');
+        });
+      });
+    }
+
+    function loadPricing() {
+      var tbody = document.getElementById('pricing-body');
+      tbody.innerHTML = '<tr><td colspan="4">Chargement des tarifs...</td></tr>';
+      return safePromise(typeof getPricing === 'function' ? getPricing() : []).then(function(rows) {
+        applyPricingRows(rows || []);
+        renderPricing();
+      }).catch(function() {
+        applyPricingRows([]);
+        renderPricing();
+      });
+    }
+
+    function applyPricingRows(rows) {
+      var defaults = [
+        { type: 'Standard', rate_gnf: 0, rate_eur: 0 },
+        { type: 'Mini Suite', rate_gnf: 0, rate_eur: 0 },
+        { type: 'Suite', rate_gnf: 0, rate_eur: 0 }
+      ];
+      pricingRows = defaults.map(function(row) {
+        var dbRow = findPricingRow(rows, row.type);
+        var localRow = loadLocalRate(row.type);
+        return mergeRate(row, dbRow, localRow);
+      });
+    }
+
+    function findPricingRow(rows, type) {
+      for (var i = 0; i < rows.length; i++) {
+        if (rows[i] && (rows[i].type === type || rows[i].room_type === type || rows[i].name === type)) {
+          return rows[i];
+        }
+      }
+      return null;
+    }
+
+    function mergeRate(base, dbRow, localRow) {
+      var out = { type: base.type, rate_gnf: Number(base.rate_gnf || 0), rate_eur: Number(base.rate_eur || 0) };
+      if (dbRow) {
+        out.rate_gnf = Number(dbRow.rate_gnf || dbRow.gnf || dbRow.price_gnf || out.rate_gnf || 0);
+        out.rate_eur = Number(dbRow.rate_eur || dbRow.eur || dbRow.price_eur || out.rate_eur || 0);
+      }
+      if (localRow) {
+        out.rate_gnf = Number(localRow.rate_gnf || 0);
+        out.rate_eur = Number(localRow.rate_eur || 0);
+      }
+      return out;
+    }
+
+    function loadLocalRate(type) {
+      try {
+        var raw = localStorage.getItem('hck_rate_' + type);
+        return raw ? JSON.parse(raw) : null;
+      } catch (error) {
+        return null;
+      }
+    }
+
+    function renderPricing() {
+      var tbody = document.getElementById('pricing-body');
+      tbody.innerHTML = pricingRows.map(function(row) {
+        return '<tr id="rate-row-' + slug(row.type) + '">' +
+          '<td>' + escapeHtml(row.type) + '</td>' +
+          '<td data-value="gnf">' + formatMoney(row.rate_gnf) + '</td>' +
+          '<td data-value="eur">' + formatMoney(row.rate_eur) + '</td>' +
+          '<td><button class="secondary-btn" type="button" onclick="editRate(\'' + escapeAttr(row.type) + '\')">Modifier</button></td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function editRate(type) {
+      var row = findPricingRow(pricingRows, type) || { type: type, rate_gnf: 0, rate_eur: 0 };
+      var tr = document.getElementById('rate-row-' + slug(type));
+      tr.innerHTML = '<td>' + escapeHtml(type) + '</td>' +
+        '<td><input id="rate-gnf-' + slug(type) + '" type="number" min="0" step="1" value="' + Number(row.rate_gnf || 0) + '"></td>' +
+        '<td><input id="rate-eur-' + slug(type) + '" type="number" min="0" step="1" value="' + Number(row.rate_eur || 0) + '"></td>' +
+        '<td><button class="gold-btn" type="button" onclick="saveRate(\'' + escapeAttr(type) + '\')">Save</button></td>';
+    }
+
+    function saveRate(type) {
+      var rateGnf = Number(document.getElementById('rate-gnf-' + slug(type)).value || 0);
+      var rateEur = Number(document.getElementById('rate-eur-' + slug(type)).value || 0);
+      localStorage.setItem('hck_rate_' + type, JSON.stringify({ rate_gnf: rateGnf, rate_eur: rateEur }));
+      pricingRows = pricingRows.map(function(row) {
+        if (row.type === type) {
+          return { type: row.type, rate_gnf: rateGnf, rate_eur: rateEur };
+        }
+        return row;
+      });
+      renderPricing();
+    }
+
+    function loadSettings() {
+      return safePromise(typeof getSystemSettings === 'function' ? getSystemSettings() : {}).then(function(rows) {
+        settings = rows || {};
+        fillSettingsForm();
+      }).catch(function() {
+        settings = {};
+        fillSettingsForm();
+      });
+    }
+
+    function fillSettingsForm() {
+      var form = document.getElementById('settings-form');
+      form.hotel_name.value = settings.hotel_name || 'Hotel Club de Kipe';
+      form.address_line1.value = settings.address_line1 || '';
+      form.address_line2.value = settings.address_line2 || '';
+      form.phone.value = settings.phone || '';
+      form.email.value = settings.email || '';
+      form.rccm.value = settings.rccm || '';
+      form.default_tax_rate.value = settings.default_tax_rate !== null && typeof settings.default_tax_rate !== 'undefined' ? settings.default_tax_rate : 0;
+      form.default_currency.value = settings.default_currency || 'GNF';
+    }
+
+    function saveSettings(event) {
+      event.preventDefault();
+      var form = event.target;
+      var data = {
+        hotel_name: getFormValue(form, 'hotel_name'),
+        address_line1: getFormValue(form, 'address_line1'),
+        address_line2: getFormValue(form, 'address_line2'),
+        phone: getFormValue(form, 'phone'),
+        email: getFormValue(form, 'email'),
+        rccm: getFormValue(form, 'rccm'),
+        default_tax_rate: getFormValue(form, 'default_tax_rate'),
+        default_currency: getFormValue(form, 'default_currency')
+      };
+      data.default_tax_rate = Number(data.default_tax_rate || 0);
+      return safePromise(typeof updateSystemSettings === 'function' ? updateSystemSettings(data) : data).then(function() {
+        settings = data;
+        return loadActivityLog(getActivityFilters());
+      });
+    }
+
+    function loadUsers() {
+      var tbody = document.getElementById('users-body');
+      tbody.innerHTML = '<tr><td colspan="4">Chargement des utilisateurs...</td></tr>';
+      return safePromise(typeof getProfiles === 'function' ? getProfiles() : []).then(function(rows) {
+        users = rows || [];
+        renderUsers();
+        populateUserFilter();
+      }).catch(function() {
+        users = [];
+        renderUsers();
+        populateUserFilter();
+      });
+    }
+
+    function renderUsers() {
+      var tbody = document.getElementById('users-body');
+      var profile = getCurrentProfile();
+      if (!users.length) {
+        tbody.innerHTML = '<tr><td colspan="4">Aucun utilisateur trouvé.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = users.map(function(user) {
+        var isOwnProfile = String(user.id) === String(profile && profile.id);
+        var label = user.is_admin ? 'Administrateur' : 'Personnel';
+        return '<tr>' +
+          '<td>' + escapeHtml(user.full_name || user.name || '') + '</td>' +
+          '<td>' + escapeHtml(user.email || '') + '</td>' +
+          '<td><span class="role-badge ' + (user.is_admin ? 'role-admin' : '') + '">' + label + '</span></td>' +
+          '<td><button class="secondary-btn" type="button" ' + (isOwnProfile ? 'disabled' : '') + ' onclick="toggleUserAdmin(\'' + escapeAttr(user.id) + '\', ' + (user.is_admin ? 'false' : 'true') + ')">' +
+          (user.is_admin ? 'Retirer admin' : 'Rendre admin') + '</button></td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function toggleUserAdmin(userId, makeAdmin) {
+      return safePromise(typeof updateProfile === 'function' ? updateProfile(userId, { is_admin: makeAdmin }) : null).then(function() {
+        users = users.map(function(user) {
+          if (String(user.id) === String(userId)) {
+            user.is_admin = makeAdmin;
+          }
+          return user;
+        });
+        renderUsers();
+      });
+    }
+
+    function populateUserFilter() {
+      var select = document.getElementById('activity-user-filter');
+      var current = select.value;
+      select.innerHTML = '<option value="">Tous utilisateurs</option>' + users.map(function(user) {
+        var name = user.full_name || user.name || user.email || 'Utilisateur';
+        return '<option value="' + escapeHtml(user.id) + '">' + escapeHtml(name) + '</option>';
+      }).join('');
+      select.value = current;
+    }
+
+    function loadActivityLog(filters) {
+      var tbody = document.getElementById('activity-body');
+      if (!activityRows.length) {
+        tbody.innerHTML = '<tr><td colspan="4">Chargement du journal...</td></tr>';
+      }
+      return safePromise(typeof getActivityLog === 'function' ? getActivityLog(100) : []).then(function(rows) {
+        activityRows = rows || [];
+        renderActivity(filterActivity(activityRows, filters || getActivityFilters()));
+      }).catch(function() {
+        activityRows = [];
+        renderActivity([]);
+      });
+    }
+
+    function getActivityFilters() {
+      return {
+        userId: document.getElementById('activity-user-filter').value,
+        from: document.getElementById('activity-from').value,
+        to: document.getElementById('activity-to').value,
+        search: document.getElementById('activity-search').value.trim().toLowerCase()
+      };
+    }
+
+    function filterActivity(rows, filters) {
+      filters = filters || getActivityFilters();
+      return rows.filter(function(row) {
+        var rowDate = row.created_at ? new Date(row.created_at) : null;
+        var afterFrom = !filters.from || (rowDate && rowDate >= new Date(filters.from));
+        var beforeTo = !filters.to || (rowDate && rowDate <= new Date(filters.to + 'T23:59:59'));
+        var sameUser = !filters.userId || String(row.user_id) === String(filters.userId);
+        var haystack = [row.user_name, row.email, row.action, formatDetails(row.details)]
+          .filter(function(value) { return !!value; }).join(' ').toLowerCase();
+        var matchesSearch = !filters.search || haystack.indexOf(filters.search) !== -1;
+        return afterFrom && beforeTo && sameUser && matchesSearch;
+      });
+    }
+
+    function renderActivity(rows) {
+      var tbody = document.getElementById('activity-body');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="4">Aucune activité trouvée.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(function(row) {
+        return '<tr>' +
+          '<td>' + formatDateTime(row.created_at) + '</td>' +
+          '<td>' + escapeHtml(row.user_name || row.email || row.user_id || profileName(row) || '') + '</td>' +
+          '<td>' + escapeHtml(actionToFrench(row.action)) + '</td>' +
+          '<td>' + escapeHtml(formatDetails(row.details)) + '</td>' +
+          '</tr>';
+      }).join('');
+    }
+
+    function startAutoRefresh() {
+      if (activityTimer) {
+        clearInterval(activityTimer);
+      }
+      activityTimer = setInterval(function() {
+        loadActivityLog(getActivityFilters());
+      }, 30000);
+    }
+
+    function actionToFrench(action) {
+      var map = {
+        reservation_created: 'Réservation créée',
+        client_created: 'Client créé',
+        invoice_created: 'Facture créée',
+        reservation_archived: 'Réservation archivée',
+        invoice_archived: 'Facture archivée',
+        client_archived: 'Client archivé',
+        settings_updated: 'Paramètres mis à jour',
+        rate_updated: 'Tarif mis à jour',
+        update_profile: 'Profil mis à jour'
+      };
+      return map[action] || action || '';
+    }
+
+    function formatDetails(details) {
+      if (!details) return '';
+      if (typeof details === 'string') return details;
+      try {
+        return JSON.stringify(details);
+      } catch (error) {
+        return String(details);
+      }
+    }
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString('fr-FR');
+    }
+
+    function formatDateTime(value) {
+      if (!value) { return ''; }
+      return new Date(value).toLocaleString('fr-FR');
+    }
+
+    function slug(value) {
+      return String(value).toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/(^-|-$)/g, '');
+    }
+
+    function profileName(row) {
+      if (row && row.profiles) {
+        return row.profiles.full_name || row.profiles.username || '';
+      }
+      return '';
+    }
+
+    function getFormValue(form, name) {
+      return form.elements[name] ? form.elements[name].value : '';
+    }
+
+    function safePromise(value) {
+      if (value && typeof value.then === 'function') {
+        return value;
+      }
+      return Promise.resolve(value);
+    }
+
+    function forEachElement(nodes, callback) {
+      for (var i = 0; i < nodes.length; i++) {
+        callback(nodes[i], i);
+      }
+    }
+
+    function escapeAttr(value) {
+      return String(value === null || typeof value === 'undefined' ? '' : value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
+    function escapeHtml(value) {
+      return String(value === null || typeof value === 'undefined' ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+  </script>
+<div class="cw-credit">Conçu par <a href="https://catalystworks.consulting" target="_blank" rel="noopener">Catalyst Works</a></div>
+</body>
+</html>

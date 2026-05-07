@@ -1,0 +1,1073 @@
+﻿<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Factures - Hotel Club de Kipe</title>
+  <style>
+    :root {
+      --bg: #0b1118;
+      --panel: #111a24;
+      --panel-soft: #162230;
+      --line: #2a3848;
+      --text: #f4f0e8;
+      --muted: #aeb8c4;
+      --gold: #C9A84C;
+      --gold-dark: #8f702c;
+      --danger: #e06c63;
+      --ok: #5cc08a;
+      --shadow: rgba(0, 0, 0, 0.38);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: linear-gradient(135deg, #081018 0%, #111820 50%, #15110b 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 58px;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px;
+      background: rgba(9, 15, 22, 0.96);
+      border-bottom: 1px solid var(--line);
+      z-index: 30;
+    }
+    .hamburger {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--gold);
+      border-radius: 8px;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .mobile-title { font-weight: 700; letter-spacing: 0; }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: #0d151f;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      transition: transform 0.25s ease;
+      box-shadow: 10px 0 30px var(--shadow);
+    }
+    .sidebar-logo {
+      padding: 24px 22px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .sidebar-logo img {
+      display: block;
+      max-width: 154px;
+      height: auto;
+      filter: brightness(0) saturate(100%) invert(70%) sepia(55%) saturate(500%) hue-rotate(2deg) brightness(100%) contrast(95%);
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px 14px;
+      flex: 1;
+    }
+    .sidebar-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      min-height: 42px;
+      border: 1px solid transparent;
+    }
+    .sidebar-nav a.active {
+      color: #14100a;
+      background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+      border-color: var(--gold-dark);
+      font-weight: 700;
+    }
+    .sidebar-nav a:hover:not(.active) {
+      color: var(--text);
+      border-color: var(--gold);
+    }
+    .sidebar-footer {
+      border-top: 1px solid var(--line);
+      padding: 16px 14px 18px;
+      display: grid;
+      gap: 10px;
+    }
+    #sidebar-username { color: var(--muted); font-size: 14px; }
+    .logout-btn,
+    .secondary-btn,
+    .danger-btn,
+    .gold-btn {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 9px 12px;
+      color: var(--text);
+      background: var(--panel-soft);
+    }
+    .gold-btn {
+      background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+      border-color: var(--gold-dark);
+      color: #14100a;
+      font-weight: 700;
+    }
+    .danger-btn { color: #ffe7e4; border-color: rgba(224,108,99,0.45); }
+    .logout-btn:hover,
+    .secondary-btn:hover { border-color: var(--gold); }
+    .sidebar-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.62);
+      z-index: 35;
+    }
+    .admin-only { display: flex; }
+    .main {
+      margin-left: 260px;
+      min-height: 100vh;
+      padding: 34px;
+    }
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 30px; letter-spacing: 0; }
+    .subtitle { margin: 0; color: var(--muted); }
+    .filter-bar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    input,
+    select,
+    textarea {
+      background: #0d1620;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      outline: none;
+    }
+    textarea { min-height: 86px; resize: vertical; }
+    input:focus,
+    select:focus,
+    textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(215,173,87,0.12); }
+    .search-input { min-width: 280px; max-width: 460px; width: 100%; }
+    .panel {
+      background: rgba(17, 26, 36, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 18px 45px var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: var(--gold);
+      font-size: 13px;
+      text-transform: uppercase;
+      background: rgba(12, 20, 29, 0.88);
+    }
+    tr:hover td { background: rgba(255,255,255,0.025); }
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .status-badge {
+      display: inline-flex;
+      align-items: center;
+      min-height: 26px;
+      padding: 4px 9px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: #0d1620;
+      color: var(--muted);
+      font-size: 13px;
+    }
+    .status-paid { color: var(--ok); border-color: rgba(92,192,138,0.4); }
+    .status-cancelled { color: #e06c63; border-color: rgba(224,108,99,0.4); text-decoration: line-through; opacity: 0.7; }
+    .status-draft { color: var(--muted); }
+    .status-sent { color: var(--gold); border-color: rgba(215,173,87,0.4); }
+    .amount-due { color: var(--danger); font-weight: 800; }
+    .amount-clear { color: var(--ok); font-weight: 700; }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 80;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      width: min(860px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: #101923;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.55);
+    }
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .modal-footer { border-top: 1px solid var(--line); border-bottom: 0; justify-content: flex-end; flex-wrap: wrap; }
+    .modal-header h2 { margin: 0; font-size: 20px; }
+    .close-modal { background: transparent; color: var(--muted); border: 0; font-size: 26px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 18px;
+    }
+    .field { display: grid; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { color: var(--muted); font-size: 13px; }
+    .readonly { opacity: 0.78; }
+    #invoice-balance-due { color: var(--gold); font-weight: 800; }
+    .credit {
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    @media print {
+      .mobile-topbar,
+      .sidebar,
+      .sidebar-scrim,
+      .filter-bar,
+      .page-header,
+      .credit,
+      .modal-overlay { display: none !important; }
+      .main { margin: 0; padding: 0; }
+      body { background: #fff; color: #111; }
+    }
+    @media (max-width: 900px) {
+      .mobile-topbar { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-scrim.open { display: block; }
+      .main { margin-left: 0; padding: 82px 14px 24px; }
+      .page-header { display: grid; }
+      .panel { overflow-x: auto; }
+      .form-grid { grid-template-columns: 1fr; }
+      th, td { white-space: nowrap; }
+    }
+    .inv-tabs { display: flex; gap: 6px; margin-bottom: 14px; }
+    .inv-tab { background: var(--panel-soft); border: 1px solid var(--line); border-radius: 8px; padding: 10px 18px; color: var(--muted); min-height: 38px; }
+    .inv-tab.active { background: linear-gradient(180deg, var(--gold), var(--gold-dark)); border-color: var(--gold-dark); color: #14100a; font-weight: 700; }
+    .inv-tab:hover:not(.active) { border-color: var(--gold); color: var(--text); }
+    .sortable { cursor: pointer; user-select: none; }
+    .sortable:hover { color: var(--text); }
+    .sort-icon { font-size: 11px; opacity: 0.6; }
+  </style>
+</head>
+<body>
+  <div class="mobile-topbar">
+    <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu">☰</button>
+    <span class="mobile-title">Factures</span>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="../public/images/logo-transparent.png" alt="Hotel Club de Kipe">
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">Tableau de bord</a>
+      <a href="calendar.html">Calendrier</a>
+      <a href="clients.html">Clients</a>
+      <a href="invoices.html" class="active">Factures</a>
+      <a href="admin.html" class="admin-only">Administration</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="sidebar-username">Personnel</span>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </aside>
+  <div class="sidebar-scrim" id="sidebar-scrim"></div>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1>Factures</h1>
+        <p class="subtitle">Création, suivi et impression des factures séjour.</p>
+      </div>
+      <button class="gold-btn" type="button" onclick="openInvoiceModal()">Nouvelle facture</button>
+    </header>
+
+    <div class="inv-tabs">
+      <button class="inv-tab active" id="tab-active" type="button" onclick="switchInvoiceView('active')">Factures actives</button>
+      <button class="inv-tab" id="tab-history" type="button" onclick="switchInvoiceView('history')">Historique</button>
+    </div>
+    <section class="filter-bar">
+      <select id="status-filter" aria-label="Filtrer par statut">
+        <option value="all">Tous</option>
+        <option value="draft">Brouillon</option>
+        <option value="sent">Envoyé</option>
+        <option value="paid">Payé</option>
+        <option value="archived">Archive</option>
+      </select>
+      <input class="search-input" id="invoice-search" type="search" placeholder="Rechercher facture, client, chambre">
+    </section>
+
+    <section class="panel">
+      <table>
+        <thead>
+          <tr>
+            <th class="sortable" data-col="invoice_number" onclick="sortInvoices('invoice_number')">N.Facture <span class="sort-icon" id="sort-invoice_number"></span></th>
+            <th class="sortable" data-col="client_name" onclick="sortInvoices('client_name')">Client <span class="sort-icon" id="sort-client_name"></span></th>
+            <th>Chambre</th>
+            <th class="sortable" data-col="check_in" onclick="sortInvoices('check_in')">Séjour <span class="sort-icon" id="sort-check_in"></span></th>
+            <th>Nuits</th>
+            <th class="sortable" data-col="total_ttc" onclick="sortInvoices('total_ttc')">Total <span class="sort-icon" id="sort-total_ttc"></span></th>
+            <th>Devise</th>
+            <th class="sortable" data-col="status" onclick="sortInvoices('status')">Statut <span class="sort-icon" id="sort-status"></span></th>
+            <th class="sortable" data-col="balance_due" onclick="sortInvoices('balance_due')">Reste <span class="sort-icon" id="sort-balance_due"></span></th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody id="invoices-body">
+          <tr><td colspan="10">Chargement des factures...</td></tr>
+        </tbody>
+      </table>
+    </section>
+
+    <p class="credit">Catalyst Works</p>
+  </main>
+
+  <div class="modal-overlay" id="invoice-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="invoice-modal-title">
+      <div class="modal-header">
+        <h2 id="invoice-modal-title">Nouvelle facture</h2>
+        <button class="close-modal" type="button" onclick="closeInvoiceModal()">×</button>
+      </div>
+      <form id="invoice-form">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="invoice-reservation">Réservation</label>
+            <select id="invoice-reservation" name="reservation_id" onchange="onReservationSelect()">
+              <option value="">Choisir une réservation</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="invoice-client-name">Nom client *</label>
+            <input id="invoice-client-name" name="client_name" required>
+          </div>
+          <div class="field full">
+            <label for="invoice-client-address">Adresse client</label>
+            <input id="invoice-client-address" name="client_address">
+          </div>
+          <div class="field">
+            <label for="invoice-room">Chambre</label>
+            <input id="invoice-room" name="room" readonly class="readonly">
+          </div>
+          <div class="field">
+            <label for="invoice-stay">Séjour du/au</label>
+            <input id="invoice-stay" name="stay_label" readonly class="readonly">
+          </div>
+          <div class="field">
+            <label for="invoice-nights">Nombre nuits</label>
+            <input id="invoice-nights" name="nights" type="number" readonly class="readonly" oninput="calculateTotals()">
+          </div>
+          <div class="field">
+            <label for="invoice-rate">Prix par nuit</label>
+            <input id="invoice-rate" name="nightly_rate" type="number" min="0" step="1" oninput="calculateTotals()">
+          </div>
+          <div class="field">
+            <label for="invoice-currency">Devise</label>
+            <select id="invoice-currency" name="currency">
+              <option value="GNF">GNF</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="invoice-total-ht">Total HT</label>
+            <input id="invoice-total-ht" name="total_ht" readonly class="readonly">
+          </div>
+          <div class="field">
+            <label for="invoice-tax-rate">Taux taxe %</label>
+            <input id="invoice-tax-rate" name="tax_rate" type="number" min="0" step="0.01" value="0" oninput="calculateTotals()">
+          </div>
+          <div class="field">
+            <label for="invoice-total-ttc">Total TTC</label>
+            <input id="invoice-total-ttc" name="total_ttc" readonly class="readonly">
+          </div>
+          <div class="field">
+            <label for="invoice-payment-mode">Mode paiement</label>
+            <select id="invoice-payment-mode" name="payment_mode">
+              <option value="Especes">Espèces</option>
+              <option value="Mobile Money">Mobile Money</option>
+              <option value="Virement">Virement</option>
+              <option value="Carte">Carte</option>
+              <option value="Autre">Autre</option>
+              <option value="Compte entreprise">Compte entreprise</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="invoice-paid">Déjà payé</label>
+            <input id="invoice-paid" name="amount_paid" type="number" min="0" step="1" value="0" oninput="calculateTotals()">
+          </div>
+          <div class="field">
+            <label for="invoice-balance-due">Reste à payer</label>
+            <input id="invoice-balance-due" name="balance_due" readonly class="readonly">
+          </div>
+          <div class="field full">
+            <label for="invoice-notes">Notes internes</label>
+            <textarea id="invoice-notes" name="internal_notes"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-btn" type="button" onclick="closeInvoiceModal()">Annuler</button>
+          <button class="secondary-btn" type="button" onclick="saveInvoice(false)">Enregistrer brouillon</button>
+          <button class="gold-btn" type="button" onclick="saveInvoice(true)">Enregistrer et imprimer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="view-invoice-modal">
+    <div class="modal" role="dialog" aria-modal="true" style="max-width:640px">
+      <div class="modal-header">
+        <h2 id="view-invoice-title">Facture</h2>
+        <button class="close-modal" type="button" onclick="closeViewModal()">&times;</button>
+      </div>
+      <div id="view-invoice-body" style="padding:20px 18px;line-height:1.7"></div>
+      <div class="modal-footer">
+        <button class="secondary-btn" type="button" onclick="closeViewModal()">Fermer</button>
+        <button class="gold-btn" type="button" id="view-reprint-btn">Réimprimer</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=20260507"></script>
+  <script src="js/auth.js?v=20260507"></script>
+  <script src="js/api.js?v=20260507"></script>
+  <script>
+    var invoices = [];
+    var reservations = [];
+    var currentInvoice = null;
+
+    document.addEventListener('DOMContentLoaded', initPage);
+
+    function initPage() {
+      var hamburger = document.getElementById('hamburger');
+      var sidebar = document.getElementById('sidebar');
+      var scrim = document.getElementById('sidebar-scrim');
+      hamburger.addEventListener('click', function() {
+        sidebar.classList.toggle('open');
+        scrim.classList.toggle('open');
+      });
+      scrim.addEventListener('click', function() {
+        sidebar.classList.remove('open');
+        scrim.classList.remove('open');
+      });
+      document.getElementById('status-filter').addEventListener('change', filterInvoices);
+      document.getElementById('invoice-search').addEventListener('input', filterInvoices);
+      requireAuth(function(profile) {
+        var username = document.getElementById('sidebar-username');
+        username.textContent = (profile && profile.full_name) || (profile && profile.email) || 'Personnel';
+        if (profile && profile.is_admin) {
+          forEachElement(document.querySelectorAll('.admin-only'), function(el) { el.style.display = 'flex'; });
+        } else {
+          document.getElementById('invoice-tax-rate').disabled = true;
+        }
+        loadReservations();
+        loadInvoices();
+      });
+    }
+
+    function loadInvoices(filters) {
+      var tbody = document.getElementById('invoices-body');
+      tbody.innerHTML = '<tr><td colspan="10">Chargement des factures...</td></tr>';
+      return safePromise(typeof getInvoices === 'function' ? getInvoices(filters || {}) : []).then(function(rows) {
+        invoices = rows || [];
+        filterInvoices();
+      }).catch(function() {
+        tbody.innerHTML = '<tr><td colspan="10">Impossible de charger les factures.</td></tr>';
+      });
+    }
+
+    function loadReservations() {
+      var select = document.getElementById('invoice-reservation');
+      var now = new Date();
+      var year = now.getFullYear();
+      var month = now.getMonth() + 1;
+      var previous = new Date(year, month - 2, 1);
+      var currentRequest = typeof getReservationsForMonth === 'function' ? getReservationsForMonth(year, month) : [];
+      var previousRequest = typeof getReservationsForMonth === 'function' ? getReservationsForMonth(previous.getFullYear(), previous.getMonth() + 1) : [];
+      return safePromise(currentRequest).then(function(currentRows) {
+        return safePromise(previousRequest).then(function(previousRows) {
+          var merged = mergeReservations(currentRows || [], previousRows || []);
+          reservations = merged.filter(function(reservation) {
+            return reservation && statusAllowed(reservation.status);
+          });
+          select.innerHTML = '<option value="">Choisir une réservation</option>' + reservations.map(function(reservation) {
+            var client = reservation.client_name || reservation.guest_name || getNestedClientName(reservation) || 'Client';
+            var room = reservation.room_number || reservation.room || '';
+            return '<option value="' + escapeHtml(reservation.id) + '">' + escapeHtml(client) + ' - ' + escapeHtml(room) + '</option>';
+          }).join('');
+        });
+      }).catch(function() {
+        select.innerHTML = '<option value="">Réservations indisponibles</option>';
+      });
+    }
+
+    function mergeReservations(a, b) {
+      var out = [];
+      var seen = {};
+      var rows = (a || []).concat(b || []);
+      for (var i = 0; i < rows.length; i++) {
+        var id = rows[i] && rows[i].id;
+        var key = id !== null && typeof id !== 'undefined' ? String(id) : 'row-' + i;
+        if (!seen[key]) {
+          seen[key] = true;
+          out.push(rows[i]);
+        }
+      }
+      return out;
+    }
+
+    function statusAllowed(status) {
+      return status === 'confirmed' || status === 'checked_in' || status === 'checked_out';
+    }
+
+    function filterInvoices() {
+      var status = document.getElementById('status-filter').value;
+      var search = document.getElementById('invoice-search').value.trim().toLowerCase();
+      var filtered = invoices.filter(function(invoice) {
+        var isHistory = invoice.status === 'paid' || invoice.status === 'archived' || invoice.status === 'cancelled';
+        var viewMatch = currentView === 'history' ? isHistory : !isHistory;
+        var matchesStatus = (status === 'all') ? viewMatch : invoice.status === status;
+        var haystack = [invoice.invoice_number, invoice.client_name, invoice.room, invoice.room_number]
+          .filter(function(value) { return !!value; }).join(' ').toLowerCase();
+        return matchesStatus && haystack.indexOf(search) !== -1;
+      });
+      filtered.sort(function(a, b) {
+        var av = a[sortCol] || '';
+        var bv = b[sortCol] || '';
+        if (typeof av === 'number' && typeof bv === 'number') { return sortAsc ? av - bv : bv - av; }
+        av = String(av).toLowerCase(); bv = String(bv).toLowerCase();
+        if (av < bv) { return sortAsc ? -1 : 1; }
+        if (av > bv) { return sortAsc ? 1 : -1; }
+        return 0;
+      });
+      renderInvoices(filtered);
+    }
+
+    function renderInvoices(rows) {
+      var tbody = document.getElementById('invoices-body');
+      if (!rows.length) {
+        tbody.innerHTML = '<tr><td colspan="10">Aucune facture trouvée.</td></tr>';
+        return;
+      }
+      tbody.innerHTML = rows.map(function(invoice) {
+        var total = Number(invoice.total_ttc || invoice.total || 0);
+        var paid = Number(invoice.amount_paid || 0);
+        var due = invoice.balance_due !== null && typeof invoice.balance_due !== 'undefined' ? Number(invoice.balance_due) : Math.max(total - paid, 0);
+        var currency = invoice.currency || 'GNF';
+        var stay = formatStay(invoice.check_in || invoice.start_date, invoice.check_out || invoice.end_date);
+        return '<tr>' +
+          '<td>' + escapeHtml(invoice.invoice_number || '') + '</td>' +
+          '<td>' + escapeHtml(invoice.client_name || '') + '</td>' +
+          '<td>' + escapeHtml(invoice.room || invoice.room_number || '') + '</td>' +
+          '<td>' + stay + '</td>' +
+          '<td>' + Number(invoice.nights || 0) + '</td>' +
+          '<td>' + formatMoney(total) + '</td>' +
+          '<td>' + escapeHtml(currency) + '</td>' +
+          '<td><span class="status-badge ' + statusClass(invoice.status) + '">' + statusLabel(invoice.status) + '</span></td>' +
+          '<td class="' + (due > 0 ? 'amount-due' : 'amount-clear') + '">' + formatMoney(due) + '</td>' +
+          '<td><div class="row-actions">' +
+          '<button class="secondary-btn" type="button" onclick="viewInvoice(\'' + escapeAttr(invoice.id) + '\')">Voir</button>' +
+          '<button class="secondary-btn" type="button" onclick="printInvoice(\'' + escapeAttr(invoice.id) + '\')">Imprimer</button>' +
+          (currentView === 'history'
+            ? '<button class="secondary-btn admin-only" type="button" onclick="archiveWithNote(\'' + escapeAttr(invoice.id) + '\')">Archiver</button>'
+            : '<button class="danger-btn admin-only" type="button" onclick="cancelInvoice(\'' + escapeAttr(invoice.id) + '\')">Annuler</button>') +
+          '</div></td></tr>';
+        }).join('');
+      var profile = getCurrentProfile();
+      if (profile && profile.is_admin) {
+        forEachElement(document.querySelectorAll('.admin-only'), function(el) { el.style.display = 'flex'; });
+      }
+    }
+
+    function openInvoiceModal() {
+      currentInvoice = null;
+      var form = document.getElementById('invoice-form');
+      form.reset();
+      document.getElementById('invoice-tax-rate').value = '0';
+      document.getElementById('invoice-paid').value = '0';
+      calculateTotals();
+      document.getElementById('invoice-modal').classList.add('open');
+    }
+
+    function closeInvoiceModal() {
+      document.getElementById('invoice-modal').classList.remove('open');
+    }
+
+    function onReservationSelect() {
+      var id = document.getElementById('invoice-reservation').value;
+      var reservation = findById(reservations, id);
+      if (!reservation) { return; }
+      var checkIn = reservation.check_in || reservation.start_date || '';
+      var checkOut = reservation.check_out || reservation.end_date || '';
+      var nights = calculateNights(checkIn, checkOut);
+      document.getElementById('invoice-client-name').value = reservation.client_name || reservation.guest_name || getNestedClientName(reservation) || '';
+      document.getElementById('invoice-client-address').value = reservation.client_address || reservation.address || getNestedClientAddress(reservation) || '';
+      document.getElementById('invoice-room').value = reservation.room_number || reservation.room || '';
+      document.getElementById('invoice-stay').value = formatStay(checkIn, checkOut);
+      document.getElementById('invoice-nights').value = nights;
+      document.getElementById('invoice-rate').value = reservation.nightly_rate || reservation.rate || reservation.price_per_night || '';
+      document.getElementById('invoice-currency').value = reservation.currency || 'GNF';
+      calculateTotals();
+    }
+
+    function calculateTotals() {
+      var nights = Number(document.getElementById('invoice-nights').value || 0);
+      var rate = Number(document.getElementById('invoice-rate').value || 0);
+      var taxRate = Number(document.getElementById('invoice-tax-rate').value || 0);
+      var paid = Number(document.getElementById('invoice-paid').value || 0);
+      var totalHt = nights * rate;
+      var totalTtc = totalHt + (totalHt * taxRate / 100);
+      var due = Math.max(totalTtc - paid, 0);
+      document.getElementById('invoice-total-ht').value = Math.round(totalHt);
+      document.getElementById('invoice-total-ttc').value = Math.round(totalTtc);
+      document.getElementById('invoice-balance-due').value = Math.round(due);
+    }
+
+    function saveInvoice(print) {
+      var form = document.getElementById('invoice-form');
+      if (!form.reportValidity()) { return; }
+      calculateTotals();
+      var formData = readInvoiceForm(form);
+      var reservation = findById(reservations, formData.reservation_id);
+      return safePromise(apiGenerateInvoiceNumber(formData.client_name)).then(function(invoiceNumber) {
+        var payload = {
+          reservation_id: formData.reservation_id,
+          client_name: formData.client_name,
+          client_address: formData.client_address,
+          stay_label: formData.stay_label,
+          payment_mode: formData.payment_mode,
+          internal_notes: formData.internal_notes,
+          currency: formData.currency,
+          invoice_number: invoiceNumber || localInvoiceNumber(formData.client_name),
+          status: print ? 'sent' : 'draft',
+          room: formData.room,
+          check_in: (reservation && (reservation.check_in || reservation.start_date)) || '',
+          check_out: (reservation && (reservation.check_out || reservation.end_date)) || '',
+          nights: Number(formData.nights || 0),
+          nightly_rate: Number(formData.nightly_rate || 0),
+          tax_rate: Number(formData.tax_rate || 0),
+          total_ht: Number(formData.total_ht || 0),
+          total_ttc: Number(formData.total_ttc || 0),
+          amount_paid: Number(formData.amount_paid || 0),
+          balance_due: Number(formData.balance_due || 0)
+        };
+        return safePromise(typeof createInvoice === 'function' ? createInvoice(payload) : payload).then(function(saved) {
+          currentInvoice = saved || payload;
+          closeInvoiceModal();
+          return loadInvoices().then(function() {
+            if (print) {
+              printInvoice(currentInvoice.id || currentInvoice.invoice_number);
+            }
+          });
+        });
+      }).catch(function() {
+        alert('Impossible d\'enregistrer la facture.');
+      });
+    }
+
+    function readInvoiceForm(form) {
+      return {
+        reservation_id: getFormValue(form, 'reservation_id'),
+        client_name: getFormValue(form, 'client_name'),
+        client_address: getFormValue(form, 'client_address'),
+        room: getFormValue(form, 'room'),
+        stay_label: getFormValue(form, 'stay_label'),
+        nights: getFormValue(form, 'nights'),
+        nightly_rate: getFormValue(form, 'nightly_rate'),
+        currency: getFormValue(form, 'currency'),
+        total_ht: getFormValue(form, 'total_ht'),
+        tax_rate: getFormValue(form, 'tax_rate'),
+        total_ttc: getFormValue(form, 'total_ttc'),
+        payment_mode: getFormValue(form, 'payment_mode'),
+        amount_paid: getFormValue(form, 'amount_paid'),
+        balance_due: getFormValue(form, 'balance_due'),
+        internal_notes: getFormValue(form, 'internal_notes')
+      };
+    }
+
+    function getFormValue(form, name) {
+      return form.elements[name] ? form.elements[name].value : '';
+    }
+
+    function localInvoiceNumber(clientName) {
+      var now = new Date();
+      var y = now.getFullYear();
+      var m = ('0' + (now.getMonth() + 1)).slice(-2);
+      var d = ('0' + now.getDate()).slice(-2);
+      var parts = String(clientName || '').trim().split(/\s+/);
+      var surname = parts.length > 1 ? parts[parts.length - 1] : parts[0] || 'XX';
+      var initials = (surname.slice(0, 2).toUpperCase() + 'XX').slice(0, 2);
+      var base = String(y) + m + d + '-' + initials;
+      var duplicates = invoices.filter(function(invoice) {
+        return String(invoice.invoice_number || '').indexOf(base) === 0;
+      }).length;
+      return duplicates ? base + '-' + ('0' + (duplicates + 1)).slice(-2) : base;
+    }
+
+    function apiGenerateInvoiceNumber(clientName) {
+      if (window.HCK && window.HCK.api && typeof window.HCK.api.generateInvoiceNumber === 'function') {
+        return window.HCK.api.generateInvoiceNumber();
+      }
+      if (typeof generateInvoiceNumber === 'function') {
+        return generateInvoiceNumber();
+      }
+      return localInvoiceNumber(clientName);
+    }
+
+    function fmtInvoiceMoney(val, cur) {
+      var n = Number(val || 0);
+      if (cur === 'EUR') {
+        return n.toLocaleString('fr-FR', {minimumFractionDigits:0, maximumFractionDigits:2}) + ' €';
+      }
+      return n.toLocaleString('fr-FR') + ' GNF';
+    }
+    function printInvoice(id) {
+      var invoice = findInvoice(id) || currentInvoice;
+      if (!invoice) { return; }
+      var win = window.open('', '_blank');
+      if (!win) { return; }
+      var cur = invoice.currency || 'GNF';
+      var total = Number(invoice.total_ttc || invoice.total || 0);
+      var paid = Number(invoice.amount_paid || 0);
+      var due = Number(invoice.balance_due !== null && typeof invoice.balance_due !== 'undefined' ? invoice.balance_due : Math.max(total - paid, 0));
+      var ht = Number(invoice.total_ht || 0);
+      var tax = Number(invoice.tax_rate || 0);
+      var nights = Number(invoice.nights || invoice.num_nights || 0);
+      var rate = Number(invoice.nightly_rate || invoice.rate_per_night || 0);
+      var room = invoice.room || invoice.room_number || '';
+      var stay = formatStay(invoice.check_in || invoice.stay_from, invoice.check_out || invoice.stay_to);
+      var invoiceDate = invoice.invoice_date ? formatDateIntl(String(invoice.invoice_date).slice(0,10)) : formatDateIntl(new Date().toISOString().slice(0,10));
+      var logoSrc = window.location.origin + '/public/images/logo-transparent.png';
+      var html = '<!DOCTYPE html>' +
+        '<html lang="fr"><head><meta charset="UTF-8">' +
+        '<title>' + escapeHtml(invoice.invoice_number || 'Facture') + '</title>' +
+        '<style>' +
+          '@page{margin:18mm 16mm}' +
+          'body{font-family:Arial,Helvetica,sans-serif;font-size:10pt;color:#111;margin:0;padding:0}' +
+          '.page{max-width:700px;margin:0 auto}' +
+          '.header{display:flex;justify-content:space-between;align-items:flex-start;padding-bottom:14px;border-bottom:2px solid #C9A84C;margin-bottom:18px}' +
+          '.logo{max-height:70px;max-width:160px}' +
+          '.header-right{text-align:right;font-size:9pt;color:#444}' +
+          '.header-right .inv-num{font-size:11pt;font-weight:700;color:#111;margin-top:4px}' +
+          '.header-right .stay{font-size:9pt;color:#555;margin-top:2px}' +
+          '.parties{display:flex;justify-content:space-between;margin-bottom:22px;gap:30px}' +
+          '.emetteur,.destinataire{flex:1}' +
+          '.emetteur h3,.destinataire h3{font-size:9pt;color:#888;text-transform:uppercase;letter-spacing:.05em;margin:0 0 5px;font-weight:600}' +
+          '.emetteur p,.destinataire p{margin:0;line-height:1.6;font-size:9.5pt}' +
+          '.emetteur strong{font-size:10.5pt}' +
+          'table.res{width:100%;border-collapse:collapse;margin-bottom:18px}' +
+          'table.res thead tr{border-bottom:2px solid #C9A84C}' +
+          'table.res thead th{text-align:left;padding:7px 8px;font-size:9pt;color:#555;font-weight:600;text-transform:uppercase;letter-spacing:.04em}' +
+          'table.res thead th.r{text-align:right}' +
+          'table.res tbody tr{border-bottom:1px solid #e8e8e8}' +
+          'table.res tbody td{padding:8px 8px;font-size:10pt}' +
+          'table.res tbody td.r{text-align:right}' +
+          '.totals{margin-left:auto;width:260px;border-top:1px solid #ddd;padding-top:10px}' +
+          '.trow{display:flex;justify-content:space-between;padding:5px 0;font-size:10pt;border-bottom:1px solid #f0f0f0}' +
+          '.trow.total{font-weight:700;font-size:11.5pt;border-bottom:2px solid #C9A84C;border-top:2px solid #C9A84C;padding:8px 0;margin:4px 0}' +
+          '.trow.due{font-weight:700;font-size:11pt;color:#8f702c}' +
+          '.trow.paid{color:#444}' +
+          '.notes{margin-top:20px;font-size:9pt;color:#555;border-top:1px solid #e8e8e8;padding-top:10px}' +
+          '.footer{margin-top:40px;padding-top:10px;border-top:1px solid #ddd;display:flex;justify-content:space-between;font-size:8pt;color:#888}' +
+          '.cw{font-size:8pt;color:#aaa;margin-top:6px;text-align:center}' +
+          '@media print{body{-webkit-print-color-adjust:exact;print-color-adjust:exact}}' +
+        '</style></head><body><div class="page">' +
+        '<div class="header">' +
+          '<img class="logo" src="' + logoSrc + '" alt="Hôtel Club de Kipé" onerror="this.style.display=\'none\'">' +
+          '<div class="header-right">' +
+            '<div>Date de la facture : ' + invoiceDate + '</div>' +
+            '<div class="inv-num">N. Facture : ' + escapeHtml(invoice.invoice_number || '') + '</div>' +
+            (stay ? '<div class="stay">Séjour du ' + stay + '</div>' : '') +
+          '</div>' +
+        '</div>' +
+        '<div class="parties">' +
+          '<div class="emetteur">' +
+            '<h3>Émetteur</h3>' +
+            '<p><strong>HOTEL CLUB DE KIPE</strong><br>Kipé Dadia<br>Conakry – GUINÉE<br>Téléphone : +224 669 69 99 99<br>E-mail : hotelclubdekipe@gmail.com</p>' +
+          '</div>' +
+          '<div class="destinataire">' +
+            '<h3>Adressé à</h3>' +
+            '<p><strong>' + escapeHtml(invoice.client_name || '') + '</strong>' +
+            (invoice.client_address ? '<br>' + escapeHtml(invoice.client_address) : '') + '</p>' +
+          '</div>' +
+        '</div>' +
+        '<table class="res"><thead><tr>' +
+          '<th>Réservations</th>' +
+          '<th class="r">Nombre de nuits</th>' +
+          '<th class="r">Prix par nuit</th>' +
+          '<th class="r">Prix TTC</th>' +
+        '</tr></thead><tbody><tr>' +
+          '<td>Chambre ' + escapeHtml(String(room)) + '</td>' +
+          '<td class="r">' + nights + '</td>' +
+          '<td class="r">' + fmtInvoiceMoney(rate, cur) + '</td>' +
+          '<td class="r">' + fmtInvoiceMoney(ht || nights * rate, cur) + '</td>' +
+        '</tr>' +
+        '<tr><td colspan="3" style="text-align:right;padding-top:10px;font-weight:600;color:#555">Total des réservations</td><td class="r" style="font-weight:600">' + fmtInvoiceMoney(ht || total, cur) + '</td></tr>' +
+        '</tbody></table>' +
+        '<div class="totals">' +
+          '<div class="trow"><span>Total HT</span><span>' + fmtInvoiceMoney(ht || total, cur) + '</span></div>' +
+          (tax > 0 ? '<div class="trow"><span>Taxe (' + tax + '%)</span><span>' + fmtInvoiceMoney(total - ht, cur) + '</span></div>' : '') +
+          '<div class="trow total"><span>Total TTC</span><span>' + fmtInvoiceMoney(total, cur) + '</span></div>' +
+          (paid > 0 ? '<div class="trow paid"><span><em>Déjà payé</em></span><span>' + fmtInvoiceMoney(paid, cur) + '</span></div>' : '<div class="trow paid"><span><em>Déjà payé</em></span><span>&mdash;</span></div>') +
+          '<div class="trow due"><span>Reste à payer</span><span>' + fmtInvoiceMoney(due, cur) + '</span></div>' +
+        '</div>' +
+        (invoice.internal_notes || invoice.notes ? '<div class="notes"><strong>Notes :</strong> ' + escapeHtml(invoice.internal_notes || invoice.notes || '') + '</div>' : '') +
+        '<div class="footer">' +
+          '<span>RCCM/GN.TCC.2019.0 5769</span>' +
+          '<span>CLUB DE KIPE</span>' +
+        '</div>' +
+        '<div class="cw">Conçu par <a href="https://catalystworks.consulting">Catalyst Works</a></div>' +
+        '</div></body></html>';
+      win.document.write(html);
+      win.document.close();
+      win.focus();
+      win.print();
+    }
+    function cancelInvoice(id) {
+      var invoice = findInvoice(id);
+      if (!invoice) { return; }
+      var reason = window.prompt('Motif d\'annulation (obligatoire) :');
+      if (!reason || !reason.trim()) {
+        alert('Motif obligatoire pour annuler une facture.');
+        return;
+      }
+      var notes = (invoice.internal_notes ? invoice.internal_notes + '\n' : '') + 'ANNULÉ le ' + new Date().toLocaleDateString('fr-FR') + ' — Motif : ' + reason.trim();
+      var payload = { status: 'cancelled', internal_notes: notes, cancellation_reason: reason.trim() };
+      getClient().from('invoices').update(payload).eq('id', id).then(function() {
+        loadInvoices();
+      }).catch(function(err) {
+        alert(err && err.message ? err.message : 'Erreur lors de l\'annulation.');
+      });
+    }
+
+    function archiveInvoice(id) {
+      getClient().from('invoices').update({ status: 'archived' }).eq('id', id).then(function() {
+        loadInvoices();
+      }).catch(function() { loadInvoices(); });
+    }
+
+    function archiveWithNote(id) {
+      var invoice = findInvoice(id);
+      if (!invoice) { return; }
+      var note = window.prompt('Note d\'archivage (obligatoire) :');
+      if (!note || !note.trim()) {
+        alert('Une note est obligatoire pour archiver une facture.');
+        return;
+      }
+      var existing = invoice.internal_notes || invoice.notes || '';
+      var combined = (existing ? existing + '\n' : '') + 'ARCHIVÉ le ' + new Date().toLocaleDateString('fr-FR') + ' — ' + note.trim();
+      getClient().from('invoices').update({ status: 'archived', internal_notes: combined }).eq('id', id).then(function() {
+        loadInvoices();
+      }).catch(function(err) {
+        alert(err && err.message ? err.message : 'Erreur lors de l\'archivage.');
+      });
+    }
+
+    function findInvoice(id) {
+      for (var i = 0; i < invoices.length; i++) {
+        if (String(invoices[i].id) === String(id) || String(invoices[i].invoice_number) === String(id)) {
+          return invoices[i];
+        }
+      }
+      return null;
+    }
+
+    function findById(rows, id) {
+      for (var i = 0; i < rows.length; i++) {
+        if (String(rows[i].id) === String(id)) {
+          return rows[i];
+        }
+      }
+      return null;
+    }
+
+    function calculateNights(start, end) {
+      if (!start || !end) { return 0; }
+      var startDate = new Date(start);
+      var endDate = new Date(end);
+      var diff = endDate - startDate;
+      return diff > 0 ? Math.ceil(diff / 86400000) : 0;
+    }
+
+    function formatDateIntl(isoStr) {
+      if (!isoStr) { return ''; }
+      var parts = String(isoStr).split('-');
+      if (parts.length < 3) { return isoStr; }
+      var months = ['Jan','Févr','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Dec'];
+      var days = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+      var y = parseInt(parts[0],10); var mo = parseInt(parts[1],10)-1; var d = parseInt(parts[2],10);
+      var dt = new Date(y, mo, d);
+      return days[dt.getDay()] + ' ' + (d<10?'0'+d:d) + ' ' + months[mo] + ' ' + y;
+    }
+    function formatStay(start, end) {
+      var a = formatDateIntl(start ? String(start).slice(0,10) : '');
+      var b = formatDateIntl(end ? String(end).slice(0,10) : '');
+      return a && b ? a + ' - ' + b : '';
+    }
+
+    function formatMoney(value) {
+      return Number(value || 0).toLocaleString('fr-FR');
+    }
+
+    function statusLabel(status) {
+      var labels = { draft: 'Brouillon', sent: 'Envoyé', paid: 'Payé', archived: 'Archivé', cancelled: 'Annulé' };
+      return labels[status] || status || 'Brouillon';
+    }
+
+    function statusClass(status) {
+      if (status === 'paid') { return 'status-paid'; }
+      if (status === 'sent') { return 'status-sent'; }
+      if (status === 'cancelled') { return 'status-cancelled'; }
+      return 'status-draft';
+    }
+
+    function getNestedClientName(reservation) {
+      if (reservation && reservation.clients) {
+        return reservation.clients.full_name || reservation.clients.name || '';
+      }
+      return '';
+    }
+
+    function getNestedClientAddress(reservation) {
+      if (reservation && reservation.clients) {
+        return reservation.clients.address || reservation.clients.client_address || '';
+      }
+      return '';
+    }
+
+    function safePromise(value) {
+      if (value && typeof value.then === 'function') {
+        return value;
+      }
+      return Promise.resolve(value);
+    }
+
+    function forEachElement(nodes, callback) {
+      for (var i = 0; i < nodes.length; i++) {
+        callback(nodes[i], i);
+      }
+    }
+
+    function escapeAttr(value) {
+      return String(value === null || typeof value === 'undefined' ? '' : value).replace(/\\/g, '\\\\').replace(/'/g, "\\'");
+    }
+
+    function escapeHtml(value) {
+      return String(value === null || typeof value === 'undefined' ? '' : value)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#039;');
+    }
+
+    var currentView = 'active';
+    var sortCol = 'created_at';
+    var sortAsc = false;
+
+    function switchInvoiceView(view) {
+      currentView = view;
+      document.getElementById('tab-active').className = view === 'active' ? 'inv-tab active' : 'inv-tab';
+      document.getElementById('tab-history').className = view === 'history' ? 'inv-tab active' : 'inv-tab';
+      if (view === 'active') {
+        document.getElementById('status-filter').value = 'all';
+      } else {
+        document.getElementById('status-filter').value = 'all';
+      }
+      filterInvoices();
+    }
+
+    function sortInvoices(col) {
+      if (sortCol === col) { sortAsc = !sortAsc; } else { sortCol = col; sortAsc = true; }
+      var icons = document.querySelectorAll('.sort-icon');
+      for (var i = 0; i < icons.length; i++) { icons[i].textContent = ''; }
+      var icon = document.getElementById('sort-' + col);
+      if (icon) { icon.textContent = sortAsc ? ' ▲' : ' ▼'; }
+      filterInvoices();
+    }
+
+    function viewInvoice(id) {
+      var invoice = null;
+      for (var i = 0; i < invoices.length; i++) {
+        if (String(invoices[i].id) === String(id) || String(invoices[i].invoice_number) === String(id)) {
+          invoice = invoices[i]; break;
+        }
+      }
+      if (!invoice) { return; }
+      currentInvoice = invoice;
+      var total = Number(invoice.total_ttc || invoice.total || 0);
+      var paid = Number(invoice.amount_paid || 0);
+      var due = (invoice.balance_due !== null && typeof invoice.balance_due !== 'undefined') ? Number(invoice.balance_due) : Math.max(total - paid, 0);
+      var cur = invoice.currency || 'GNF';
+      var stay = formatStay(invoice.check_in || invoice.start_date, invoice.check_out || invoice.end_date);
+      var dueColor = due > 0 ? '#e06c63' : '#5cc08a';
+      var notesRow = invoice.internal_notes ? '<tr><td style="padding:7px 0;color:#aeb8c4">Notes</td><td style="padding:7px 0;font-style:italic">' + escapeHtml(invoice.internal_notes) + '</td></tr>' : '';
+      document.getElementById('view-invoice-title').textContent = 'Facture ' + (invoice.invoice_number || '');
+      document.getElementById('view-invoice-body').innerHTML = '<table style="width:100%;border-collapse:collapse">' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4;width:45%">Client</td><td style="padding:7px 0;font-weight:600">' + escapeHtml(invoice.client_name || '') + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Adresse</td><td style="padding:7px 0">' + escapeHtml(invoice.client_address || '-') + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Chambre</td><td style="padding:7px 0">' + escapeHtml(invoice.room || invoice.room_number || '-') + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Séjour</td><td style="padding:7px 0">' + stay + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Nuits</td><td style="padding:7px 0">' + (invoice.nights || 0) + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Prix/nuit</td><td style="padding:7px 0">' + formatMoney(invoice.nightly_rate || 0) + ' ' + escapeHtml(cur) + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Total HT</td><td style="padding:7px 0">' + formatMoney(invoice.total_ht || 0) + ' ' + escapeHtml(cur) + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Taxe</td><td style="padding:7px 0">' + (invoice.tax_rate || 0) + ' %</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4;font-weight:700">Total TTC</td><td style="padding:7px 0;font-weight:700;color:#C9A84C">' + formatMoney(total) + ' ' + escapeHtml(cur) + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Déjà payé</td><td style="padding:7px 0">' + formatMoney(paid) + ' ' + escapeHtml(cur) + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4;font-weight:700">Reste à payer</td><td style="padding:7px 0;font-weight:700;color:' + dueColor + '">' + formatMoney(due) + ' ' + escapeHtml(cur) + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Mode paiement</td><td style="padding:7px 0">' + escapeHtml(invoice.payment_mode || '-') + '</td></tr>' +
+        '<tr><td style="padding:7px 0;color:#aeb8c4">Statut</td><td style="padding:7px 0">' + statusLabel(invoice.status) + '</td></tr>' +
+        notesRow + '</table>';
+      document.getElementById('view-reprint-btn').onclick = function() { printInvoice(invoice.id); };
+      document.getElementById('view-invoice-modal').classList.add('open');
+    }
+
+    function closeViewModal() {
+      document.getElementById('view-invoice-modal').classList.remove('open');
+    }
+  </script>
+<div class="cw-credit">Conçu par <a href="https://catalystworks.consulting" target="_blank" rel="noopener">Catalyst Works</a></div>
+</body>
+</html>

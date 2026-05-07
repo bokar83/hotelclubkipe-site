@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Calendrier - Hotel Club de Kipe</title>
+  <link rel="stylesheet" href="css/staff.css">
+  <style>
+    .modal-card { max-width: 840px; }
+    .form-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 14px; }
+    .fg { display: grid; gap: 6px; }
+    .fg.full { grid-column: 1 / -1; }
+    .nights-display { grid-column: 1 / -1; color: #C9A84C; font-weight: 700; min-height: 22px; }
+    .form-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; margin-top: 16px; }
+    .autocomplete-list { position: absolute; background: #111b19; border: 1px solid #2b4039; border-radius: 8px; z-index: 60; min-width: 260px; max-height: 220px; overflow: auto; }
+    .autocomplete-item { padding: 10px 12px; cursor: pointer; border-bottom: 1px solid #1a2a28; }
+    .autocomplete-item:hover { background: rgba(201,168,76,.12); }
+    .cal-scroll-wrap { overflow-x: auto; }
+    .cal-month-grid { min-width: 980px; }
+    .cal-month-row { display: grid; grid-template-columns: 118px repeat(31, 32px); min-height: 42px; }
+    .mc-header-row { min-height: 36px; }
+    .mc-room-label { border: 1px solid #1a2a28; background: #0b1110; padding: 8px; color: #f4efe2; overflow: hidden; display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+    .mc-room-badge { display: block; color: #a9b3aa; font-size: 11px; margin-top: 2px; }
+    .mc-header-label, .mc-day-label { color: #C9A84C; font-weight: 700; }
+    .mc-day-label { border: 1px solid #1a2a28; background: #0b1110; text-align: center; padding: 8px 0; }
+    .mc-cell { border: 1px solid rgba(255,255,255,0.15); background: rgba(255,255,255,0.07); color: #f4efe2; min-height: 42px; padding: 0; }
+    .mc-cell.empty:hover { background: #163319; }
+    .mc-cell.pending { background: rgba(195,154,69,.9); }
+    .mc-cell.confirmed { background: rgba(76,131,168,.9); }
+    .mc-cell.checked_in { background: rgba(79,156,114,.9); }
+    .mc-cell.checked_out { background: rgba(90,90,90,.9); }
+    .mc-cell.cancelled { background: rgba(200,83,83,.9); }
+    .detail-panel { position: fixed; right: 24px; top: 90px; width: 320px; background: #111b19; border: 1px solid #2b4039; border-radius: 10px; box-shadow: 0 8px 32px rgba(0,0,0,.55); z-index: 70; padding: 16px; }
+    .detail-header { display: flex; justify-content: space-between; align-items: center; gap: 10px; border-bottom: 1px solid #2b4039; margin-bottom: 12px; }
+    .detail-header h3 { margin: 0 0 12px; }
+    .detail-row { display: flex; justify-content: space-between; gap: 12px; padding: 7px 0; border-bottom: 1px solid #1a2a28; }
+    .detail-row span { color: #a9b3aa; }
+    .detail-row strong { text-align: right; }
+    .detail-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+    .btn-sm { min-height: 32px; padding: 6px 9px; font-size: 12px; }
+    .date-fr { color: #C9A84C; font-size: 0.75rem; display: block; margin-top: 2px; }
+    .toast { position: fixed; bottom: 18px; right: 18px; background: #111b19; border: 1px solid #2b4039; color: #f4efe2; padding: 12px 14px; border-radius: 8px; z-index: 100; transition: opacity .25s; }
+    .toast-success { border-color: #4f9c72; }
+    .toast-error { border-color: #c85353; }
+    @media (max-width: 820px) {
+      .form-grid { grid-template-columns: 1fr; }
+      .detail-panel { left: 14px; right: 14px; top: 76px; width: auto; }
+    }
+  </style>
+</head>
+<body>
+<div class="app-container">
+  <div class="mobile-topbar">
+    <button class="hamburger" type="button" id="mobile-menu-btn" aria-label="Menu">Menu</button>
+    <span class="mobile-title">Calendrier</span>
+  </div>
+  <aside id="sidebar" class="sidebar">
+    <div class="sidebar-logo"><img src="../public/images/logo-transparent.png" alt="Hotel Club de Kipe"></div>
+    <nav class="sidebar-nav">
+      <a class="nav-item" href="dashboard.html" data-page="dashboard">Tableau de bord</a>
+      <a class="nav-item active" href="calendar.html" data-page="calendar">Calendrier</a>
+      <a class="nav-item" href="clients.html" data-page="clients">Clients</a>
+      <a class="nav-item" href="invoices.html" data-page="invoices">Factures</a>
+      <a class="nav-item" href="admin.html" data-page="admin">Administration</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="sidebar-username">Personnel</span>
+      <button class="btn-logout" onclick="logout()">Déconnexion</button>
+    </div>
+    <div class="cw-credit">Built by <a href="https://catalystworks.ai" target="_blank" rel="noopener">Catalyst Works</a></div>
+  </aside>
+  <div class="sidebar-scrim" id="sidebar-scrim"></div>
+  <main class="main-content">
+    <header class="topbar">
+      <button class="hamburger" type="button" onclick="toggleMobileSidebar()">Menu</button>
+      <h1>Calendrier des chambres</h1>
+      <div class="topbar-actions">
+        <button class="btn-primary" type="button" onclick="openResModal()">Nouvelle reservation</button>
+        <span id="today-label"></span>
+      </div>
+    </header>
+    <div class="content-wrap">
+      <section class="card">
+        <div class="cal-nav">
+          <button class="btn-secondary cal-nav-btn" id="prev-month" type="button">Mois précédent</button>
+          <h2 class="cal-month-label" id="month-title">Calendrier</h2>
+          <button class="btn-secondary cal-nav-btn" id="next-month" type="button">Mois suivant</button>
+        </div>
+        <div class="cal-legend">
+          <span class="legend-item"><span class="legend-dot" style="background:rgba(195,154,69,.9)"></span>En attente</span>
+          <span class="legend-item"><span class="legend-dot" style="background:rgba(76,131,168,.9)"></span>Confirmée</span>
+          <span class="legend-item"><span class="legend-dot" style="background:rgba(79,156,114,.9)"></span>Check-in</span>
+          <span class="legend-item"><span class="legend-dot" style="background:rgba(169,179,170,.9)"></span>Check-out</span>
+          <span class="legend-item"><span class="legend-dot" style="background:rgba(200,83,83,.9)"></span>Annulée</span>
+        </div>
+        <div class="cal-scroll-wrap">
+          <div id="calendar-grid" class="cal-month-grid"></div>
+        </div>
+      </section>
+    </div>
+  </main>
+</div>
+<div id="reservation-modal" class="modal-overlay">
+  <div class="modal-card">
+    <div class="modal-header">
+      <h2>Nouvelle reservation</h2>
+      <button class="modal-close" type="button" onclick="closeReservationModal()">&times;</button>
+    </div>
+    <div class="modal-body">
+      <form id="reservation-form">
+        <div class="form-grid">
+          <div class="fg">
+            <label for="res-room">Chambre</label>
+            <select id="res-room" required></select>
+          </div>
+          <div class="fg">
+            <label for="res-business">Compte entreprise</label>
+            <select id="res-business"><option value="">Aucun</option></select>
+          </div>
+          <div class="fg">
+            <label for="res-prenom">Prénom</label>
+            <input id="res-prenom" autocomplete="off" required>
+          </div>
+          <div class="fg">
+            <label for="res-nom">Nom de famille *</label>
+            <input id="res-nom" autocomplete="off" required>
+            <input id="res-client-id" type="hidden">
+            <div id="client-autocomplete" class="autocomplete-list" hidden></div>
+          </div>
+          <div class="fg">
+            <label for="res-checkin">Arrivée</label>
+            <input id="res-checkin" type="date" required>
+            <small id="ci-fr" class="date-fr"></small>
+          </div>
+          <div class="fg">
+            <label for="res-checkout">Départ</label>
+            <input id="res-checkout" type="date" required>
+            <small id="co-fr" class="date-fr"></small>
+          </div>
+          <div class="nights-display" id="nights-display">1 nuit</div>
+          <div class="fg">
+            <label for="res-persons">Personnes</label>
+            <input id="res-persons" type="number" min="1" value="1">
+          </div>
+          <div class="fg">
+            <label for="res-rate">Prix par nuit</label>
+            <input id="res-rate" type="number" min="0" step="1" value="0">
+          </div>
+          <div class="fg">
+            <label for="res-total">Total estime</label>
+            <input id="res-total" type="text" readonly value="0 GNF">
+          </div>
+          <div class="fg">
+            <label for="res-payment-type">Paiement</label>
+            <select id="res-payment-type">
+              <option value="Cash">Cash</option>
+              <option value="OrangeMoney">OrangeMoney</option>
+              <option value="Carte">Carte</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div class="fg">
+            <label for="res-payment-status">Statut paiement</label>
+            <select id="res-payment-status"><option value="pending">En attente</option><option value="partial">Partiel</option><option value="paid">Paye</option></select>
+          </div>
+          <div class="fg">
+            <label for="res-paid">Montant paye</label>
+            <input id="res-paid" type="number" min="0" value="0">
+          </div>
+          <div class="fg">
+            <label for="res-status">Statut sejour</label>
+            <select id="res-status"><option value="pending">En attente</option><option value="confirmed">Confirmee</option><option value="checked_in">Check-in</option></select>
+          </div>
+          <div class="fg full">
+            <label for="res-notes">Notes</label>
+            <textarea id="res-notes"></textarea>
+          </div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-secondary" type="button" onclick="closeReservationModal()">Annuler</button>
+          <button class="btn-primary" type="submit">Enregistrer</button>
+          <button class="btn-primary" type="button" id="save-invoice-btn">Enregistrer et facturer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+<div id="detail-panel" class="detail-panel" hidden></div>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.js"></script>
+<script src="js/config.js"></script>
+<script src="js/auth.js"></script>
+<script src="js/api.js"></script>
+<script>
+(function(){
+  var ROOMS = [
+    { number:'102', type:'Standard', floor:'RDC', rate_gnf:600000, rate_eur:60 },
+    { number:'103', type:'Standard', floor:'RDC', rate_gnf:600000, rate_eur:60 },
+    { number:'104', type:'Standard', floor:'RDC', rate_gnf:600000, rate_eur:60 },
+    { number:'201', type:'Mini Suite', floor:'2e', rate_gnf:1000000, rate_eur:100 },
+    { number:'202', type:'Standard', floor:'2e', rate_gnf:800000, rate_eur:80 },
+    { number:'203', type:'Standard', floor:'2e', rate_gnf:800000, rate_eur:80 },
+    { number:'204', type:'Suite', floor:'2e', rate_gnf:1200000, rate_eur:120 },
+    { number:'301', type:'Mini Suite', floor:'3e', rate_gnf:1000000, rate_eur:100 },
+    { number:'302', type:'Standard', floor:'3e', rate_gnf:800000, rate_eur:80 },
+    { number:'303', type:'Standard', floor:'3e', rate_gnf:800000, rate_eur:80 },
+    { number:'304', type:'Suite', floor:'3e', rate_gnf:1200000, rate_eur:120 },
+    { number:'305', type:'Standard', floor:'3e', rate_gnf:800000, rate_eur:80 }
+  ];
+  var FR_MONTHS = ['janv.', 'févr.', 'mars', 'avr.', 'mai', 'juin', 'juil.', 'aout', 'sept.', 'oct.', 'nov.', 'dec.'];
+  var cursor = new Date();
+  var reservations = [];
+  var clientMatches = [];
+  var businessAccounts = [];
+  var selectedClient = null;
+  function pad(n){ return ('0' + n).slice(-2); }
+  function dateKey(y,m,d){ return y + '-' + pad(m) + '-' + pad(d); }
+  function esc(v){ return String(v === null || v === undefined ? '' : v).replace(/[&<>"']/g, function(c){ return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]; }); }
+  function formatGNF(n){ return Math.round(Number(n || 0)).toLocaleString('fr-FR') + ' GNF'; }
+  function money(v,c){ return (Number(v || 0)).toLocaleString('fr-FR') + ' ' + (c || 'GNF'); }
+  function nights(a,b){ var s = new Date(a); var e = new Date(b); var d = Math.round((e - s) / 86400000); return d > 0 ? d : 1; }
+  function roomByNumber(n){ for(var i=0;i<ROOMS.length;i++){ if(ROOMS[i].number === String(n)){ return ROOMS[i]; } } return null; }
+  function statusClass(s){ return s || 'confirmed'; }
+  function clientName(r){ return r && r.clients && r.clients.full_name ? r.clients.full_name : (r && r.client_name ? r.client_name : 'Client'); }
+  function initials(name){ var parts = String(name || 'Client').split(' '); return ((parts[0] || 'C').charAt(0) + (parts[1] || '').charAt(0)).toUpperCase(); }
+  function closeSidebar(){ var s=document.getElementById('sidebar'); var x=document.getElementById('sidebar-scrim'); if(s){s.classList.remove('open');} if(x){x.classList.remove('open');} }
+  window.toggleMobileSidebar = function(){ var s=document.getElementById('sidebar'); var x=document.getElementById('sidebar-scrim'); var open = !(s && s.classList.contains('open')); if(s){s.classList.toggle('open', open);} if(x){x.classList.toggle('open', open);} };
+  function toast(message,type){ var t=document.createElement('div'); t.className='toast toast-' + (type || 'info'); t.textContent=message; document.body.appendChild(t); window.setTimeout(function(){ t.style.opacity='0'; },2400); window.setTimeout(function(){ if(t.parentNode){ t.parentNode.removeChild(t); } },3000); }
+  var _CAL_DAYS_FR = ['Dim','Lun','Mar','Mer','Jeu','Ven','Sam'];
+  var _CAL_MONTHS_FR = ['Jan','Févr','Mar','Avr','Mai','Juin','Juil','Août','Sep','Oct','Nov','Dec'];
+  function setToday(){ var t=document.getElementById('today-label'); if(t){ var n=new Date(); var d=n.getDate(); t.textContent = _CAL_DAYS_FR[n.getDay()] + ' ' + (d<10?'0'+d:d) + ' ' + _CAL_MONTHS_FR[n.getMonth()] + ' ' + n.getFullYear(); } }
+  function populateRooms(){ var select=document.getElementById('res-room'); select.innerHTML=''; for(var i=0;i<ROOMS.length;i++){ var r=ROOMS[i]; select.innerHTML += '<option value="'+esc(r.number)+'">'+esc(r.number)+' - '+esc(r.type)+'</option>'; } }
+  function populateBusiness(){ var select=document.getElementById('res-business'); select.innerHTML='<option value="">Aucun</option>'; for(var i=0;i<businessAccounts.length;i++){ var b=businessAccounts[i]; select.innerHTML += '<option value="'+esc(b.id)+'">'+esc(b.company_name || b.name || '')+'</option>'; } }
+  function loadBusinessAccounts(){ if(typeof getBusinessAccounts !== 'function'){ return; } getBusinessAccounts().then(function(rows){ businessAccounts = rows || []; populateBusiness(); }).catch(function(){ businessAccounts = []; populateBusiness(); }); }
+  function loadReservations(){ getReservationsForMonth(cursor.getFullYear(), cursor.getMonth()+1).then(function(rows){ reservations = rows || []; renderCalendar(); }).catch(function(err){ toast(err && err.message ? err.message : 'Chargement impossible', 'error'); renderCalendar(); }); }
+  function reservationFor(room, day){
+    for(var i=0;i<reservations.length;i++){
+      var r=reservations[i];
+      var rnum = r.room_number || (r.rooms && r.rooms.number) || String(r.room_id || '');
+      if(String(rnum) === String(room) && r.check_in <= day && r.check_out > day && r.status !== 'cancelled' && r.status !== 'archived'){ return r; }
+    }
+    return null;
+  }
+  function renderHeader(grid, days){ var y=cursor.getFullYear(); var m=cursor.getMonth(); var row=document.createElement('div'); row.className='cal-month-row mc-header-row'; row.innerHTML='<div class="mc-room-label"><span class="mc-header-label">Chambre</span></div>'; for(var d=1;d<=days;d++){ var dow=new Date(y,m,d).getDay(); row.innerHTML += '<div class="mc-day-label" title="'+_CAL_DAYS_FR[dow]+' '+d+'">'+_CAL_DAYS_FR[dow]+'<br>'+d+'</div>'; } grid.appendChild(row); }
+  function renderRoomRow(grid, room, y, m, days){ var row=document.createElement('div'); row.className='cal-month-row'; row.innerHTML='<div class="mc-room-label"><strong>'+esc(room.number)+'</strong><span class="mc-room-badge">'+esc(room.type)+'</span></div>'; for(var d=1;d<=days;d++){ var key=dateKey(y,m,d); var res=reservationFor(room.number,key); if(res){ row.innerHTML += '<button type="button" class="mc-cell '+esc(statusClass(res.status))+'" data-id="'+esc(res.id)+'" title="'+esc(clientName(res))+'"><span class="mc-initials">'+esc(initials(clientName(res)))+'</span></button>'; } else { row.innerHTML += '<button type="button" class="mc-cell empty" data-room="'+esc(room.number)+'" data-date="'+esc(key)+'" title="Nouvelle reservation"></button>'; } } grid.appendChild(row); }
+  function bindCells(){ var cells=document.querySelectorAll('.mc-cell'); for(var i=0;i<cells.length;i++){ cells[i].onclick=function(){ var id=this.getAttribute('data-id'); if(id){ showDetail(id); } else { openResModal(this.getAttribute('data-room'), this.getAttribute('data-date')); } }; } }
+  function renderCalendar(){ var y=cursor.getFullYear(); var m=cursor.getMonth()+1; var days=new Date(y,m,0).getDate(); var grid=document.getElementById('calendar-grid'); document.getElementById('month-title').textContent = FR_MONTHS[cursor.getMonth()] + ' ' + cursor.getFullYear(); grid.innerHTML=''; renderHeader(grid,days); for(var i=0;i<ROOMS.length;i++){ renderRoomRow(grid,ROOMS[i],y,m,days); } bindCells(); }
+  function resetForm(){ document.getElementById('reservation-form').reset(); document.getElementById('res-client-id').value=''; document.getElementById('res-persons').value='1'; document.getElementById('res-paid').value='0'; document.getElementById('res-payment-status').value='pending'; document.getElementById('res-status').value='pending'; selectedClient=null; hideAutocomplete(); }
+  function updateRateFromRoom(){ var room=roomByNumber(document.getElementById('res-room').value); document.getElementById('res-rate').value = room ? room.rate_gnf : 0; calcNightsAndTotal(); }
+  function calcNightsAndTotal(){ var n=nights(document.getElementById('res-checkin').value, document.getElementById('res-checkout').value); var rate=Number(document.getElementById('res-rate').value || 0); document.getElementById('nights-display').textContent = n + (n > 1 ? ' nuits' : ' nuit'); document.getElementById('res-total').value = formatGNF(n * rate); }
+  window.openResModal = function(room,date){ resetForm(); populateRooms(); populateBusiness(); if(room){ document.getElementById('res-room').value=room; } if(date){ document.getElementById('res-checkin').value=date; var out=new Date(date); out.setDate(out.getDate()+1); document.getElementById('res-checkout').value=out.toISOString().slice(0,10); } updateRateFromRoom(); document.getElementById('reservation-modal').className='modal-overlay open'; };
+  window.openReservationModal = window.openResModal;
+  window.closeReservationModal = function(){ document.getElementById('reservation-modal').className='modal-overlay'; hideAutocomplete(); };
+  function hideAutocomplete(){ var box=document.getElementById('client-autocomplete'); box.hidden=true; box.innerHTML=''; }
+  function renderAutocomplete(rows){ var box=document.getElementById('client-autocomplete'); clientMatches=rows || []; box.innerHTML=''; if(!clientMatches.length){ hideAutocomplete(); return; } for(var i=0;i<clientMatches.length;i++){ var c=clientMatches[i]; box.innerHTML += '<div class="autocomplete-item" data-index="'+i+'">'+esc(c.full_name)+'<br><span class="form-hint">'+esc(c.phone || c.email || '')+'</span></div>'; } box.hidden=false; bindAutocomplete(); }
+  function bindAutocomplete(){ var items=document.querySelectorAll('.autocomplete-item'); for(var i=0;i<items.length;i++){ items[i].onclick=function(){ var c=clientMatches[Number(this.getAttribute('data-index'))]; var parts=String(c.full_name || '').split(' '); selectedClient=c; document.getElementById('res-prenom').value=parts.shift() || ''; document.getElementById('res-nom').value=parts.join(' ').toUpperCase(); document.getElementById('res-client-id').value=c.id || ''; hideAutocomplete(); }; } }
+  function searchClients(){ var q=(document.getElementById('res-prenom').value + ' ' + document.getElementById('res-nom').value).replace(/^\s+|\s+$/g,''); selectedClient=null; document.getElementById('res-client-id').value=''; if(!q || q.length < 2){ hideAutocomplete(); return; } getClients(q).then(function(rows){ renderAutocomplete(rows || []); }).catch(function(){ hideAutocomplete(); }); }
+  function ensureClient(){ var id=document.getElementById('res-client-id').value; var full=(document.getElementById('res-prenom').value + ' ' + document.getElementById('res-nom').value).replace(/^\s+|\s+$/g,''); if(id){ return Promise.resolve({ id:id, full_name:full }); } return createClient({ full_name:full, created_at:new Date().toISOString() }); }
+  function reservationPayload(client){ var n=nights(document.getElementById('res-checkin').value, document.getElementById('res-checkout').value); var rate=Number(document.getElementById('res-rate').value || 0); return { room_number:document.getElementById('res-room').value, client_id:client.id, client_name:client.full_name, guest_name:client.full_name, business_account_id:document.getElementById('res-business').value || null, check_in:document.getElementById('res-checkin').value, check_out:document.getElementById('res-checkout').value, persons:Number(document.getElementById('res-persons').value || 1), currency:'GNF', nightly_rate:rate, total_amount:rate * n, payment_type:document.getElementById('res-payment-type').value, payment_status:document.getElementById('res-payment-status').value, amount_paid:Number(document.getElementById('res-paid').value || 0), notes:document.getElementById('res-notes').value, status:document.getElementById('res-status').value, updated_at:new Date().toISOString() }; }
+  function saveReservation(makeInvoice){ ensureClient().then(function(client){ return createReservation(reservationPayload(client)); }).then(function(row){ closeReservationModal(); loadReservations(); toast('Reservation enregistree','success'); if(makeInvoice){ window.location.href='invoices.html?newres=' + encodeURIComponent(row && row.id ? row.id : ''); } }).catch(function(err){ toast(err && err.message ? err.message : 'Reservation impossible','error'); }); }
+  function row(label,value){ return '<div class="detail-row"><span>'+esc(label)+'</span><strong>'+esc(value)+'</strong></div>'; }
+  function findReservation(id){ for(var i=0;i<reservations.length;i++){ if(String(reservations[i].id) === String(id)){ return reservations[i]; } } return null; }
+  function showDetail(id){ var r=findReservation(id); var panel=document.getElementById('detail-panel'); if(!r){ return; } panel.hidden=false; var notesId='detail-notes-'+esc(r.id); panel.innerHTML='<div class="detail-header"><h3>Chambre '+esc(r.room_number)+'</h3><button class="modal-close" type="button" onclick="closeDetailPanel()">&times;</button></div>'+row('Client',clientName(r))+row('Arrivee',r.check_in || '')+row('Depart',r.check_out || '')+row('Nuits',nights(r.check_in,r.check_out))+row('Statut',r.status || 'confirmed')+row('Paiement',r.payment_status || 'pending')+row('Total',money(r.total_amount,r.currency))+row('Paye',money(r.amount_paid,r.currency))+'<div class="detail-row" style="flex-direction:column;align-items:flex-start;gap:6px"><span>Notes</span><textarea id="notes-field-'+esc(r.id)+'"  style="width:100%;background:#0b1110;color:#f4efe2;border:1px solid #2b4039;border-radius:6px;padding:6px 8px;min-height:60px;resize:vertical">'+esc(r.notes || '')+'</textarea><button class="btn-primary btn-sm" onclick="saveNotes(\''+esc(r.id)+'\')"  style="margin-top:2px">Enregistrer notes</button></div><div class="detail-actions"><button class="btn-secondary btn-sm" onclick="setReservationStatus(\''+esc(r.id)+'\',\'confirmed\')">Confirmer</button><button class="btn-primary btn-sm" onclick="setReservationStatus(\''+esc(r.id)+'\',\'checked_in\')">Check-in</button><button class="btn-secondary btn-sm" onclick="setReservationStatus(\''+esc(r.id)+'\',\'checked_out\')">Check-out</button><button class="btn-secondary btn-sm" onclick="setReservationStatus(\''+esc(r.id)+'\',\'cancelled\')">Annuler</button></div>'; }
+  window.closeDetailPanel = function(){ var panel=document.getElementById('detail-panel'); panel.hidden=true; panel.innerHTML=''; };
+  window.setReservationStatus = function(id,status){ updateReservationStatus(id,status).then(function(){ closeDetailPanel(); loadReservations(); toast('Statut mis a jour','success'); }).catch(function(err){ toast(err && err.message ? err.message : 'Mise a jour impossible','error'); }); };
+  window.saveNotes = function(id){ var el=document.getElementById('notes-field-'+id); if(!el){ return; } var notes=el.value; updateReservationStatus(id,'',{notes:notes}).then(function(){ loadReservations(); toast('Notes enregistrees','success'); }).catch(function(err){ toast(err && err.message ? err.message : 'Erreur','error'); }); };
+  var FR_MONTHS_LONG = ['janvier','février','mars','avril','mai','juin','juillet','août','septembre','octobre','novembre','decembre'];
+  function formatDateFR(isoStr){ if(!isoStr){ return ''; } var parts=isoStr.split('-'); if(parts.length!==3){ return ''; } return parseInt(parts[2])+' '+FR_MONTHS_LONG[parseInt(parts[1])-1]+' '+parts[0]; }
+  function bindForm(){ document.getElementById('reservation-form').onsubmit=function(e){ e.preventDefault(); saveReservation(false); }; document.getElementById('save-invoice-btn').onclick=function(){ saveReservation(true); }; document.getElementById('res-prenom').oninput=searchClients; document.getElementById('res-nom').oninput=searchClients; document.getElementById('res-nom').onblur=function(){ this.value=this.value.toUpperCase(); }; document.getElementById('res-room').onchange=updateRateFromRoom; document.getElementById('res-checkin').onchange=function(){ var el=document.getElementById('ci-fr'); if(el){ el.textContent=formatDateFR(this.value); } calcNightsAndTotal(); }; document.getElementById('res-checkout').onchange=function(){ var el=document.getElementById('co-fr'); if(el){ el.textContent=formatDateFR(this.value); } calcNightsAndTotal(); }; document.getElementById('res-rate').onchange=calcNightsAndTotal; document.getElementById('res-rate').oninput=calcNightsAndTotal; }
+  function bindNav(){ document.getElementById('prev-month').onclick=function(){ cursor.setMonth(cursor.getMonth()-1); loadReservations(); }; document.getElementById('next-month').onclick=function(){ cursor.setMonth(cursor.getMonth()+1); loadReservations(); }; var b=document.getElementById('mobile-menu-btn'); var x=document.getElementById('sidebar-scrim'); if(b){ b.onclick=toggleMobileSidebar; } if(x){ x.onclick=closeSidebar; } }
+  function initPage(){
+    var urlParams = new URLSearchParams(window.location.search);
+    var pRoom = urlParams.get('room');
+    var pDate = urlParams.get('date');
+    var pAuto = urlParams.get('autoopen');
+    setToday();
+    populateRooms();
+    bindForm();
+    bindNav();
+    renderCalendar();
+    requireAuth(function(){
+      loadBusinessAccounts();
+      loadReservations();
+      if (pRoom || pAuto) { setTimeout(function() { openResModal(pRoom, pDate); }, 1200); }
+    });
+  }
+  document.addEventListener('DOMContentLoaded', initPage);
+})();
+</script>
+</body>
+</html>

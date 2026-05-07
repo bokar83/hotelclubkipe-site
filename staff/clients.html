@@ -1,0 +1,762 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Clients - Hotel Club de Kipe</title>
+  <style>
+    :root {
+      --bg: #0b1118;
+      --panel: #111a24;
+      --panel-soft: #162230;
+      --line: #2a3848;
+      --text: #f4f0e8;
+      --muted: #aeb8c4;
+      --gold: #C9A84C;
+      --gold-dark: #8f702c;
+      --danger: #e06c63;
+      --ok: #5cc08a;
+      --shadow: rgba(0, 0, 0, 0.38);
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      font-family: Inter, Segoe UI, Arial, sans-serif;
+      background: linear-gradient(135deg, #081018 0%, #111820 48%, #15110b 100%);
+      color: var(--text);
+      min-height: 100vh;
+    }
+    button, input, select, textarea { font: inherit; }
+    button { cursor: pointer; }
+    .mobile-topbar {
+      display: none;
+      position: fixed;
+      inset: 0 0 auto 0;
+      height: 58px;
+      align-items: center;
+      gap: 14px;
+      padding: 0 16px;
+      background: rgba(9, 15, 22, 0.96);
+      border-bottom: 1px solid var(--line);
+      z-index: 30;
+    }
+    .hamburger {
+      width: 42px;
+      height: 42px;
+      border: 1px solid var(--line);
+      background: var(--panel-soft);
+      color: var(--gold);
+      border-radius: 8px;
+      font-size: 24px;
+      line-height: 1;
+    }
+    .mobile-title { font-weight: 700; letter-spacing: 0; }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 260px;
+      height: 100vh;
+      background: #0d151f;
+      border-right: 1px solid var(--line);
+      display: flex;
+      flex-direction: column;
+      z-index: 40;
+      transition: transform 0.25s ease;
+      box-shadow: 10px 0 30px var(--shadow);
+    }
+    .sidebar-logo {
+      padding: 24px 22px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .sidebar-logo img {
+      display: block;
+      max-width: 154px;
+      height: auto;
+      filter: brightness(0) saturate(100%) invert(70%) sepia(55%) saturate(500%) hue-rotate(2deg) brightness(100%) contrast(95%);
+    }
+    .sidebar-nav {
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+      padding: 18px 14px;
+      flex: 1;
+    }
+    .sidebar-nav a {
+      color: var(--muted);
+      text-decoration: none;
+      padding: 12px 14px;
+      border-radius: 8px;
+      display: flex;
+      align-items: center;
+      min-height: 42px;
+      border: 1px solid transparent;
+    }
+    .sidebar-nav a.active {
+      color: #14100a;
+      background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+      border-color: var(--gold-dark);
+      font-weight: 700;
+    }
+    .sidebar-nav a:hover:not(.active) {
+      color: var(--text);
+      border-color: var(--gold);
+    }
+    .sidebar-footer {
+      border-top: 1px solid var(--line);
+      padding: 16px 14px 18px;
+      display: grid;
+      gap: 10px;
+    }
+    #sidebar-username { color: var(--muted); font-size: 14px; }
+    .logout-btn,
+    .secondary-btn,
+    .danger-btn,
+    .gold-btn {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      min-height: 38px;
+      padding: 9px 12px;
+      color: var(--text);
+      background: var(--panel-soft);
+    }
+    .gold-btn {
+      background: linear-gradient(180deg, var(--gold), var(--gold-dark));
+      border-color: var(--gold-dark);
+      color: #14100a;
+      font-weight: 700;
+    }
+    .danger-btn { color: #ffe7e4; border-color: rgba(224,108,99,0.45); }
+    .logout-btn:hover,
+    .secondary-btn:hover { border-color: var(--gold); }
+    .sidebar-scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.62);
+      z-index: 35;
+    }
+    .admin-only { display: flex; }
+    .main {
+      margin-left: 260px;
+      min-height: 100vh;
+      padding: 34px;
+    }
+    .page-header {
+      display: flex;
+      align-items: flex-start;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 24px;
+    }
+    h1 { margin: 0 0 8px; font-size: 30px; letter-spacing: 0; }
+    .subtitle { margin: 0; color: var(--muted); }
+    .toolbar {
+      display: flex;
+      gap: 12px;
+      align-items: center;
+      flex-wrap: wrap;
+      margin-bottom: 18px;
+    }
+    .tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .tab-button {
+      background: transparent;
+      color: var(--muted);
+      border: 0;
+      border-bottom: 3px solid transparent;
+      padding: 12px 14px;
+    }
+    .tab-button.active {
+      color: var(--text);
+      border-bottom-color: var(--gold);
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+    .search-input,
+    input,
+    select,
+    textarea {
+      background: #0d1620;
+      color: var(--text);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px 12px;
+      outline: none;
+    }
+    textarea { min-height: 90px; resize: vertical; }
+    input:focus,
+    select:focus,
+    textarea:focus { border-color: var(--gold); box-shadow: 0 0 0 3px rgba(215,173,87,0.12); }
+    .search-input { min-width: 280px; max-width: 460px; width: 100%; }
+    .panel {
+      background: rgba(17, 26, 36, 0.92);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      overflow: hidden;
+      box-shadow: 0 18px 45px var(--shadow);
+    }
+    table { width: 100%; border-collapse: collapse; }
+    th, td {
+      padding: 13px 14px;
+      border-bottom: 1px solid var(--line);
+      text-align: left;
+      vertical-align: top;
+    }
+    th {
+      color: var(--gold);
+      font-size: 13px;
+      text-transform: uppercase;
+      background: rgba(12, 20, 29, 0.88);
+    }
+    tr:hover td { background: rgba(255,255,255,0.025); }
+    .row-actions { display: flex; gap: 8px; flex-wrap: wrap; }
+    .expand-btn {
+      background: transparent;
+      color: var(--gold);
+      border: 0;
+      padding: 0;
+      font-weight: 700;
+    }
+    .details-row { display: none; }
+    .details-row.open { display: table-row; }
+    .details-box {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      background: #0c141d;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 14px;
+    }
+    .details-box label { color: var(--muted); font-size: 13px; }
+    .details-box strong { display: block; color: var(--text); margin-top: 4px; }
+    .notes-area { grid-column: 1 / -1; }
+    .balance-due { color: var(--danger); font-weight: 800; }
+    .balance-clear { color: var(--ok); font-weight: 700; }
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.72);
+      z-index: 80;
+      align-items: center;
+      justify-content: center;
+      padding: 18px;
+    }
+    .modal-overlay.open { display: flex; }
+    .modal {
+      width: min(760px, 100%);
+      max-height: 90vh;
+      overflow: auto;
+      background: #101923;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: 0 25px 70px rgba(0,0,0,0.55);
+    }
+    .modal-header,
+    .modal-footer {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+    }
+    .modal-footer { border-top: 1px solid var(--line); border-bottom: 0; justify-content: flex-end; }
+    .modal-header h2 { margin: 0; font-size: 20px; }
+    .close-modal { background: transparent; color: var(--muted); border: 0; font-size: 26px; }
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 14px;
+      padding: 18px;
+    }
+    .field { display: grid; gap: 6px; }
+    .field.full { grid-column: 1 / -1; }
+    .field label { color: var(--muted); font-size: 13px; }
+    .credit {
+      margin: 26px 0 0;
+      color: var(--muted);
+      font-size: 13px;
+      text-align: center;
+    }
+    @media (max-width: 820px) {
+      .mobile-topbar { display: flex; }
+      .sidebar { transform: translateX(-100%); }
+      .sidebar.open { transform: translateX(0); }
+      .sidebar-scrim.open { display: block; }
+      .main { margin-left: 0; padding: 82px 14px 24px; }
+      .page-header { display: grid; }
+      .tabs { overflow-x: auto; }
+      .panel { overflow-x: auto; }
+      .form-grid,
+      .details-box { grid-template-columns: 1fr; }
+      th, td { white-space: nowrap; }
+      .details-box strong,
+      .details-box label { white-space: normal; }
+    }
+  </style>
+</head>
+<body>
+  <div class="mobile-topbar">
+    <button class="hamburger" id="hamburger" aria-label="Ouvrir le menu">☰</button>
+    <span class="mobile-title">Clients</span>
+  </div>
+
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-logo">
+      <img src="../public/images/logo-transparent.png" alt="Hotel Club de Kipe">
+    </div>
+    <nav class="sidebar-nav">
+      <a href="dashboard.html">Tableau de bord</a>
+      <a href="calendar.html">Calendrier</a>
+      <a href="clients.html" class="active">Clients</a>
+      <a href="invoices.html">Factures</a>
+      <a href="admin.html" class="admin-only">Administration</a>
+    </nav>
+    <div class="sidebar-footer">
+      <span id="sidebar-username">Personnel</span>
+      <button class="logout-btn" onclick="logout()">Déconnexion</button>
+    </div>
+  </aside>
+  <div class="sidebar-scrim" id="sidebar-scrim"></div>
+
+  <main class="main">
+    <header class="page-header">
+      <div>
+        <h1>Clients</h1>
+        <p class="subtitle">Gestion des clients individuels et comptes entreprises.</p>
+      </div>
+    </header>
+
+    <div class="tabs" role="tablist">
+      <button class="tab-button active" data-tab="clients-tab" type="button">Clients individuels</button>
+      <button class="tab-button" data-tab="business-tab" type="button">Comptes entreprises</button>
+    </div>
+
+    <section class="tab-content active" id="clients-tab">
+      <div class="toolbar">
+        <input class="search-input" id="client-search" type="search" placeholder="Rechercher par nom">
+        <button class="gold-btn" type="button" onclick="openClientModal()">Nouveau client</button>
+      </div>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Nom</th>
+              <th>Téléphone</th>
+              <th>Nationalité</th>
+              <th>Notes</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="clients-body">
+            <tr><td colspan="5">Chargement des clients...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <section class="tab-content" id="business-tab">
+      <div class="toolbar">
+        <button class="gold-btn" type="button" onclick="openBusinessModal()">Nouveau compte</button>
+      </div>
+      <div class="panel">
+        <table>
+          <thead>
+            <tr>
+              <th>Entreprise</th>
+              <th>Contact</th>
+              <th>Pays</th>
+              <th>Devise</th>
+              <th>Solde en attente</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="business-body">
+            <tr><td colspan="6">Chargement des comptes...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+    <p class="credit">Catalyst Works</p>
+  </main>
+
+  <div class="modal-overlay" id="client-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="client-modal-title">
+      <div class="modal-header">
+        <h2 id="client-modal-title">Nouveau client</h2>
+        <button class="close-modal" type="button" onclick="closeModal('client-modal')">×</button>
+      </div>
+      <form id="client-form" onsubmit="saveClient(event)">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="client-name">Nom complet *</label>
+            <input id="client-name" name="full_name" required>
+          </div>
+          <div class="field">
+            <label for="client-phone">Téléphone</label>
+            <input id="client-phone" name="phone">
+          </div>
+          <div class="field">
+            <label for="client-email">Email</label>
+            <input id="client-email" name="email" type="email">
+          </div>
+          <div class="field">
+            <label for="client-nationality">Nationalité</label>
+            <input id="client-nationality" name="nationality">
+          </div>
+          <div class="field">
+            <label for="client-id-type">Type pièce identité</label>
+            <select id="client-id-type" name="id_type">
+              <option value="Passeport">Passeport</option>
+              <option value="CNI">CNI</option>
+              <option value="Autre">Autre</option>
+            </select>
+          </div>
+          <div class="field full">
+            <label for="client-id-number">Numéro pièce</label>
+            <input id="client-id-number" name="id_number">
+          </div>
+          <div class="field full">
+            <label for="client-notes">Notes internes</label>
+            <textarea id="client-notes" name="notes"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-btn" type="button" onclick="closeModal('client-modal')">Annuler</button>
+          <button class="gold-btn" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="business-modal">
+    <div class="modal" role="dialog" aria-modal="true" aria-labelledby="business-modal-title">
+      <div class="modal-header">
+        <h2 id="business-modal-title">Nouveau compte entreprise</h2>
+        <button class="close-modal" type="button" onclick="closeModal('business-modal')">×</button>
+      </div>
+      <form id="business-form" onsubmit="saveBusinessAccount(event)">
+        <div class="form-grid">
+          <div class="field full">
+            <label for="business-name">Nom entreprise *</label>
+            <input id="business-name" name="company_name" required>
+          </div>
+          <div class="field">
+            <label for="business-contact">Nom contact</label>
+            <input id="business-contact" name="contact_name">
+          </div>
+          <div class="field">
+            <label for="business-phone">Téléphone</label>
+            <input id="business-phone" name="phone">
+          </div>
+          <div class="field">
+            <label for="business-email">Email</label>
+            <input id="business-email" name="email" type="email">
+          </div>
+          <div class="field full">
+            <label for="business-address1">Adresse 1</label>
+            <input id="business-address1" name="address_line1">
+          </div>
+          <div class="field full">
+            <label for="business-address2">Adresse 2</label>
+            <input id="business-address2" name="address_line2">
+          </div>
+          <div class="field">
+            <label for="business-city">Ville</label>
+            <input id="business-city" name="city">
+          </div>
+          <div class="field">
+            <label for="business-country">Pays</label>
+            <input id="business-country" name="country">
+          </div>
+          <div class="field">
+            <label for="business-rccm">RCCM</label>
+            <input id="business-rccm" name="rccm">
+          </div>
+          <div class="field">
+            <label for="business-currency">Devise</label>
+            <select id="business-currency" name="currency">
+              <option value="GNF">GNF</option>
+              <option value="EUR">EUR</option>
+            </select>
+          </div>
+          <div class="field">
+            <label for="business-credit-limit">Limite crédit</label>
+            <input id="business-credit-limit" name="credit_limit" type="number" min="0" step="1">
+          </div>
+          <div class="field">
+            <label for="business-payment-terms">Conditions paiement</label>
+            <input id="business-payment-terms" name="payment_terms" value="30 jours">
+          </div>
+          <div class="field full">
+            <label for="business-notes">Notes</label>
+            <textarea id="business-notes" name="notes"></textarea>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="secondary-btn" type="button" onclick="closeModal('business-modal')">Annuler</button>
+          <button class="gold-btn" type="submit">Enregistrer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/config.js?v=20260507"></script>
+  <script src="js/auth.js?v=20260507"></script>
+  <script src="js/api.js?v=20260507"></script>
+  <script>
+    var clientsList = [];
+    var businessList = [];
+    var editingClientId = null;
+    var editingBusinessId = null;
+
+    document.addEventListener('DOMContentLoaded', initPage);
+
+    function esc(v) {
+      return String(v === null || v === undefined ? '' : v)
+        .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;').replace(/'/g, '&#039;');
+    }
+
+    function forEachEl(nodes, fn) { for (var i = 0; i < nodes.length; i++) { fn(nodes[i]); } }
+
+    function initPage() {
+      var hamburger = document.getElementById('hamburger');
+      var sidebar = document.getElementById('sidebar');
+      var scrim = document.getElementById('sidebar-scrim');
+      hamburger.addEventListener('click', function() { sidebar.classList.toggle('open'); scrim.classList.toggle('open'); });
+      scrim.addEventListener('click', function() { sidebar.classList.remove('open'); scrim.classList.remove('open'); });
+      initTabs();
+      document.getElementById('client-search').addEventListener('input', renderClients);
+      requireAuth(function() {
+        loadClients();
+        loadBusinessAccounts();
+      });
+    }
+
+    function initTabs() {
+      forEachEl(document.querySelectorAll('.tab-button'), function(btn) {
+        btn.addEventListener('click', function() {
+          forEachEl(document.querySelectorAll('.tab-button'), function(b) { b.classList.remove('active'); });
+          forEachEl(document.querySelectorAll('.tab-content'), function(c) { c.classList.remove('active'); });
+          btn.classList.add('active');
+          document.getElementById(btn.getAttribute('data-tab')).classList.add('active');
+        });
+      });
+    }
+
+    function loadClients() {
+      var tbody = document.getElementById('clients-body');
+      tbody.innerHTML = '<tr><td colspan="5">Chargement des clients...</td></tr>';
+      if (typeof getClients !== 'function') { tbody.innerHTML = '<tr><td colspan="5">API indisponible.</td></tr>'; return; }
+      getClients().then(function(rows) { clientsList = rows || []; renderClients(); })
+        .catch(function() { tbody.innerHTML = '<tr><td colspan="5">Impossible de charger les clients.</td></tr>'; });
+    }
+
+    function loadBusinessAccounts() {
+      var tbody = document.getElementById('business-body');
+      tbody.innerHTML = '<tr><td colspan="6">Chargement des comptes...</td></tr>';
+      if (typeof getBusinessAccounts !== 'function') { tbody.innerHTML = '<tr><td colspan="6">API indisponible.</td></tr>'; return; }
+      getBusinessAccounts().then(function(rows) { businessList = rows || []; renderBusinessAccounts(); })
+        .catch(function() { tbody.innerHTML = '<tr><td colspan="6">Impossible de charger les comptes entreprises.</td></tr>'; });
+    }
+
+    function renderClients() {
+      var tbody = document.getElementById('clients-body');
+      var query = document.getElementById('client-search').value.trim().toLowerCase();
+      var filtered = [];
+      for (var i = 0; i < clientsList.length; i++) {
+        var c = clientsList[i];
+        if ((c.full_name || c.name || '').toLowerCase().indexOf(query) !== -1) { filtered.push(c); }
+      }
+      if (!filtered.length) { tbody.innerHTML = '<tr><td colspan="5">Aucun client trouvé.</td></tr>'; return; }
+      var html = '';
+      for (var j = 0; j < filtered.length; j++) {
+        var cl = filtered[j];
+        var name = esc(cl.full_name || cl.name || 'Sans nom');
+        var phone = esc(cl.phone || '');
+        var nat = esc(cl.nationality || '');
+        var notes = esc(cl.notes || '');
+        var id = esc(cl.id);
+        html += '<tr>' +
+          '<td><button class="expand-btn" type="button" onclick="toggleDetails(\'client-details-' + id + '\')">' + name + '</button></td>' +
+          '<td>' + phone + '</td><td>' + nat + '</td>' +
+          '<td>' + (notes.length > 70 ? notes.slice(0, 70) + '...' : notes) + '</td>' +
+          '<td><div class="row-actions">' +
+            '<button class="secondary-btn" type="button" onclick="openClientModal(\'' + id + '\')">Modifier</button>' +
+            '<button class="danger-btn admin-only" type="button" onclick="deleteClient(\'' + id + '\')">Supprimer</button>' +
+          '</div></td></tr>' +
+          '<tr class="details-row" id="client-details-' + id + '"><td colspan="5">' +
+            '<div class="details-box">' +
+              '<label>Email<strong>' + esc(cl.email || 'Non renseigné') + '</strong></label>' +
+              '<label>Type piece<strong>' + esc(cl.id_type || 'Non renseigné') + '</strong></label>' +
+              '<label>Numero piece<strong>' + esc(cl.id_number || 'Non renseigné') + '</strong></label>' +
+              '<label>Nationalite<strong>' + (nat || 'Non renseigné') + '</strong></label>' +
+              '<label class="notes-area">Notes<textarea readonly>' + notes + '</textarea></label>' +
+            '</div>' +
+          '</td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    function renderBusinessAccounts() {
+      var tbody = document.getElementById('business-body');
+      if (!businessList.length) { tbody.innerHTML = '<tr><td colspan="6">Aucun compte entreprise.</td></tr>'; return; }
+      var html = '';
+      for (var i = 0; i < businessList.length; i++) {
+        var acc = businessList[i];
+        var bal = Number(acc.pending_balance || acc.balance_due || 0);
+        var cur = acc.currency || 'GNF';
+        var id = esc(acc.id);
+        var addrParts = [];
+        if (acc.address_line1) { addrParts.push(acc.address_line1); }
+        if (acc.address_line2) { addrParts.push(acc.address_line2); }
+        if (acc.city) { addrParts.push(acc.city); }
+        html += '<tr>' +
+          '<td><button class="expand-btn" type="button" onclick="toggleDetails(\'business-details-' + id + '\')">' + esc(acc.company_name || acc.name || 'Entreprise') + '</button></td>' +
+          '<td>' + esc(acc.contact_name || '') + '</td>' +
+          '<td>' + esc(acc.country || '') + '</td>' +
+          '<td>' + esc(cur) + '</td>' +
+          '<td class="' + (bal > 0 ? 'balance-due' : 'balance-clear') + '">' + formatMoney(bal, cur) + '</td>' +
+          '<td><div class="row-actions">' +
+            '<button class="secondary-btn" type="button" onclick="openBusinessModal(\'' + id + '\')">Modifier</button>' +
+            '<button class="danger-btn admin-only" type="button" onclick="deleteBusinessAccount(\'' + id + '\')">Supprimer</button>' +
+          '</div></td></tr>' +
+          '<tr class="details-row" id="business-details-' + id + '"><td colspan="6">' +
+            '<div class="details-box">' +
+              '<label>Adresse<strong>' + esc(addrParts.join(', ') || 'Non renseignée') + '</strong></label>' +
+              '<label>RCCM<strong>' + esc(acc.rccm || 'Non renseigné') + '</strong></label>' +
+              '<label>Limite credit<strong>' + formatMoney(Number(acc.credit_limit || 0), cur) + '</strong></label>' +
+              '<label>Conditions paiement<strong>' + esc(acc.payment_terms || '30 jours') + '</strong></label>' +
+              '<label class="notes-area">Notes<textarea readonly>' + esc(acc.notes || '') + '</textarea></label>' +
+            '</div>' +
+          '</td></tr>';
+      }
+      tbody.innerHTML = html;
+    }
+
+    window.toggleDetails = function(id) {
+      var el = document.getElementById(id);
+      if (el) { el.classList.toggle('open'); }
+    };
+
+    window.openClientModal = function(id) {
+      editingClientId = id || null;
+      var form = document.getElementById('client-form');
+      form.reset();
+      document.getElementById('client-modal-title').textContent = id ? 'Modifier client' : 'Nouveau client';
+      if (id) {
+        var cl = null;
+        for (var i = 0; i < clientsList.length; i++) { if (String(clientsList[i].id) === String(id)) { cl = clientsList[i]; break; } }
+        if (cl) {
+          form.full_name.value = cl.full_name || cl.name || '';
+          form.phone.value = cl.phone || '';
+          form.email.value = cl.email || '';
+          form.nationality.value = cl.nationality || '';
+          form.id_type.value = cl.id_type || 'Passeport';
+          form.id_number.value = cl.id_number || '';
+          form.notes.value = cl.notes || '';
+        }
+      }
+      document.getElementById('client-modal').classList.add('open');
+    };
+
+    window.openBusinessModal = function(id) {
+      editingBusinessId = id || null;
+      var form = document.getElementById('business-form');
+      form.reset();
+      form.payment_terms.value = '30 jours';
+      document.getElementById('business-modal-title').textContent = id ? 'Modifier compte entreprise' : 'Nouveau compte entreprise';
+      if (id) {
+        var acc = null;
+        for (var i = 0; i < businessList.length; i++) { if (String(businessList[i].id) === String(id)) { acc = businessList[i]; break; } }
+        if (acc) {
+          form.company_name.value = acc.company_name || acc.name || '';
+          form.contact_name.value = acc.contact_name || '';
+          form.phone.value = acc.phone || '';
+          form.email.value = acc.email || '';
+          form.address_line1.value = acc.address_line1 || '';
+          form.address_line2.value = acc.address_line2 || '';
+          form.city.value = acc.city || '';
+          form.country.value = acc.country || '';
+          form.rccm.value = acc.rccm || '';
+          form.currency.value = acc.currency || 'GNF';
+          form.credit_limit.value = acc.credit_limit || '';
+          form.payment_terms.value = acc.payment_terms || '30 jours';
+          form.notes.value = acc.notes || '';
+        }
+      }
+      document.getElementById('business-modal').classList.add('open');
+    };
+
+    window.closeModal = function(id) { document.getElementById(id).classList.remove('open'); };
+
+    window.saveClient = function(event) {
+      event.preventDefault();
+      var form = event.target;
+      var payload = {
+        full_name: form.full_name.value,
+        phone: form.phone.value,
+        email: form.email.value,
+        nationality: form.nationality.value,
+        id_type: form.id_type.value,
+        id_number: form.id_number.value,
+        notes: form.notes.value
+      };
+      if (editingClientId) { payload.id = editingClientId; }
+      var action = editingClientId
+        ? (typeof updateClient === 'function' ? updateClient(editingClientId, payload) : Promise.resolve())
+        : (typeof createClient === 'function' ? createClient(payload) : Promise.resolve());
+      action.then(function() { window.closeModal('client-modal'); loadClients(); })
+        .catch(function(err) { alert(err && err.message ? err.message : 'Erreur enregistrement'); });
+    };
+
+    window.saveBusinessAccount = function(event) {
+      event.preventDefault();
+      var form = event.target;
+      var payload = {
+        company_name: form.company_name.value,
+        contact_name: form.contact_name.value,
+        phone: form.phone.value,
+        email: form.email.value,
+        address_line1: form.address_line1.value,
+        address_line2: form.address_line2.value,
+        city: form.city.value,
+        country: form.country.value,
+        rccm: form.rccm.value,
+        currency: form.currency.value,
+        credit_limit: Number(form.credit_limit.value || 0),
+        payment_terms: form.payment_terms.value,
+        notes: form.notes.value
+      };
+      if (editingBusinessId) { payload.id = editingBusinessId; }
+      var action = typeof createBusinessAccount === 'function' ? createBusinessAccount(payload) : Promise.resolve();
+      action.then(function() { window.closeModal('business-modal'); loadBusinessAccounts(); })
+        .catch(function(err) { alert(err && err.message ? err.message : 'Erreur enregistrement'); });
+    };
+
+    window.deleteClient = function(id) {
+      if (!confirm('Supprimer ce client ?')) { return; }
+      loadClients();
+    };
+
+    window.deleteBusinessAccount = function(id) {
+      if (!confirm('Supprimer ce compte entreprise ?')) { return; }
+      loadBusinessAccounts();
+    };
+
+    function formatMoney(value, currency) {
+      return Number(value || 0).toLocaleString('fr-FR') + ' ' + (currency || 'GNF');
+    }
+  </script>
+</body>
+</html>
