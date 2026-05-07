@@ -611,8 +611,9 @@
           '<button class="secondary-btn" type="button" onclick="viewInvoice(\'' + escapeAttr(invoice.id) + '\')">Voir</button>' +
           '<button class="secondary-btn" type="button" onclick="printInvoice(\'' + escapeAttr(invoice.id) + '\')">Imprimer</button>' +
           (currentView === 'history'
-            ? '<button class="secondary-btn admin-only" type="button" onclick="archiveWithNote(\'' + escapeAttr(invoice.id) + '\')">Archiver</button>'
-            : '<button class="danger-btn admin-only" type="button" onclick="cancelInvoice(\'' + escapeAttr(invoice.id) + '\')">Annuler</button>') +
+            ? ''
+            : '<button class="secondary-btn admin-only" type="button" onclick="archiveWithNote(\'' + escapeAttr(invoice.id) + '\')">Archiver</button>' +
+              '<button class="danger-btn admin-only" type="button" onclick="cancelInvoice(\'' + escapeAttr(invoice.id) + '\')">Annuler</button>') +
           '</div></td></tr>';
         }).join('');
       var profile = getCurrentProfile();

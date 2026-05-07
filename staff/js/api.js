@@ -141,26 +141,44 @@ function generateInvoiceNumber(){
     return prefix + ('0000' + next).slice(-4);
   });
 }
-function getPricing(){ return getClient().from('room_rates').select('*').order('room_number', { ascending:true }).then(unwrap); }
+function getPricing(){ return getClient().from('rooms').select('id,number,type,rate_gnf,rate_eur').order('number', { ascending:true }).then(unwrap); }
 function updateRoomRate(id, payload){
-  var data = payload || {};
-  data.updated_at = new Date().toISOString();
-  return getClient().from('room_rates').update(data).eq('id', id).select('*').then(one).then(function(row){
-    return logActivity('update_room_rate','room_rate',id,data).then(function(){ return row; });
+  var data = {};
+  if(payload && payload.rate_gnf !== undefined){ data.rate_gnf = Number(payload.rate_gnf); }
+  if(payload && payload.rate_eur !== undefined){ data.rate_eur = Number(payload.rate_eur); }
+  return getClient().from('rooms').update(data).eq('id', id).select('*').then(one).then(function(row){
+    return logActivity('update_room_rate','room',id,data).then(function(){ return row; });
   });
 }
 function getSystemSettings(){
-  return getClient().from('system_settings').select('*').order('key', { ascending:true }).then(unwrap).then(function(rows){
-    var out = {};
-    for(var i=0;i<(rows || []).length;i++){ out[rows[i].key] = rows[i].value; }
-    return out;
+  return getClient().from('system_settings').select('*').eq('id',1).maybeSingle().then(function(res){
+    if(res && res.error){ throw res.error; }
+    var row = res && res.data ? res.data : {};
+    return {
+      hotel_name: row.hotel_name || 'Hôtel Club de Kipé',
+      address_line1: row.address_line1 || '',
+      address_line2: row.address_line2 || '',
+      phone: row.phone || '',
+      email: row.email || '',
+      rccm: row.rccm || '',
+      default_tax_rate: row.tax_rate_default || 0,
+      default_currency: row.currency_default || 'GNF'
+    };
   });
 }
 function updateSystemSettings(settings){
-  var data = [];
-  for(var k in settings){ if(settings.hasOwnProperty(k)){ data.push({ key:k, value:settings[k], updated_at:new Date().toISOString() }); } }
-  if(!data.length){ return Promise.resolve([]); }
-  return getClient().from('system_settings').upsert(data, { onConflict:'key' }).select('*').then(unwrap).then(function(rows){
+  var data = {
+    hotel_name: settings.hotel_name,
+    address_line1: settings.address_line1,
+    address_line2: settings.address_line2,
+    phone: settings.phone,
+    email: settings.email,
+    rccm: settings.rccm,
+    tax_rate_default: Number(settings.default_tax_rate || 0),
+    currency_default: settings.default_currency || 'GNF',
+    updated_at: new Date().toISOString()
+  };
+  return getClient().from('system_settings').update(data).eq('id',1).select('*').then(unwrap).then(function(rows){
     return logActivity('update_system_settings','settings',null,settings).then(function(){ return rows; });
   });
 }

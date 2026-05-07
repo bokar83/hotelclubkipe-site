@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html lang="fr">
 <head>
   <meta charset="UTF-8">
@@ -325,10 +325,11 @@
         <table>
           <thead>
             <tr>
+              <th>Chambre</th>
               <th>Type</th>
               <th>Tarif GNF</th>
               <th>Tarif EUR</th>
-              <th>Modifier</th>
+              <th>Action</th>
             </tr>
           </thead>
           <tbody id="pricing-body">
@@ -487,92 +488,60 @@
 
     function loadPricing() {
       var tbody = document.getElementById('pricing-body');
-      tbody.innerHTML = '<tr><td colspan="4">Chargement des tarifs...</td></tr>';
+      tbody.innerHTML = '<tr><td colspan="5">Chargement des tarifs...</td></tr>';
       return safePromise(typeof getPricing === 'function' ? getPricing() : []).then(function(rows) {
-        applyPricingRows(rows || []);
+        pricingRows = rows || [];
         renderPricing();
       }).catch(function() {
-        applyPricingRows([]);
+        pricingRows = [];
         renderPricing();
       });
     }
 
-    function applyPricingRows(rows) {
-      var defaults = [
-        { type: 'Standard', rate_gnf: 0, rate_eur: 0 },
-        { type: 'Mini Suite', rate_gnf: 0, rate_eur: 0 },
-        { type: 'Suite', rate_gnf: 0, rate_eur: 0 }
-      ];
-      pricingRows = defaults.map(function(row) {
-        var dbRow = findPricingRow(rows, row.type);
-        var localRow = loadLocalRate(row.type);
-        return mergeRate(row, dbRow, localRow);
-      });
-    }
-
-    function findPricingRow(rows, type) {
-      for (var i = 0; i < rows.length; i++) {
-        if (rows[i] && (rows[i].type === type || rows[i].room_type === type || rows[i].name === type)) {
-          return rows[i];
-        }
-      }
-      return null;
-    }
-
-    function mergeRate(base, dbRow, localRow) {
-      var out = { type: base.type, rate_gnf: Number(base.rate_gnf || 0), rate_eur: Number(base.rate_eur || 0) };
-      if (dbRow) {
-        out.rate_gnf = Number(dbRow.rate_gnf || dbRow.gnf || dbRow.price_gnf || out.rate_gnf || 0);
-        out.rate_eur = Number(dbRow.rate_eur || dbRow.eur || dbRow.price_eur || out.rate_eur || 0);
-      }
-      if (localRow) {
-        out.rate_gnf = Number(localRow.rate_gnf || 0);
-        out.rate_eur = Number(localRow.rate_eur || 0);
-      }
-      return out;
-    }
-
-    function loadLocalRate(type) {
-      try {
-        var raw = localStorage.getItem('hck_rate_' + type);
-        return raw ? JSON.parse(raw) : null;
-      } catch (error) {
-        return null;
-      }
+    function typeLabel(type) {
+      var map = { standard: 'Standard', mini_suite: 'Mini Suite', suite: 'Suite' };
+      return map[type] || type || '';
     }
 
     function renderPricing() {
       var tbody = document.getElementById('pricing-body');
+      if (!pricingRows.length) { tbody.innerHTML = '<tr><td colspan="5">Aucun tarif chargé.</td></tr>'; return; }
       tbody.innerHTML = pricingRows.map(function(row) {
-        return '<tr id="rate-row-' + slug(row.type) + '">' +
-          '<td>' + escapeHtml(row.type) + '</td>' +
-          '<td data-value="gnf">' + formatMoney(row.rate_gnf) + '</td>' +
-          '<td data-value="eur">' + formatMoney(row.rate_eur) + '</td>' +
-          '<td><button class="secondary-btn" type="button" onclick="editRate(\'' + escapeAttr(row.type) + '\')">Modifier</button></td>' +
+        return '<tr id="rate-row-' + escapeHtml(row.id) + '">' +
+          '<td>' + escapeHtml(row.number || '') + '</td>' +
+          '<td>' + escapeHtml(typeLabel(row.type)) + '</td>' +
+          '<td>' + formatMoney(row.rate_gnf) + ' GNF</td>' +
+          '<td>' + Number(row.rate_eur || 0).toLocaleString('fr-FR') + ' €</td>' +
+          '<td><button class="secondary-btn" type="button" onclick="editRate(\'' + escapeAttr(String(row.id)) + '\')">Modifier</button></td>' +
           '</tr>';
       }).join('');
     }
 
-    function editRate(type) {
-      var row = findPricingRow(pricingRows, type) || { type: type, rate_gnf: 0, rate_eur: 0 };
-      var tr = document.getElementById('rate-row-' + slug(type));
-      tr.innerHTML = '<td>' + escapeHtml(type) + '</td>' +
-        '<td><input id="rate-gnf-' + slug(type) + '" type="number" min="0" step="1" value="' + Number(row.rate_gnf || 0) + '"></td>' +
-        '<td><input id="rate-eur-' + slug(type) + '" type="number" min="0" step="1" value="' + Number(row.rate_eur || 0) + '"></td>' +
-        '<td><button class="gold-btn" type="button" onclick="saveRate(\'' + escapeAttr(type) + '\')">Save</button></td>';
+    function editRate(id) {
+      var row = null;
+      for (var i = 0; i < pricingRows.length; i++) { if (String(pricingRows[i].id) === String(id)) { row = pricingRows[i]; break; } }
+      if (!row) { return; }
+      var tr = document.getElementById('rate-row-' + id);
+      tr.innerHTML = '<td>' + escapeHtml(row.number || '') + '</td>' +
+        '<td>' + escapeHtml(typeLabel(row.type)) + '</td>' +
+        '<td><input id="rate-gnf-' + escapeHtml(String(id)) + '" type="number" min="0" step="1000" style="width:130px" value="' + Number(row.rate_gnf || 0) + '"></td>' +
+        '<td><input id="rate-eur-' + escapeHtml(String(id)) + '" type="number" min="0" step="1" style="width:80px" value="' + Number(row.rate_eur || 0) + '"></td>' +
+        '<td><button class="gold-btn" type="button" onclick="saveRate(\'' + escapeAttr(String(id)) + '\')">Enregistrer</button></td>';
     }
 
-    function saveRate(type) {
-      var rateGnf = Number(document.getElementById('rate-gnf-' + slug(type)).value || 0);
-      var rateEur = Number(document.getElementById('rate-eur-' + slug(type)).value || 0);
-      localStorage.setItem('hck_rate_' + type, JSON.stringify({ rate_gnf: rateGnf, rate_eur: rateEur }));
-      pricingRows = pricingRows.map(function(row) {
-        if (row.type === type) {
-          return { type: row.type, rate_gnf: rateGnf, rate_eur: rateEur };
-        }
-        return row;
-      });
-      renderPricing();
+    function saveRate(id) {
+      var gnfEl = document.getElementById('rate-gnf-' + id);
+      var eurEl = document.getElementById('rate-eur-' + id);
+      if (!gnfEl) { return; }
+      var rateGnf = Number(gnfEl.value || 0);
+      var rateEur = Number(eurEl ? eurEl.value : 0);
+      safePromise(typeof updateRoomRate === 'function' ? updateRoomRate(id, { rate_gnf: rateGnf, rate_eur: rateEur }) : null)
+        .then(function() {
+          for (var i = 0; i < pricingRows.length; i++) {
+            if (String(pricingRows[i].id) === String(id)) { pricingRows[i].rate_gnf = rateGnf; pricingRows[i].rate_eur = rateEur; break; }
+          }
+          renderPricing();
+        }).catch(function() { renderPricing(); });
     }
 
     function loadSettings() {
