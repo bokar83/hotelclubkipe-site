@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Hotel Club de Kipe | Conakry, Guinee</title>
+  <meta name="description" content="Hotel Club de Kipe, refuge boutique a Kipe, Conakry. 13 chambres, piscine, restaurant, bar et reservation WhatsApp.">
+  <meta property="og:title" content="Hotel Club de Kipe">
+  <meta property="og:image" content="images/hero-painting.png">
+  <link rel="icon" type="image/png" href="images/logo-transparent.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <div id="cursor"></div>
+  <div id="cursor-ring"></div>
+
+  <nav id="nav" aria-label="Navigation principale">
+    <a href="#hero" aria-label="Hotel Club de Kipe">
+      <img src="images/logo-transparent.png" alt="Hotel Club de Kipe" class="nav-logo-img">
+    </a>
+    <div class="nav-links">
+      <a href="#about" data-i18n="nav_about">A propos</a>
+      <a href="#rooms" data-i18n="nav_rooms">Chambres</a>
+      <a href="#services" data-i18n="nav_svc">Services</a>
+      <a href="#gallery" data-i18n="nav_gallery">Galerie</a>
+    </div>
+    <div class="nav-end">
+      <div class="lang-sw">
+        <button id="fr-btn" type="button" aria-pressed="true">FR</button>
+        <span>/</span>
+        <button id="en-btn" type="button" aria-pressed="false">EN</button>
+      </div>
+      <a href="#booking" class="nav-cta magnetic" data-i18n="nav_book">Reserver</a>
+      <button class="burger" id="burger" type="button" aria-label="Menu" aria-expanded="false"><span></span><span></span></button>
+    </div>
+  </nav>
+
+  <div class="drawer" id="drawer" aria-hidden="true">
+    <a href="#about" data-i18n="nav_about">A propos</a>
+    <a href="#rooms" data-i18n="nav_rooms">Chambres</a>
+    <a href="#services" data-i18n="nav_svc">Services</a>
+    <a href="#gallery" data-i18n="nav_gallery">Galerie</a>
+    <a href="#booking" data-i18n="nav_book">Reserver</a>
+  </div>
+  <div class="drawer-scrim" id="drawer-scrim"></div>
+
+  <section class="hero" id="hero" aria-label="Hotel Club de Kipe">
+    <div class="hero-img-wrap">
+      <img src="images/hero-painting.png" alt="" class="hero-img" id="hero-img" fetchpriority="high" aria-hidden="true">
+    </div>
+    <div class="hero-scrim" aria-hidden="true"></div>
+    <div class="hero-grain" aria-hidden="true"></div>
+    <div class="hero-logo-stamp" aria-hidden="true">
+      <img src="images/logo-transparent.png" alt="" class="hero-logo-stamp-img">
+    </div>
+    <div class="hero-body">
+      <p class="hero-eyebrow">Kipe, Conakry / <span data-i18n="hero_since">Depuis 2019</span></p>
+      <h1 class="hero-h1">
+        <span class="word-wrap"><span class="word" data-i18n-word="hw1">Hotel</span></span>
+        <span class="word-wrap"><span class="word italic" data-i18n-word="hw2">Club</span></span>
+        <span class="word-wrap"><span class="word" data-i18n-word="hw3">de Kipe</span></span>
+      </h1>
+      <p class="hero-sub" data-i18n="hero_sub">Votre refuge prive au coeur de Kipe</p>
+      <div class="hero-ctas">
+        <a href="#rooms" class="btn-ghost magnetic" data-i18n="hero_explore">Decouvrir</a>
+        <a href="#booking" class="btn-gold magnetic" data-i18n="hero_book">Reserver</a>
+      </div>
+    </div>
+    <a href="#about" class="hero-scroll-cue" aria-label="Defiler vers le bas">
+      <span class="cue-label" data-i18n="scroll_lbl">Defiler</span>
+      <span class="cue-rail"><span class="cue-thumb"></span></span>
+    </a>
+  </section>
+
+  <div class="ticker" aria-hidden="true">
+    <div class="ticker-inner">
+      <span>Hotel Club de Kipe</span><span>Kipe, Conakry</span><span>Piscine</span><span>Restaurant</span><span>Bar</span><span>13 Chambres</span><span>Depuis 2019</span>
+      <span>Hotel Club de Kipe</span><span>Kipe, Conakry</span><span>Piscine</span><span>Restaurant</span><span>Bar</span><span>13 Chambres</span><span>Depuis 2019</span>
+    </div>
+  </div>
+
+  <main>
+    <section id="about" class="section about-sec">
+      <div class="container about-inner">
+        <div class="about-left">
+          <p class="eyebrow si" data-i18n="about_ey">Notre histoire</p>
+          <h2 class="h2 sw" data-i18n="about_h2">Un havre de paix, discret et chaleureux</h2>
+          <p class="body-txt si" data-i18n="about_p1">Niche dans le quartier residentiel de Kipe, un refuge pour ceux qui recherchent l intimite, le confort et la discretion.</p>
+          <p class="body-txt si" data-i18n="about_p2">Nos 13 chambres sur trois niveaux combinent l hospitalite guineenne avec des equipements modernes: climatisation, Wi-Fi, restaurant, piscine, bar.</p>
+          <div class="about-stats si">
+            <div class="ast-item"><span class="ast-n">13</span><span class="ast-l" data-i18n="st_rooms">Chambres</span></div>
+            <div class="ast-item"><span class="ast-n">3</span><span class="ast-l" data-i18n="st_floors">Niveaux</span></div>
+            <div class="ast-item"><span class="ast-n">2019</span><span class="ast-l" data-i18n="st_since">Depuis</span></div>
+          </div>
+          <p class="about-num" aria-hidden="true">13 / 3 / 2019</p>
+        </div>
+        <div class="about-right si">
+          <img src="Photos du Hotel et Club/HCKroom_20.jpg" alt="Chambre chaleureuse de l Hotel Club de Kipe" class="about-img" loading="lazy">
+        </div>
+      </div>
+    </section>
+
+    <div class="african-divider" aria-hidden="true">
+      <svg viewBox="0 0 1200 88" preserveAspectRatio="none">
+        <path d="M0 44h1200" />
+        <path d="M40 44l36-30 36 30-36 30-36-30zm150 0l36-30 36 30-36 30-36-30zm150 0l36-30 36 30-36 30-36-30zm150 0l36-30 36 30-36 30-36-30zm150 0l36-30 36 30-36 30-36-30zm150 0l36-30 36 30-36 30-36-30zm150 0l36-30 36 30-36 30-36-30zm150 0l36-30 36 30-36 30-36-30z" />
+      </svg>
+    </div>
+
+    <section id="rooms" class="section rooms-sec">
+      <div class="container">
+        <p class="eyebrow si" data-i18n="rooms_ey">Nos hebergements</p>
+        <h2 class="h2 sw" data-i18n="rooms_h2">Choisissez votre chambre</h2>
+        <p class="body-txt si" data-i18n="rooms_note">Climatisation - Wi-Fi gratuit - Salle de bain privee</p>
+      </div>
+
+      <article class="room-row si">
+        <div class="room-row-img"><img src="Photos du Hotel et Club/HCKroom_01.jpg" alt="Chambre Standard" loading="lazy"></div>
+        <div class="room-row-body">
+          <span class="room-badge room-badge-std" data-i18n="b_std">Standard</span>
+          <p class="room-nums">102 / 103 / 104</p>
+          <h3 class="room-name" data-i18n="r_std">Chambre Standard</h3>
+          <ul class="room-feats"><li data-i18n="f_ac">Climatisation</li><li data-i18n="f_wifi">Wi-Fi</li><li data-i18n="f_bath">Bain prive</li><li data-i18n="f_tv">Television</li></ul>
+          <p class="room-price"><span class="rpn">600 000</span> <span class="rpc" data-i18n="cur">FG</span> <span class="rpp" data-i18n="pn">/ nuit</span></p>
+          <a href="#booking" class="btn-room magnetic" data-i18n="btn_bk">Reserver</a>
+        </div>
+      </article>
+
+      <article class="room-row room-row-flip si">
+        <div class="room-row-img"><img src="Photos du Hotel et Club/HCKroom_06.jpg" alt="Chambre Standard superieure" loading="lazy"></div>
+        <div class="room-row-body">
+          <span class="room-badge room-badge-std" data-i18n="b_std">Standard</span>
+          <p class="room-nums">202 / 203 / 302 / 303</p>
+          <h3 class="room-name" data-i18n="r_std">Chambre Standard</h3>
+          <ul class="room-feats"><li data-i18n="f_ac">Climatisation</li><li data-i18n="f_wifi">Wi-Fi</li><li data-i18n="f_bath">Bain prive</li><li data-i18n="f_tv">Television</li></ul>
+          <p class="room-price"><span class="rpn">800 000</span> <span class="rpc" data-i18n="cur">FG</span> <span class="rpp" data-i18n="pn">/ nuit</span></p>
+          <a href="#booking" class="btn-room magnetic" data-i18n="btn_bk">Reserver</a>
+        </div>
+      </article>
+
+      <article class="room-row si">
+        <div class="room-row-img"><img src="Photos du Hotel et Club/HCKroom_15.jpg" alt="Mini Suite" loading="lazy"></div>
+        <div class="room-row-body">
+          <span class="room-badge room-badge-mini" data-i18n="b_mini">Mini Suite</span>
+          <p class="room-nums">201 / 301</p>
+          <h3 class="room-name" data-i18n="r_mini">Mini Suite</h3>
+          <ul class="room-feats"><li data-i18n="f_ac">Climatisation</li><li data-i18n="f_wifi">Wi-Fi</li><li data-i18n="f_bath">Bain prive</li><li data-i18n="f_sitting">Coin salon</li></ul>
+          <p class="room-price"><span class="rpn">1 000 000</span> <span class="rpc" data-i18n="cur">FG</span> <span class="rpp" data-i18n="pn">/ nuit</span></p>
+          <a href="#booking" class="btn-room magnetic" data-i18n="btn_bk">Reserver</a>
+        </div>
+      </article>
+
+      <article class="room-row room-row-flip si">
+        <div class="room-row-img"><img src="Photos du Hotel et Club/HCKroom_13.jpg" alt="Suite" loading="lazy"></div>
+        <div class="room-row-body">
+          <span class="room-badge room-badge-suite" data-i18n="b_suite">Suite</span>
+          <p class="room-nums">204 / 304</p>
+          <h3 class="room-name" data-i18n="r_suite">Suite</h3>
+          <ul class="room-feats"><li data-i18n="f_ac">Climatisation</li><li data-i18n="f_wifi">Wi-Fi</li><li data-i18n="f_bath">Bain prive</li><li data-i18n="f_sitting">Salon prive</li><li data-i18n="f_desk">Bureau</li></ul>
+          <p class="room-price"><span class="rpn">1 200 000</span> <span class="rpc" data-i18n="cur">FG</span> <span class="rpp" data-i18n="pn">/ nuit</span></p>
+          <a href="#booking" class="btn-room magnetic" data-i18n="btn_bk">Reserver</a>
+        </div>
+      </article>
+    </section>
+
+    <section id="services" class="section svc-sec">
+      <div class="container svc-inner">
+        <div class="svc-item si">
+          <span class="svc-num">01</span>
+          <h3 class="svc-name" data-i18n="svc_pool">Piscine</h3>
+          <p class="svc-desc" data-i18n="svc_pool_d">Detente dans un cadre verdoyant et prive.</p>
+        </div>
+        <div class="svc-item si">
+          <span class="svc-num">02</span>
+          <h3 class="svc-name" data-i18n="svc_resto">Restaurant</h3>
+          <p class="svc-desc" data-i18n="svc_resto_d">Cuisine guineenne et internationale.</p>
+        </div>
+        <div class="svc-item si">
+          <span class="svc-num">03</span>
+          <h3 class="svc-name" data-i18n="svc_bar">Bar</h3>
+          <p class="svc-desc" data-i18n="svc_bar_d">Cocktails et boissons fraiches en soiree.</p>
+        </div>
+      </div>
+    </section>
+
+    <section id="gallery" class="section gal-sec">
+      <div class="container">
+        <p class="eyebrow si" data-i18n="gal_ey">Nos espaces</p>
+        <h2 class="h2 sw" data-i18n="gal_h2">Galerie</h2>
+      </div>
+      <div class="gal-grid si">
+        <button class="gp gp-tall" onclick="openLb(14)" aria-label="Voir photo"><img src="Photos du Hotel et Club/HCKroom_15.jpg" alt="Salon" loading="lazy"></button>
+        <button class="gp" onclick="openLb(0)" aria-label="Voir photo"><img src="Photos du Hotel et Club/HCKroom_01.jpg" alt="Chambre" loading="lazy"></button>
+        <button class="gp" onclick="openLb(4)" aria-label="Voir photo"><img src="Photos du Hotel et Club/HCKroom_05.jpg" alt="Salle de bain" loading="lazy"></button>
+        <button class="gp gp-wide" onclick="openLb(7)" aria-label="Voir photo"><img src="Photos du Hotel et Club/HCKroom_08.jpg" alt="Chambre" loading="lazy"></button>
+        <button class="gp" onclick="openLb(12)" aria-label="Voir photo"><img src="Photos du Hotel et Club/HCKroom_13.jpg" alt="Suite" loading="lazy"></button>
+        <button class="gp" onclick="openLb(19)" aria-label="Voir photo"><img src="Photos du Hotel et Club/HCKroom_20.jpg" alt="Chambre" loading="lazy"></button>
+      </div>
+      <div class="gal-more-row">
+        <button id="show-all" type="button" class="btn-outline magnetic" data-i18n="gal_more">Voir les 21 photos</button>
+      </div>
+      <div class="gal-full" id="gal-full" hidden>
+        <div class="gal-all">
+          <button class="gp" onclick="openLb(0)"><img src="Photos du Hotel et Club/HCKroom_01.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(1)"><img src="Photos du Hotel et Club/HCKroom_02.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(2)"><img src="Photos du Hotel et Club/HCKroom_03.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(3)"><img src="Photos du Hotel et Club/HCKroom_04.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(4)"><img src="Photos du Hotel et Club/HCKroom_05.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(5)"><img src="Photos du Hotel et Club/HCKroom_06.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(6)"><img src="Photos du Hotel et Club/HCKroom_07.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(7)"><img src="Photos du Hotel et Club/HCKroom_08.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(8)"><img src="Photos du Hotel et Club/HCKroom_09.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(9)"><img src="Photos du Hotel et Club/HCKroom_10.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(10)"><img src="Photos du Hotel et Club/HCKroom_11.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(11)"><img src="Photos du Hotel et Club/HCKroom_12.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(12)"><img src="Photos du Hotel et Club/HCKroom_13.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(13)"><img src="Photos du Hotel et Club/HCKroom_14.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(14)"><img src="Photos du Hotel et Club/HCKroom_15.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(15)"><img src="Photos du Hotel et Club/HCKroom_16.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(16)"><img src="Photos du Hotel et Club/HCKroom_17.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(17)"><img src="Photos du Hotel et Club/HCKroom_18.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(18)"><img src="Photos du Hotel et Club/HCKroom_19.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(19)"><img src="Photos du Hotel et Club/HCKroom_20.jpg" alt="" loading="lazy"></button>
+          <button class="gp" onclick="openLb(20)"><img src="Photos du Hotel et Club/HCKroom_21.jpg" alt="" loading="lazy"></button>
+        </div>
+        <div class="gal-more-row">
+          <button id="hide-all" type="button" class="btn-outline magnetic" data-i18n="gal_less">Reduire</button>
+        </div>
+      </div>
+    </section>
+
+    <div id="lb" role="dialog" aria-modal="true" hidden>
+      <button id="lb-x" type="button" aria-label="Fermer">x</button>
+      <button id="lb-prev" type="button" aria-label="Precedent">Prev</button>
+      <img id="lb-img" src="" alt="">
+      <button id="lb-next" type="button" aria-label="Suivant">Next</button>
+      <p id="lb-ct" aria-live="polite"></p>
+    </div>
+
+    <section class="section rev-sec">
+      <div class="container">
+        <p class="eyebrow si" data-i18n="rev_ey">Avis clients</p>
+        <div class="rev-stage si" id="rev-stage">
+          <blockquote class="rev active"><p class="qt" data-i18n="r1">Un endroit magnifique. Tres propre, calme, personnel accueillant. La piscine est parfaite. Je reviendrai.</p><footer><strong data-i18n="r1a">Mamadou D.</strong><span data-i18n="r1l">Conakry, Guinee</span>
+  </footer></blockquote>
+          <blockquote class="rev"><p class="qt" data-i18n="r2">Sejour parfait pour un voyage affaires. Chambre confortable, Wi-Fi fiable, restaurant excellent.</p><footer><strong data-i18n="r2a">Ibrahim K.</strong><span data-i18n="r2l">Dakar, Senegal</span>
+  </footer></blockquote>
+          <blockquote class="rev"><p class="qt" data-i18n="r3">La meilleure adresse a Kipe. Discretion totale, espace prive. Le bar en soiree est une vraie surprise.</p><footer><strong data-i18n="r3a">Fatoumata B.</strong><span data-i18n="r3l">Conakry, Guinee</span>
+  </footer></blockquote>
+        </div>
+        <div class="rev-dots" role="tablist">
+          <button class="rd active" type="button" aria-label="Avis 1"></button>
+          <button class="rd" type="button" aria-label="Avis 2"></button>
+          <button class="rd" type="button" aria-label="Avis 3"></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="map" class="section map-sec">
+      <div class="container map-grid">
+        <div class="map-frame si">
+          <iframe title="Hotel Club de Kipe sur Google Maps" src="https://maps.google.com/maps?q=9.5991875,-13.6505625&z=16&output=embed" width="100%" height="460" style="border:0;" allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+        <div class="map-info si">
+          <p class="eyebrow" data-i18n="map_ey">Nous trouver</p>
+          <h2 class="h2" data-i18n="map_h2">Ou nous sommes</h2>
+          <div class="mi"><span class="mi-l" data-i18n="mi_addr">Adresse</span><span>Kipe Dadyah, Commune de Ratoma, Conakry, Guinee</span></div>
+          <div class="mi"><span class="mi-l" data-i18n="mi_tel">Telephone</span><a href="tel:+224669699999">+224 669 69 99 99</a></div>
+          <div class="mi"><span class="mi-l">WhatsApp</span><a href="https://wa.me/224669000999" target="_blank" rel="noopener">+224 669 00 09 99</a></div>
+          <div class="mi"><span class="mi-l" data-i18n="mi_hrs">Horaires</span><span data-i18n="mi_hrs_v">Reception 24h/24</span></div>
+        </div>
+      </div>
+    </section>
+
+    <div class="rr-strip">
+      <div class="container rr-grid">
+        <div class="rr-item"><span class="rr-badge rr-badge-std" data-i18n="b_std">Standard</span><span class="rr-rooms">102 / 103 / 104</span><span class="rr-price">600 000 <span data-i18n="cur">FG</span></span></div>
+        <div class="rr-item"><span class="rr-badge rr-badge-std" data-i18n="b_std">Standard</span><span class="rr-rooms">202 / 203 / 302 / 303</span><span class="rr-price">800 000 <span data-i18n="cur">FG</span></span></div>
+        <div class="rr-item"><span class="rr-badge rr-badge-mini" data-i18n="b_mini">Mini Suite</span><span class="rr-rooms">201 / 301</span><span class="rr-price">1 000 000 <span data-i18n="cur">FG</span></span></div>
+        <div class="rr-item"><span class="rr-badge rr-badge-suite" data-i18n="b_suite">Suite</span><span class="rr-rooms">204 / 304</span><span class="rr-price">1 200 000 <span data-i18n="cur">FG</span></span></div>
+      </div>
+    </div>
+
+    <section id="booking" class="section bk-sec">
+      <div class="container bk-grid">
+        <div class="bk-left si">
+          <p class="eyebrow" data-i18n="bk_ey">Reserver</p>
+          <h2 class="h2" data-i18n="bk_h2">Planifiez votre sejour</h2>
+          <p class="body-txt" data-i18n="bk_desc">Remplissez le formulaire ou ecrivez sur WhatsApp. Reponse sous 24 heures.</p>
+          <a href="https://wa.me/224669000999" class="btn-wa magnetic" target="_blank" rel="noopener" id="wa-btn" data-i18n="wa_cta">Reserver via WhatsApp</a>
+        </div>
+        <form class="bk-form si" id="bk-form" novalidate>
+          <div class="fg"><label for="fn" data-i18n="fl_name">Nom complet</label><input type="text" id="fn" name="name" required autocomplete="name"></div>
+          <div class="fg"><label for="fp" data-i18n="fl_phone">Telephone / WhatsApp</label><input type="tel" id="fp" name="phone" required autocomplete="tel"></div>
+          <div class="fg-row">
+            <div class="fg"><label for="fci" data-i18n="fl_ci">Arrivee</label><input type="date" id="fci" name="checkin" required></div>
+            <div class="fg"><label for="fco" data-i18n="fl_co">Depart</label><input type="date" id="fco" name="checkout" required></div>
+          </div>
+          <div class="fg">
+            <label for="fr-sel" data-i18n="fl_room">Chambre</label>
+            <select id="fr-sel" name="room" required>
+              <option value="" data-i18n="fl_ph">Choisir</option>
+              <option value="std1" data-i18n="o_std1">Standard 1er etage - 600 000 FG</option>
+              <option value="std2" data-i18n="o_std2">Standard 2e/3e etage - 800 000 FG</option>
+              <option value="mini" data-i18n="o_mini">Mini Suite - 1 000 000 FG</option>
+              <option value="suite" data-i18n="o_suite">Suite - 1 200 000 FG</option>
+            </select>
+          </div>
+          <div class="fg"><label for="fnotes" data-i18n="fl_notes">Message (optionnel)</label><textarea id="fnotes" name="notes" rows="4"></textarea></div>
+          <button type="submit" class="btn-gold magnetic" data-i18n="fl_sub">Envoyer la demande</button>
+          <p class="form-note" data-i18n="fl_note">Confirmation sous 24 heures.</p>
+        </form>
+      </div>
+    </section>
+  </main>
+
+  <footer class="footer">
+    <div class="container footer-inner">
+      <div>
+        <img src="images/logo-transparent.png" alt="Hotel Club de Kipe" class="ft-logo">
+        <p class="ft-tag" data-i18n="ft_tag">Votre refuge elegant a Conakry.</p>
+      </div>
+      <div class="ft-contact">
+        <p>Kipe Dadyah, Conakry, Guinee</p>
+        <p><a href="tel:+224669699999">+224 669 69 99 99</a></p>
+        <p><a href="https://wa.me/224669000999" target="_blank" rel="noopener">WhatsApp: +224 669 00 09 99</a></p>
+      </div>
+    </div>
+  
+    <div class="container ft-bottom"><p>&copy; 2026 Hotel Club de Kipe. Tous droits reserves.</p><p class="cw-credit-pub">Built by <a href="https://catalystworks.ai" target="_blank" rel="noopener">Catalyst Works</a></p><a href='/staff/' class='staff-portal-link' aria-label='Personnel'>&#8226;</a></div></footer>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
+
+
+
