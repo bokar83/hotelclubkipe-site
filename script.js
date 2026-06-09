@@ -12,9 +12,11 @@ var T = {
     hero_sub:'Votre refuge prive au coeur de Kipe',
     hero_explore:'Decouvrir',hero_book:'Reserver',scroll_lbl:'Defiler',
     about_ey:'Notre histoire',about_h2:'Un havre de paix, discret et chaleureux',
-    about_p1:"Niche dans le quartier residentiel de Kipe, un refuge pour ceux qui recherchent l intimite, le confort et la discretion.",
-    about_p2:"Nos 13 chambres sur trois niveaux combinent l hospitalite guineenne avec des equipements modernes: climatisation, Wi-Fi, restaurant, piscine, bar.",
+    about_p1:"Niche dans le quartier residentiel de Kipe, un refuge pour ceux qui recherchent l'intimite, le confort et la discretion.",
+    about_p2:"Nos 13 chambres sur trois niveaux combinent l'hospitalite guineenne avec des equipements modernes: climatisation, Wi-Fi, restaurant, piscine, bar.",
     st_rooms:'Chambres',st_floors:'Niveaux',st_since:'Depuis',
+    about_pull:"Une maison, pas un hotel. Treize chambres ouvertes depuis 2019 sur les jardins de Kipe.",
+    about_attr:"Hotel Club de Kipe, Conakry",
     rooms_ey:'Nos hebergements',rooms_h2:'Choisissez votre chambre',
     rooms_note:'Climatisation - Wi-Fi gratuit - Salle de bain privee',
     b_std:'Standard',b_mini:'Mini Suite',b_suite:'Suite',
@@ -63,6 +65,8 @@ var T = {
     about_p1:'Nestled in the quiet neighbourhood of Kipe in Conakry, a retreat for those who seek intimacy, comfort, and discretion.',
     about_p2:'Our 13 rooms across three floors blend Guinean hospitality with modern amenities: air conditioning, Wi-Fi, restaurant, pool, bar.',
     st_rooms:'Rooms',st_floors:'Floors',st_since:'Est.',
+    about_pull:"A home, not a hotel. Thirteen rooms open since 2019 among the gardens of Kipe.",
+    about_attr:"Hotel Club de Kipe, Conakry",
     rooms_ey:'Our accommodations',rooms_h2:'Choose your room',
     rooms_note:'Air conditioning - Free Wi-Fi - Private bathroom',
     b_std:'Standard',b_mini:'Mini Suite',b_suite:'Suite',
@@ -134,6 +138,7 @@ function detectLangAsync() {
 }
 
 function initCursor() {
+  if (!window.matchMedia('(pointer:fine)').matches) return;
   var dot = document.getElementById('cursor');
   var ring = document.getElementById('cursor-ring');
   if (!dot) return;
@@ -157,9 +162,9 @@ function initMagnetic() {
   document.querySelectorAll('.magnetic').forEach(function(btn) {
     btn.addEventListener('mousemove', function(e) {
       var r = btn.getBoundingClientRect();
-      gsap.to(btn, { x:(e.clientX-(r.left+r.width/2))*.3, y:(e.clientY-(r.top+r.height/2))*.3, duration:.5, ease:'elastic.out(1,0.4)' });
+      gsap.to(btn, { x:(e.clientX-(r.left+r.width/2))*.3, y:(e.clientY-(r.top+r.height/2))*.3, duration:.5, ease:'power2.out' });
     });
-    btn.addEventListener('mouseleave', function() { gsap.to(btn, { x:0, y:0, duration:.7, ease:'elastic.out(1,0.4)' }); });
+    btn.addEventListener('mouseleave', function() { gsap.to(btn, { x:0, y:0, duration:.7, ease:'power2.out' }); });
   });
 }
 

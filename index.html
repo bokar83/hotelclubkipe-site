@@ -14,6 +14,7 @@
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
+  <a href="#main-content" class="skip-link">Aller au contenu principal</a>
   <div id="cursor"></div>
   <div id="cursor-ring"></div>
 
@@ -82,7 +83,7 @@
     </div>
   </div>
 
-  <main>
+  <main id="main-content">
     <section id="about" class="section about-sec">
       <div class="container about-inner">
         <div class="about-left">
@@ -90,12 +91,10 @@
           <h2 class="h2 sw" data-i18n="about_h2">Un havre de paix, discret et chaleureux</h2>
           <p class="body-txt si" data-i18n="about_p1">Niche dans le quartier residentiel de Kipe, un refuge pour ceux qui recherchent l intimite, le confort et la discretion.</p>
           <p class="body-txt si" data-i18n="about_p2">Nos 13 chambres sur trois niveaux combinent l hospitalite guineenne avec des equipements modernes: climatisation, Wi-Fi, restaurant, piscine, bar.</p>
-          <div class="about-stats si">
-            <div class="ast-item"><span class="ast-n">13</span><span class="ast-l" data-i18n="st_rooms">Chambres</span></div>
-            <div class="ast-item"><span class="ast-n">3</span><span class="ast-l" data-i18n="st_floors">Niveaux</span></div>
-            <div class="ast-item"><span class="ast-n">2019</span><span class="ast-l" data-i18n="st_since">Depuis</span></div>
-          </div>
-          <p class="about-num" aria-hidden="true">13 / 3 / 2019</p>
+          <blockquote class="about-pull si">
+            <p class="ap-text" data-i18n="about_pull">Une maison, pas un hotel. Treize chambres ouvertes depuis 2019 sur les jardins de Kipe.</p>
+            <p class="ap-attr" data-i18n="about_attr">Hotel Club de Kipe, Conakry</p>
+          </blockquote>
         </div>
         <div class="about-right si">
           <img src="Photos du Hotel et Club/HCKroom_20.jpg" alt="Chambre chaleureuse de l Hotel Club de Kipe" class="about-img" loading="lazy">
@@ -167,19 +166,36 @@
     </section>
 
     <section id="services" class="section svc-sec">
-      <div class="container svc-inner">
-        <div class="svc-item si">
-          <span class="svc-num">01</span>
+      <div class="container svc-header">
+        <p class="eyebrow si" data-i18n="svc_ey">Ce que nous offrons</p>
+        <h2 class="h2 sw" data-i18n="svc_h2">Nos services</h2>
+      </div>
+      <div class="svc-split si">
+        <div class="svc-split-img">
+          <img src="Photos du Hotel et Club/HCKroom_20.jpg" alt="Piscine" loading="lazy">
+        </div>
+        <div class="svc-split-body">
+          <span class="svc-ord">01</span>
           <h3 class="svc-name" data-i18n="svc_pool">Piscine</h3>
           <p class="svc-desc" data-i18n="svc_pool_d">Detente dans un cadre verdoyant et prive.</p>
         </div>
-        <div class="svc-item si">
-          <span class="svc-num">02</span>
+      </div>
+      <div class="svc-split svc-split-flip si">
+        <div class="svc-split-img">
+          <img src="Photos du Hotel et Club/HCKroom_08.jpg" alt="Restaurant" loading="lazy">
+        </div>
+        <div class="svc-split-body">
+          <span class="svc-ord">02</span>
           <h3 class="svc-name" data-i18n="svc_resto">Restaurant</h3>
           <p class="svc-desc" data-i18n="svc_resto_d">Cuisine guineenne et internationale.</p>
         </div>
-        <div class="svc-item si">
-          <span class="svc-num">03</span>
+      </div>
+      <div class="svc-split si">
+        <div class="svc-split-img">
+          <img src="Photos du Hotel et Club/HCKroom_03.jpg" alt="Bar" loading="lazy">
+        </div>
+        <div class="svc-split-body">
+          <span class="svc-ord">03</span>
           <h3 class="svc-name" data-i18n="svc_bar">Bar</h3>
           <p class="svc-desc" data-i18n="svc_bar_d">Cocktails et boissons fraiches en soiree.</p>
         </div>
@@ -332,6 +348,10 @@
   
     <div class="container ft-bottom"><p>&copy; 2026 Hotel Club de Kipe. Tous droits reserves.</p><p class="cw-credit-pub">Built by <a href="https://catalystworks.ai" target="_blank" rel="noopener">Catalyst Works</a></p><a href='/staff/' class='staff-portal-link' aria-label='Personnel'>&#8226;</a></div></footer>
 
+
+  <a href="https://wa.me/224669000999" class="wa-float" target="_blank" rel="noopener" aria-label="Contacter via WhatsApp">
+    <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+  </a>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
   <script src="script.js"></script>
