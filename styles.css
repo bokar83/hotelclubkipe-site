@@ -270,3 +270,40 @@ body.c-link #cursor{background:var(--cream)}
 .cw-credit-pub a{color:var(--gold);text-decoration:none}
 .cw-credit-pub a:hover{color:var(--terra)}
 
+
+/* === Photo Treatments ================================= */
+
+/* About: subtle polaroid container — rotate + sepia + shadow */
+.about-right{transform:rotate(-1.2deg);will-change:transform}
+.about-img{filter:sepia(.15) contrast(1.06) brightness(.96);transition:filter .4s var(--ease)}
+.about-right:hover .about-img{filter:sepia(0) contrast(1) brightness(1)}
+
+/* Room rows: micro torn edges (subtle, 6px amplitude) */
+.room-row:nth-child(odd) .room-row-img img{
+  clip-path:polygon(0 0,100% 0,100% calc(100% - 6px),97% 100%,93% calc(100% - 4px),88% 100%,84% calc(100% - 5px),79% 100%,74% calc(100% - 3px),69% 100%,64% calc(100% - 5px),58% 100%,53% calc(100% - 2px),47% 100%,42% calc(100% - 4px),36% 100%,31% calc(100% - 5px),26% 100%,20% calc(100% - 3px),15% 100%,10% calc(100% - 4px),5% 100%,0 calc(100% - 5px));
+  transition:clip-path .5s var(--ease)}
+.room-row:nth-child(even) .room-row-img img{
+  clip-path:polygon(0 6px,4% 0,9% 4px,14% 0,19% 5px,24% 0,29% 3px,35% 0,40% 5px,45% 0,51% 3px,56% 0,61% 4px,66% 0,71% 5px,77% 0,82% 3px,87% 0,92% 5px,97% 0,100% 3px,100% 100%,0 100%);
+  transition:clip-path .5s var(--ease)}
+.room-row-img:hover img{clip-path:polygon(0 0,100% 0,100% 100%,0 100%)!important}
+
+/* Gallery: mixed photo treatments */
+/* 1 — warm sepia film */
+.gal-grid .gp:nth-child(1) img{filter:sepia(.28) contrast(1.09) brightness(.93);transform:scale(1.04);transition:transform .6s var(--ease),filter .4s var(--ease)}
+/* 2 — classic B&W, slightly smaller */
+.gal-grid .gp:nth-child(2){transform:scale(.9);transform-origin:bottom right}
+.gal-grid .gp:nth-child(2) img{filter:grayscale(1) contrast(1.15) brightness(.9);transition:filter .4s var(--ease)}
+/* 3 — sepia + torn bottom */
+.gal-grid .gp:nth-child(3) img{filter:sepia(.22) brightness(.94);clip-path:polygon(0 0,100% 0,100% calc(100% - 10px),96% 100%,91% calc(100% - 7px),86% 100%,81% calc(100% - 9px),76% 100%,71% calc(100% - 5px),66% 100%,60% calc(100% - 8px),54% 100%,48% calc(100% - 4px),42% 100%,36% calc(100% - 7px),30% 100%,25% calc(100% - 6px),19% 100%,13% calc(100% - 8px),7% 100%,3% calc(100% - 5px),0 calc(100% - 8px));transition:clip-path .5s var(--ease),filter .4s var(--ease)}
+/* 4 — desaturated warm, slightly smaller */
+.gal-grid .gp:nth-child(4){transform:scale(.92);transform-origin:top left}
+.gal-grid .gp:nth-child(4) img{filter:saturate(.65) sepia(.18) brightness(.92);transition:filter .4s var(--ease)}
+/* 5 — B&W + torn right edge */
+.gal-grid .gp:nth-child(5) img{filter:grayscale(1) sepia(.3) contrast(1.1);clip-path:polygon(0 0,calc(100% - 9px) 0,100% 4%,calc(100% - 7px) 10%,100% 17%,calc(100% - 9px) 24%,100% 31%,calc(100% - 6px) 38%,100% 45%,calc(100% - 8px) 52%,100% 59%,calc(100% - 7px) 66%,100% 73%,calc(100% - 9px) 80%,100% 87%,calc(100% - 6px) 94%,calc(100% - 8px) 100%,0 100%);transition:clip-path .5s var(--ease),filter .4s var(--ease)}
+/* 6 — polaroid: cream frame, rotation, shadow */
+.gal-grid .gp:nth-child(6){background:#f9f3ea;padding:7px 7px 26px;overflow:visible;box-shadow:0 8px 32px rgba(26,16,8,.28),0 1px 4px rgba(26,16,8,.12);transform:rotate(-1.6deg);border-radius:0;z-index:2;position:relative}
+.gal-grid .gp:nth-child(6) img{display:block;width:100%;height:100%;object-fit:cover;border-radius:0}
+
+/* hover: all gallery images reveal clean on hover */
+.gal-grid .gp:hover:not(:nth-child(6)) img{filter:none!important;clip-path:polygon(0 0,100% 0,100% 100%,0 100%)!important}
+.gal-grid .gp:hover{transform:none!important}
