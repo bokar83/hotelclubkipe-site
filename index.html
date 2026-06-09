@@ -202,6 +202,22 @@
       </div>
     </section>
 
+    <section class="suite-spot">
+      <div class="suite-spot-img">
+        <img src="Photos du Hotel et Club/HCKroom_13.jpg" alt="Suite Hotel Club de Kipe" loading="lazy">
+      </div>
+      <div class="suite-spot-body">
+        <span class="room-badge room-badge-suite si" data-i18n="b_suite">Suite</span>
+        <h2 class="suite-spot-h2 sw">
+          <span data-i18n="spot_h2a">Notre chambre</span><br>
+          <em data-i18n="spot_h2b">signature</em>
+        </h2>
+        <p class="suite-spot-price si"><span class="rpn">1 200 000</span> <span class="rpc" data-i18n="cur">FG</span> <span class="rpp" data-i18n="pn">/ nuit</span></p>
+        <p class="suite-spot-rooms si">204 &nbsp;/&nbsp; 304</p>
+        <a href="#booking" class="btn-gold magnetic si" data-i18n="btn_bk">Reserver</a>
+      </div>
+    </section>
+
     <section id="gallery" class="section gal-sec">
       <div class="container">
         <p class="eyebrow si" data-i18n="gal_ey">Nos espaces</p>
@@ -249,10 +265,16 @@
     </section>
 
     <div id="lb" role="dialog" aria-modal="true" hidden>
-      <button id="lb-x" type="button" aria-label="Fermer">x</button>
-      <button id="lb-prev" type="button" aria-label="Precedent">Prev</button>
+      <button id="lb-x" type="button" aria-label="Fermer">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" d="M6 18L18 6M6 6l12 12"/></svg>
+      </button>
+      <button id="lb-prev" type="button" aria-label="Photo precedente">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M15.75 19.5L8.25 12l7.5-7.5"/></svg>
+      </button>
       <img id="lb-img" src="" alt="">
-      <button id="lb-next" type="button" aria-label="Suivant">Next</button>
+      <button id="lb-next" type="button" aria-label="Photo suivante">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" aria-hidden="true"><path stroke-linecap="round" stroke-linejoin="round" d="M8.25 4.5l7.5 7.5-7.5 7.5"/></svg>
+      </button>
       <p id="lb-ct" aria-live="polite"></p>
     </div>
 
@@ -303,7 +325,10 @@
     <section id="booking" class="section bk-sec">
       <div class="container bk-grid">
         <div class="bk-left si">
-          <p class="eyebrow" data-i18n="bk_ey">Reserver</p>
+          <div class="bk-scene" aria-hidden="true">
+        <img src="Photos du Hotel et Club/HCKroom_21.jpg" alt="" loading="lazy">
+      </div>
+      <p class="eyebrow" data-i18n="bk_ey">Reserver</p>
           <h2 class="h2" data-i18n="bk_h2">Planifiez votre sejour</h2>
           <p class="body-txt" data-i18n="bk_desc">Remplissez le formulaire ou ecrivez sur WhatsApp. Reponse sous 24 heures.</p>
           <a href="https://wa.me/224669000999" class="btn-wa magnetic" target="_blank" rel="noopener" id="wa-btn" data-i18n="wa_cta">Reserver via WhatsApp</a>

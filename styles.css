@@ -137,6 +137,15 @@ body.c-link #cursor{background:var(--cream)}
 .svc-name{margin:0 0 14px;font-family:var(--fd);font-size:clamp(2rem,3.5vw,3.8rem);font-weight:200;color:var(--cream)}
 .svc-desc{max-width:36ch;margin:0;color:color-mix(in srgb,var(--cream) 68%,transparent);font-size:1rem;line-height:1.6}
 
+.suite-spot{position:relative;display:grid;grid-template-columns:1fr 1fr;min-height:clamp(480px,58vw,700px);overflow:hidden;background:var(--ink)}
+.suite-spot-img{position:relative;overflow:hidden}
+.suite-spot-img img{width:100%;height:100%;object-fit:cover;transition:transform 1.2s var(--ease)}
+.suite-spot:hover .suite-spot-img img{transform:scale(1.04)}
+.suite-spot-body{display:flex;flex-direction:column;justify-content:center;padding:clamp(40px,5vw,80px);background:var(--ink);color:var(--cream)}
+.suite-spot-h2{margin:18px 0 26px;font-family:var(--fd);font-size:clamp(2.6rem,5vw,6.2rem);font-weight:200;line-height:.9;color:var(--cream)}
+.suite-spot-h2 em{color:var(--gold);font-style:italic}
+.suite-spot-price{margin:0 0 6px}
+.suite-spot-rooms{color:var(--stone);font-size:.78rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;margin:0 0 34px}
 .gal-sec{background:var(--cream);padding-bottom:0}
 .gal-grid{display:grid;grid-template-columns:repeat(4,1fr);grid-auto-rows:260px;gap:8px;width:100%;margin-top:42px}
 .gp{display:block;width:100%;height:100%;padding:0;overflow:hidden;background:var(--ink);border-radius:0}
@@ -152,8 +161,12 @@ body.c-link #cursor{background:var(--cream)}
 #lb{position:fixed;inset:0;z-index:1200;display:grid;grid-template-columns:90px 1fr 90px;grid-template-rows:72px 1fr 72px;align-items:center;gap:12px;padding:20px;background:color-mix(in srgb,var(--ink) 94%,transparent);color:var(--cream)}
 #lb[hidden]{display:none}
 #lb-img{grid-column:2;grid-row:2;justify-self:center;max-width:100%;max-height:78vh;object-fit:contain}
-#lb-x{grid-column:3;grid-row:1;justify-self:end;color:var(--cream);font-size:1rem;text-transform:uppercase}
-#lb-prev,#lb-next{color:var(--cream);font-size:.75rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase}
+#lb-x{grid-column:3;grid-row:1;justify-self:end;color:var(--cream);width:44px;height:44px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .2s var(--ease)}
+#lb-x:hover{background:color-mix(in srgb,var(--cream) 12%,transparent)}
+#lb-x svg{width:22px;height:22px}
+#lb-prev,#lb-next{color:var(--cream);width:52px;height:52px;display:flex;align-items:center;justify-content:center;border-radius:50%;transition:background .2s var(--ease)}
+#lb-prev:hover,#lb-next:hover{background:color-mix(in srgb,var(--cream) 12%,transparent)}
+#lb-prev svg,#lb-next svg{width:32px;height:32px}
 #lb-prev{grid-column:1;grid-row:2}
 #lb-next{grid-column:3;grid-row:2}
 #lb-ct{grid-column:2;grid-row:3;text-align:center;color:var(--gold)}
@@ -181,16 +194,21 @@ body.c-link #cursor{background:var(--cream)}
 .rr-item{display:grid;gap:10px;padding:18px;border:1px solid color-mix(in srgb,var(--cream) 14%,transparent)}
 .rr-price{font-family:var(--fd);font-size:1.8rem;font-weight:200;color:var(--cream)}
 
-.bk-sec{background:var(--cream)}
+.bk-sec{background:var(--ink);color:var(--cream)}
 .bk-grid{display:grid;grid-template-columns:.9fr 1.1fr;gap:clamp(34px,7vw,90px);align-items:start}
 .bk-left{position:sticky;top:110px}
-.bk-form{display:grid;gap:18px;padding:30px;border:1px solid color-mix(in srgb,var(--stone) 24%,transparent);background:color-mix(in srgb,var(--cream) 92%,var(--gold))}
+.bk-scene{width:100%;aspect-ratio:4/3;overflow:hidden;border-radius:4px;margin-bottom:32px}
+.bk-scene img{width:100%;height:100%;object-fit:cover;transition:transform .9s var(--ease)}
+.bk-scene:hover img{transform:scale(1.03)}
+.bk-left .h2{color:var(--cream)}
+.bk-left .body-txt{color:color-mix(in srgb,var(--cream) 70%,transparent)}
+.bk-form{display:grid;gap:18px;padding:30px;border:1px solid color-mix(in srgb,var(--cream) 14%,transparent);background:color-mix(in srgb,var(--ink) 50%,transparent);backdrop-filter:blur(4px)}
 .fg{display:grid;gap:8px}
 .fg-row{display:grid;grid-template-columns:1fr 1fr;gap:16px}
-.fg label{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:var(--stone)}
-.fg input,.fg select,.fg textarea{width:100%;border:0;border-bottom:1px solid color-mix(in srgb,var(--stone) 34%,transparent);border-radius:0;background:transparent;padding:12px 0;color:var(--ink);outline:none}
+.fg label{font-size:.68rem;font-weight:700;letter-spacing:.16em;text-transform:uppercase;color:color-mix(in srgb,var(--cream) 58%,transparent)}
+.fg input,.fg select,.fg textarea{width:100%;border:0;border-bottom:1px solid color-mix(in srgb,var(--stone) 34%,transparent);border-radius:0;background:transparent;padding:12px 0;color:var(--cream);outline:none}
 .fg input:focus,.fg select:focus,.fg textarea:focus{border-color:var(--gold)}
-.form-note{margin:0;color:var(--stone);font-size:.88rem}
+.form-note{margin:0;color:color-mix(in srgb,var(--cream) 48%,transparent);font-size:.88rem}
 .wa-float{position:fixed;bottom:28px;right:28px;z-index:800;width:56px;height:56px;border-radius:50%;background:#25D366;color:#fff;display:flex;align-items:center;justify-content:center;box-shadow:0 4px 18px rgba(0,0,0,.28);transition:transform .25s var(--ease),box-shadow .25s var(--ease)}
 .wa-float svg{width:28px;height:28px}
 .wa-float:hover{transform:scale(1.1);box-shadow:0 8px 28px rgba(0,0,0,.38)}
@@ -206,9 +224,12 @@ body.c-link #cursor{background:var(--cream)}
   .about-inner,.map-grid,.bk-grid{grid-template-columns:1fr}
   .about-right,.about-img{min-height:480px}
   .svc-split{grid-template-columns:1fr}
+  .suite-spot{grid-template-columns:1fr}
   .svc-split-flip .svc-split-img{order:0}
   .svc-split-flip .svc-split-body{order:1}
   .svc-split-img{min-height:300px}
+  .suite-spot-img{min-height:320px}
+  .bk-left{position:static}
   .gal-all{grid-template-columns:repeat(4,1fr)}
   .rr-grid{grid-template-columns:repeat(2,1fr)}
   .bk-left{position:static}
@@ -228,6 +249,7 @@ body.c-link #cursor{background:var(--cream)}
   .gal-all{grid-template-columns:repeat(2,1fr);grid-auto-rows:160px}
   .gp-wide{grid-column:span 2}
   .map-grid{gap:24px}
+  .bk-scene{aspect-ratio:16/9}
   .footer-inner{grid-template-columns:1fr}
   .ft-contact{justify-self:start;text-align:left}
 }
