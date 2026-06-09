@@ -54,7 +54,8 @@ var T = {
     o_std1:'Standard 1er etage - 600 000 FG',o_std2:'Standard 2e/3e etage - 800 000 FG',
     o_mini:'Mini Suite - 1 000 000 FG',o_suite:'Suite - 1 200 000 FG',
     fl_notes:'Message (optionnel)',fl_sub:'Envoyer la demande',fl_note:'Confirmation sous 24 heures.',
-    ft_tag:'Votre refuge elegant a Conakry.',ft_maps:'Voir sur Google Maps',ft_rights:'Tous droits reserves.'
+    ft_tag:'Votre refuge elegant a Conakry.',ft_maps:'Voir sur Google Maps',statement:"Un refuge discret pour ceux qui savent.",
+    ft_rights:'Tous droits reserves.'
   },
   en:{
     nav_about:'About',nav_rooms:'Rooms',nav_svc:'Services',nav_gallery:'Gallery',nav_book:'Book Now',
@@ -105,7 +106,8 @@ var T = {
     o_std1:'Standard 1st floor - 600 000 GNF',o_std2:'Standard 2nd/3rd floor - 800 000 GNF',
     o_mini:'Mini Suite - 1 000 000 GNF',o_suite:'Suite - 1 200 000 GNF',
     fl_notes:'Message (optional)',fl_sub:'Send request',fl_note:'Confirmation within 24 hours.',
-    ft_tag:'Your elegant retreat in Conakry.',ft_maps:'View on Google Maps',ft_rights:'All rights reserved.'
+    ft_tag:'Your elegant retreat in Conakry.',ft_maps:'View on Google Maps',statement:"A private retreat for those who know.",
+    ft_rights:'All rights reserved.'
   }
 };
 
