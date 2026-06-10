@@ -431,3 +431,30 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 });
+
+
+/* === Parallax scroll ================================== */
+(function(){
+  if (window.matchMedia('(prefers-reduced-motion:reduce)').matches) return;
+  var imgs = document.querySelectorAll('.room-row-img img, .svc-split-img img, .about-img');
+  if (!imgs.length) return;
+
+  function tick(){
+    var wh = window.innerHeight;
+    [].forEach.call(imgs, function(img){
+      var wrap = img.parentElement;
+      var rect = wrap.getBoundingClientRect();
+      if (rect.bottom < -100 || rect.top > wh + 100) return;
+      var mid = (rect.top + rect.height / 2) / wh;   // ~0.5 when centred
+      var shift = (mid - 0.5) * 50;                   // ±25px range
+      img.style.transform = 'translateY(' + shift.toFixed(1) + 'px)';
+    });
+  }
+
+  var rafId = null;
+  window.addEventListener('scroll', function(){
+    if (!rafId) rafId = requestAnimationFrame(function(){ tick(); rafId = null; });
+  }, {passive:true});
+
+  tick();
+})();
