@@ -282,19 +282,22 @@ body.c-link #cursor{background:var(--cream)}
 
 /* === Photo Treatments - rough-cut edges + burned borders + polaroids ============ */
 
-/* Room images: SVG rough torn clip — ink bg shows at cut edges, no blur */
-.room-row-img{min-height:380px;background:var(--ink);overflow:hidden;position:relative;clip-path:url(#torn-img-l);-webkit-clip-path:url(#torn-img-l)}
-.room-row-flip .room-row-img{clip-path:url(#torn-img-r);-webkit-clip-path:url(#torn-img-r)}
+/* Room images: gradient mask burns edges into dark ink bg — image stays sharp */
+.room-row-img{min-height:380px;background:var(--ink);overflow:hidden;position:relative}
 .room-row-img img{width:100%;height:115%;margin-top:-7.5%;object-fit:cover;will-change:transform}
 .room-row-img::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 90px rgba(26,16,8,.65),inset 0 0 180px rgba(26,16,8,.32);pointer-events:none;z-index:2}
+.rooms-sec .room-row:nth-child(1) .room-row-img img{-webkit-mask-image:radial-gradient(ellipse 82% 80% at 52% 48%,white 50%,rgba(255,255,255,0.7) 68%,transparent 90%);mask-image:radial-gradient(ellipse 82% 80% at 52% 48%,white 50%,rgba(255,255,255,0.7) 68%,transparent 90%)}
+.rooms-sec .room-row:nth-child(2) .room-row-img img{-webkit-mask-image:radial-gradient(ellipse 70% 88% at 48% 55%,white 48%,rgba(255,255,255,0.6) 65%,transparent 88%);mask-image:radial-gradient(ellipse 70% 88% at 48% 55%,white 48%,rgba(255,255,255,0.6) 65%,transparent 88%)}
+.rooms-sec .room-row:nth-child(3) .room-row-img img{-webkit-mask-image:radial-gradient(ellipse 85% 75% at 50% 45%,white 55%,rgba(255,255,255,0.5) 70%,transparent 92%);mask-image:radial-gradient(ellipse 85% 75% at 50% 45%,white 55%,rgba(255,255,255,0.5) 70%,transparent 92%)}
+.rooms-sec .room-row:nth-child(4) .room-row-img img{-webkit-mask-image:radial-gradient(ellipse 75% 82% at 46% 52%,white 52%,rgba(255,255,255,0.65) 68%,transparent 90%);mask-image:radial-gradient(ellipse 75% 82% at 46% 52%,white 52%,rgba(255,255,255,0.65) 68%,transparent 90%)}
 
-/* About: rough torn clip on ink bg */
+/* About: dramatic torn clip (14% amplitude) + soft vignette = burned texture */
 .about-right{transform:rotate(-1.5deg);will-change:transform;overflow:hidden;background:var(--ink);position:relative}
-.about-img{width:100%;height:115%;margin-top:-7.5%;object-fit:cover;will-change:transform;filter:sepia(.15) contrast(1.06) brightness(.95);clip-path:url(#torn-about);-webkit-clip-path:url(#torn-about);transition:filter .4s var(--ease)}
+.about-img{width:100%;height:115%;margin-top:-7.5%;object-fit:cover;will-change:transform;filter:sepia(.15) contrast(1.06) brightness(.95);clip-path:url(#torn-about);-webkit-clip-path:url(#torn-about);-webkit-mask-image:radial-gradient(ellipse 82% 82% at 50% 48%,white 52%,rgba(255,255,255,0.75) 70%,transparent 96%);mask-image:radial-gradient(ellipse 82% 82% at 50% 48%,white 52%,rgba(255,255,255,0.75) 70%,transparent 96%);transition:filter .4s var(--ease)}
 .about-right::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 90px rgba(26,16,8,.75),inset 0 0 45px rgba(26,16,8,.5);pointer-events:none;z-index:2}
 .about-right:hover .about-img{filter:sepia(0) contrast(1) brightness(1)}
 
-/* Services: rough torn clip */
+/* Services: rough torn clip (12% amplitude) */
 .svc-split-img{position:relative;clip-path:url(#torn-svc);-webkit-clip-path:url(#torn-svc)}
 .svc-split-img::after{content:'';position:absolute;inset:0;box-shadow:inset 0 0 70px rgba(26,16,8,.55),inset 0 0 130px rgba(26,16,8,.25);pointer-events:none;z-index:2}
 
