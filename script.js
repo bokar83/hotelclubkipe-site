@@ -446,7 +446,7 @@ document.addEventListener('DOMContentLoaded', function() {
       var rect = wrap.getBoundingClientRect();
       if (rect.bottom < -100 || rect.top > wh + 100) return;
       var mid = (rect.top + rect.height / 2) / wh;   // ~0.5 when centred
-      var shift = (mid - 0.5) * 50;                   // ±25px range
+      var shift = (mid - 0.5) * 100;                   // ±25px range
       img.style.transform = 'translateY(' + shift.toFixed(1) + 'px)';
     });
   }
