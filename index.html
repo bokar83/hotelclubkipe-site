@@ -11,15 +11,27 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Spectral:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="styles.css?v=20260611">
+  <link rel="stylesheet" href="styles.css?v=20260612">
 </head>
 <body>
-<svg style="display:none" aria-hidden="true" focusable="false">
+<svg style="display:none;position:absolute;width:0;height:0" aria-hidden="true" focusable="false">
   <defs>
-    <filter id="rough-edge" x="-5%" y="-5%" width="110%" height="110%" color-interpolation-filters="sRGB">
-      <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="4" seed="7" result="noise"/>
-      <feDisplacementMap in="SourceGraphic" in2="noise" scale="22" xChannelSelector="R" yChannelSelector="G"/>
-    </filter>
+    <!-- torn-img-l: rough top+left+bottom, straight right — for left-side room images -->
+    <clipPath id="torn-img-l" clipPathUnits="objectBoundingBox">
+      <path d="M0.04,0.05 L0.1,0 L0.17,0.08 L0.24,0.01 L0.31,0.07 L0.38,0 L0.46,0.09 L0.53,0.01 L0.6,0.08 L0.67,0 L0.75,0.09 L0.82,0.01 L0.89,0.07 L0.97,0.02 L1,0 L1,1 L0.97,0.98 L0.88,0.93 L0.8,0.99 L0.72,0.93 L0.64,1 L0.56,0.93 L0.48,1 L0.4,0.93 L0.32,1 L0.24,0.93 L0.16,1 L0.08,0.93 L0.03,0.96 L0,0.9 L0.07,0.82 L0,0.74 L0.07,0.66 L0,0.58 L0.07,0.5 L0,0.42 L0.07,0.34 L0,0.26 L0.07,0.18 L0.01,0.1 Z"/>
+    </clipPath>
+    <!-- torn-img-r: rough top+right+bottom, straight left — for right-side (flipped) room images -->
+    <clipPath id="torn-img-r" clipPathUnits="objectBoundingBox">
+      <path d="M0,0 L0.07,0.01 L0.14,0.07 L0.21,0.01 L0.28,0.08 L0.35,0 L0.42,0.08 L0.49,0.01 L0.56,0.08 L0.63,0 L0.7,0.08 L0.77,0.01 L0.84,0.07 L0.9,0 L0.97,0.05 L0.99,0.13 L0.93,0.22 L1,0.31 L0.92,0.4 L1,0.49 L0.93,0.58 L1,0.67 L0.92,0.76 L1,0.85 L0.94,0.95 L0.87,1 L0.78,0.92 L0.69,1 L0.6,0.92 L0.51,1 L0.42,0.92 L0.33,1 L0.24,0.92 L0.15,1 L0.06,0.94 L0,1 Z"/>
+    </clipPath>
+    <!-- torn-about: rough all sides, different amplitude — for about image -->
+    <clipPath id="torn-about" clipPathUnits="objectBoundingBox">
+      <path d="M0.05,0.04 L0.12,0.01 L0.2,0.08 L0.28,0.01 L0.36,0.07 L0.44,0.01 L0.52,0.08 L0.6,0.01 L0.68,0.07 L0.76,0.01 L0.84,0.08 L0.91,0.01 L0.97,0.04 L0.99,0.1 L0.93,0.19 L0.99,0.28 L0.93,0.37 L0.99,0.46 L0.93,0.55 L0.99,0.64 L0.93,0.73 L0.99,0.82 L0.94,0.92 L0.97,0.97 L0.9,0.99 L0.82,0.93 L0.74,0.99 L0.66,0.93 L0.58,0.99 L0.5,0.93 L0.42,0.99 L0.34,0.93 L0.26,0.99 L0.18,0.93 L0.1,0.99 L0.04,0.96 L0,0.89 L0.06,0.81 L0,0.73 L0.06,0.65 L0,0.57 L0.06,0.49 L0,0.41 L0.06,0.33 L0,0.25 L0.06,0.17 L0.02,0.1 Z"/>
+    </clipPath>
+    <!-- torn-svc: rough all sides — for services images -->
+    <clipPath id="torn-svc" clipPathUnits="objectBoundingBox">
+      <path d="M0.04,0.05 L0.12,0.01 L0.19,0.07 L0.27,0.01 L0.35,0.08 L0.43,0.01 L0.51,0.07 L0.59,0.01 L0.67,0.07 L0.75,0.01 L0.83,0.07 L0.91,0.01 L0.96,0.04 L1,0.12 L0.94,0.21 L1,0.3 L0.94,0.39 L1,0.48 L0.94,0.57 L1,0.66 L0.94,0.75 L1,0.84 L0.95,0.93 L0.97,0.97 L0.9,1 L0.82,0.93 L0.74,1 L0.66,0.93 L0.58,1 L0.5,0.93 L0.42,1 L0.34,0.93 L0.26,1 L0.18,0.93 L0.1,1 L0.04,0.96 L0,0.88 L0.06,0.79 L0,0.7 L0.06,0.61 L0,0.52 L0.06,0.43 L0,0.34 L0.06,0.25 L0,0.16 L0.04,0.09 Z"/>
+    </clipPath>
   </defs>
 </svg>
   <a href="#main-content" class="skip-link">Aller au contenu principal</a>
@@ -355,7 +367,7 @@
   </a>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
-  <script src="script.js?v=20260611"></script>
+  <script src="script.js?v=20260612"></script>
 </body>
 </html>
 
