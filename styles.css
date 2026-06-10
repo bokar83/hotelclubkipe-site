@@ -218,6 +218,15 @@ body.c-link #cursor{background:var(--cream)}
 
 @media (max-width:768px){
   .container{width:min(100% - 32px,var(--max))}
+  /* Reduce section gradient heights on tablet/mobile */
+  .about-sec::after,.rooms-sec::after,.suite-spot::after,.rev-sec::after,.bk-sec::after{height:50px}
+  /* Reduce gallery rotations on mobile */
+  .gal-grid .gp:nth-child(1){transform:rotate(.6deg)}
+  .gal-grid .gp:nth-child(2){transform:rotate(-1deg) scale(.95);transform-origin:bottom right}
+  .gal-grid .gp:nth-child(3){transform:rotate(.4deg)}
+  .gal-grid .gp:nth-child(4){transform:rotate(-.7deg) scale(.96);transform-origin:top left}
+  .gal-grid .gp:nth-child(5){transform:rotate(.9deg)}
+  .gal-grid .gp:nth-child(6){transform:rotate(-1.4deg)}
   #nav{padding:0 16px;grid-template-columns:auto auto}
   .nav-links,.nav-cta{display:none}
   .burger{display:flex}
@@ -236,6 +245,11 @@ body.c-link #cursor{background:var(--cream)}
 
 @media (max-width:480px){
   .section{padding:64px 0}
+  /* Section fade gradients must stay within reduced mobile padding */
+  .about-sec::after,.rooms-sec::after,.suite-spot::after,.rev-sec::after,.bk-sec::after{height:36px}
+  /* Disable gallery rotations in tight 2-col grid */
+  .gal-grid .gp:nth-child(1),.gal-grid .gp:nth-child(2),.gal-grid .gp:nth-child(3),.gal-grid .gp:nth-child(4),.gal-grid .gp:nth-child(5){transform:none}
+  .gal-grid .gp:nth-child(6){transform:rotate(-1.2deg)}
   .hero-body{left:18px;right:18px;bottom:58px}
   .hero-h1{font-size:clamp(3.8rem,20vw,5.6rem)}
   .hero-ctas{display:grid}
