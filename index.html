@@ -10,7 +10,7 @@
   <link rel="icon" type="image/png" href="images/logo-transparent.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Spectral:ital,wght@0,200;0,300;0,400;0,600;1,200;1,300;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="styles.css">
 </head>
 <body>
@@ -48,22 +48,11 @@
   </div>
   <div class="drawer-scrim" id="drawer-scrim"></div>
 
-  <section class="hero" id="hero" aria-label="Hotel Club de Kipe">
-    <div class="hero-img-wrap">
-      <img src="images/hero-painting.png" alt="" class="hero-img" id="hero-img" fetchpriority="high" aria-hidden="true">
-    </div>
-    <div class="hero-scrim" aria-hidden="true"></div>
-    <div class="hero-grain" aria-hidden="true"></div>
-    <div class="hero-logo-stamp" aria-hidden="true">
-      <img src="images/logo-transparent.png" alt="" class="hero-logo-stamp-img">
-    </div>
+    <section class="hero" id="hero" aria-label="Hotel Club de Kipe">
     <div class="hero-body">
       <p class="hero-eyebrow">Kipe, Conakry / <span data-i18n="hero_since">Depuis 2019</span></p>
-      <h1 class="hero-h1">
-        <span class="word-wrap"><span class="word" data-i18n-word="hw1">Hotel</span></span>
-        <span class="word-wrap"><span class="word italic" data-i18n-word="hw2">Club</span></span>
-        <span class="word-wrap"><span class="word" data-i18n-word="hw3">de Kipe</span></span>
-      </h1>
+      <h1 class="hero-h1" aria-label="Hotel Club de Kipe">Hotel<br>Club<br><em>de Kipe</em></h1>
+      <div class="hero-divider" aria-hidden="true"></div>
       <p class="hero-sub" data-i18n="hero_sub">Votre refuge prive au coeur de Kipe</p>
       <div class="hero-ctas">
         <a href="#rooms" class="btn-ghost magnetic" data-i18n="hero_explore">Decouvrir</a>

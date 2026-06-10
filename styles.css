@@ -65,28 +65,20 @@ body.c-link #cursor{background:var(--cream)}
 .drawer-scrim{position:fixed;inset:0;z-index:880;background:color-mix(in srgb,var(--ink) 72%,transparent);opacity:0;pointer-events:none;transition:opacity .3s var(--ease)}
 .drawer-scrim.open{opacity:1;pointer-events:auto}
 
-.hero{position:relative;min-height:100vh;overflow:hidden;background:var(--ink);color:var(--cream)}
-.hero-img-wrap{position:absolute;inset:0;overflow:hidden}
-.hero-img{width:100%;height:100%;object-fit:cover;animation:kenBurns 20s infinite alternate var(--ease);transform-origin:center}
-@keyframes kenBurns{from{transform:scale(1)}to{transform:scale(1.06)}}
-.hero-scrim{position:absolute;inset:0;background:linear-gradient(to bottom,color-mix(in srgb,var(--ink) 14%,transparent),color-mix(in srgb,var(--ink) 40%,transparent) 42%,color-mix(in srgb,var(--ink) 90%,transparent))}
-.hero-grain{position:absolute;inset:0;opacity:.18;background-image:radial-gradient(color-mix(in srgb,var(--cream) 22%,transparent) 1px,transparent 1px);background-size:4px 4px;mix-blend-mode:soft-light}
-.hero-logo-stamp{position:absolute;top:calc(var(--nav-h) + 28px);left:50%;z-index:3;transform:translateX(-50%)}
-.hero-logo-stamp-img{width:104px;filter:brightness(0) invert(1);opacity:.9}
-.hero-body{position:absolute;left:clamp(24px,6vw,86px);right:clamp(24px,6vw,86px);bottom:clamp(70px,10vh,120px);z-index:4}
-.hero-eyebrow{margin:0 0 18px;color:var(--gold);font-size:.74rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
-.hero-h1{margin:0;font-family:var(--fd);font-size:clamp(4rem,10vw,11rem);font-weight:200;line-height:.82;letter-spacing:0;color:var(--cream)}
-.word-wrap{display:block;overflow:hidden}
-.word{display:block;transform:translateY(112%)}
-.italic{font-style:italic;color:var(--gold)}
-.hero-sub{max-width:36rem;margin:28px 0 0;color:color-mix(in srgb,var(--cream) 76%,transparent);font-size:clamp(1rem,1.7vw,1.35rem)}
-.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:24px}
+@keyframes breathe{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes cue{from{transform:translateY(-22px)}to{transform:translateY(62px)}}
+.hero{position:relative;min-height:100vh;overflow:hidden;background:var(--ink);display:flex;align-items:center;justify-content:center;color:var(--cream)}
+.hero-body{position:relative;z-index:4;display:flex;flex-direction:column;align-items:center;text-align:center;padding:clamp(100px,15vh,160px) clamp(24px,6vw,86px) clamp(70px,10vh,120px)}
+.hero-eyebrow{margin:0 0 28px;color:var(--gold);font-size:.74rem;font-weight:700;letter-spacing:.24em;text-transform:uppercase}
+.hero-h1{margin:0;font-family:'Playfair Display',Georgia,serif;font-size:clamp(5rem,18vw,22rem);font-weight:900;line-height:.88;letter-spacing:-.01em;-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;color:transparent;background-image:linear-gradient(135deg,#C4622D,#E8891A,#B87A2E,#F5EDE1,#B87A2E,#2A3D25,#1A3020,#B87A2E,#C4622D,#8B3012,#C4622D);background-size:400% 400%;animation:breathe 7s ease infinite}
+.hero-h1 em{font-style:italic}
+.hero-divider{width:48px;height:2px;background:var(--gold);margin:32px auto}
+.hero-sub{max-width:36rem;margin:0;color:color-mix(in srgb,var(--cream) 72%,transparent);font-size:clamp(1rem,1.7vw,1.35rem)}
+.hero-ctas{display:flex;gap:12px;flex-wrap:wrap;margin-top:32px;justify-content:center}
 .hero-scroll-cue{position:absolute;right:34px;bottom:34px;z-index:5;display:flex;align-items:center;gap:12px;color:var(--cream)}
 .cue-label{font-size:.65rem;font-weight:700;letter-spacing:.18em;text-transform:uppercase;writing-mode:vertical-rl}
 .cue-rail{position:relative;width:1px;height:58px;background:color-mix(in srgb,var(--cream) 28%,transparent);overflow:hidden}
 .cue-thumb{position:absolute;left:0;top:0;width:1px;height:20px;background:var(--gold);animation:cue 1.6s infinite var(--ease)}
-@keyframes cue{from{transform:translateY(-22px)}to{transform:translateY(62px)}}
-
 .statement-band{background:var(--ink);padding:22px 0;text-align:center;border-top:1px solid color-mix(in srgb,var(--gold) 28%,transparent);border-bottom:1px solid color-mix(in srgb,var(--gold) 28%,transparent)}
 .statement-txt{margin:0;font-family:var(--fd);font-size:clamp(.9rem,1.4vw,1.1rem);font-weight:300;letter-spacing:.22em;text-transform:uppercase;color:color-mix(in srgb,var(--cream) 72%,transparent)}}
 
