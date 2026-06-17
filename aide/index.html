@@ -1,0 +1,1760 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Guide d'utilisation — Gestionnaire de contenu | Hôtel Club de Kipé</title>
+  <link rel="icon" type="image/png" href="../images/logo-transparent.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,900;1,900&family=Spectral:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Bricolage+Grotesque:opsz,wght@12..96,300;12..96,400;12..96,500;12..96,700&display=swap" rel="stylesheet">
+  <style>
+    /* ── TOKENS ──────────────────────────────────────── */
+    :root {
+      --gold:        #8B6914;
+      --gold-light:  #b8941e;
+      --gold-pale:   #f5edcf;
+      --gold-border: #d4c89a;
+      --dark:        #1a1a1a;
+      --dark2:       #2a2620;
+      --warm-white:  #f5f0e8;
+      --text:        #2c2820;
+      --muted:       #6b6358;
+      --border:      #ddd3be;
+      --sidebar-w:   280px;
+      --warn-bg:     #fff8e1;
+      --warn-border: #f0c040;
+      --danger-bg:   #fff0f0;
+      --danger-border:#e88;
+      --info-bg:     #f5edcf;
+      --info-border: #d4c89a;
+      --success-bg:  #f0fff4;
+      --success-border:#68c97a;
+    }
+
+    /* ── RESET ───────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 15px;
+      line-height: 1.75;
+      color: var(--text);
+      background: var(--warm-white);
+    }
+
+    a { color: var(--gold); text-decoration: none; }
+    a:hover { text-decoration: underline; }
+    code {
+      font-family: 'Courier New', monospace;
+      font-size: 0.83em;
+      background: #ede8dc;
+      padding: 2px 6px;
+      border-radius: 3px;
+      color: #4a3c20;
+    }
+
+    /* ── SIDEBAR ─────────────────────────────────────── */
+    #sidebar {
+      position: fixed;
+      top: 0; left: 0;
+      width: var(--sidebar-w);
+      height: 100vh;
+      background: var(--dark);
+      overflow-y: auto;
+      z-index: 200;
+      display: flex;
+      flex-direction: column;
+      transition: transform 0.28s cubic-bezier(.4,0,.2,1);
+    }
+
+    .sidebar-head {
+      padding: 1.6rem 1.4rem 1rem;
+      border-bottom: 1px solid #333;
+      flex-shrink: 0;
+    }
+
+    .sidebar-logo {
+      width: 52px;
+      margin-bottom: 0.8rem;
+      filter: brightness(0) invert(1) opacity(0.85);
+    }
+
+    .sidebar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.82rem;
+      color: var(--gold-light);
+      letter-spacing: 0.12em;
+      text-transform: uppercase;
+      line-height: 1.35;
+    }
+
+    .sidebar-subtitle {
+      font-size: 0.72rem;
+      color: #888;
+      margin-top: 0.3rem;
+      letter-spacing: 0.04em;
+    }
+
+    #sidebar-nav {
+      flex: 1;
+      padding: 1rem 0 2rem;
+      overflow-y: auto;
+    }
+
+    .nav-section-label {
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.14em;
+      text-transform: uppercase;
+      color: #555;
+      padding: 0.9rem 1.4rem 0.3rem;
+    }
+
+    #sidebar-nav a {
+      display: block;
+      padding: 0.38rem 1.4rem 0.38rem 1.6rem;
+      font-size: 0.82rem;
+      color: #bbb;
+      transition: color 0.15s, background 0.15s;
+      border-left: 2px solid transparent;
+      line-height: 1.4;
+    }
+
+    #sidebar-nav a:hover {
+      color: var(--gold-light);
+      background: rgba(255,255,255,0.04);
+      text-decoration: none;
+    }
+
+    #sidebar-nav a.active {
+      color: var(--gold-light);
+      border-left-color: var(--gold);
+      background: rgba(184,148,30,0.08);
+      font-weight: 500;
+    }
+
+    #sidebar-nav a.sub {
+      padding-left: 2.4rem;
+      font-size: 0.76rem;
+      color: #888;
+    }
+
+    #sidebar-nav a.sub.active { color: var(--gold-light); }
+
+    .sidebar-pdf-btn {
+      margin: 0 1rem 1.4rem;
+      display: block;
+      background: var(--gold);
+      color: #fff !important;
+      text-align: center;
+      padding: 0.6rem 1rem;
+      border-radius: 4px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      letter-spacing: 0.04em;
+      cursor: pointer;
+      border: none;
+      transition: background 0.15s;
+      text-decoration: none !important;
+    }
+    .sidebar-pdf-btn:hover { background: var(--gold-light); }
+
+    /* ── TOPBAR (mobile) ─────────────────────────────── */
+    #topbar {
+      display: none;
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 52px;
+      background: var(--dark);
+      z-index: 300;
+      align-items: center;
+      padding: 0 1rem;
+      gap: 1rem;
+    }
+
+    #menu-btn {
+      background: none;
+      border: none;
+      color: #fff;
+      font-size: 1.3rem;
+      cursor: pointer;
+      line-height: 1;
+      padding: 0.3rem;
+    }
+
+    .topbar-logo {
+      height: 28px;
+      filter: brightness(0) invert(1) opacity(0.85);
+    }
+
+    .topbar-title {
+      font-family: 'Playfair Display', serif;
+      font-size: 0.75rem;
+      color: var(--gold-light);
+      letter-spacing: 0.08em;
+      flex: 1;
+    }
+
+    /* ── SEARCH ──────────────────────────────────────── */
+    #search-bar {
+      position: fixed;
+      top: 1rem; right: 1.4rem;
+      z-index: 250;
+      display: flex;
+      gap: 0.4rem;
+      align-items: center;
+    }
+
+    #search-input {
+      width: 220px;
+      padding: 0.45rem 0.8rem;
+      border: 1.5px solid var(--border);
+      border-radius: 4px;
+      font-family: 'Bricolage Grotesque', sans-serif;
+      font-size: 0.82rem;
+      background: rgba(245,240,232,0.97);
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.15s, box-shadow 0.15s;
+    }
+
+    #search-input:focus {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 2px rgba(139,105,20,0.15);
+    }
+
+    #search-input::placeholder { color: #aaa; }
+
+    #search-clear {
+      background: none;
+      border: none;
+      color: #aaa;
+      cursor: pointer;
+      font-size: 1rem;
+      padding: 0 0.2rem;
+      display: none;
+    }
+
+    .search-highlight {
+      background: rgba(184,148,30,0.32);
+      border-radius: 2px;
+      padding: 0 1px;
+    }
+
+    #search-count {
+      font-size: 0.72rem;
+      color: var(--muted);
+      white-space: nowrap;
+      min-width: 60px;
+    }
+
+    /* ── MAIN CONTENT ────────────────────────────────── */
+    #main {
+      margin-left: var(--sidebar-w);
+      min-height: 100vh;
+    }
+
+    .content-wrap {
+      max-width: 780px;
+      margin: 0 auto;
+      padding: 2.5rem 2.5rem 4rem;
+    }
+
+    /* ── PAGE HEADER ─────────────────────────────────── */
+    .page-header {
+      background: var(--dark);
+      padding: 3rem 2.5rem 2.8rem;
+      margin-bottom: 0;
+    }
+
+    .ph-inner { max-width: 780px; margin: 0 auto; }
+
+    .ph-logo {
+      height: 52px;
+      margin-bottom: 1.4rem;
+      filter: brightness(0) invert(1) opacity(0.9);
+    }
+
+    .ph-eyebrow {
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 0.18em;
+      text-transform: uppercase;
+      color: var(--gold-light);
+      margin-bottom: 0.7rem;
+    }
+
+    .ph-h1 {
+      font-family: 'Playfair Display', serif;
+      font-size: clamp(1.8rem, 4vw, 2.6rem);
+      font-weight: 900;
+      color: var(--warm-white);
+      line-height: 1.15;
+      margin-bottom: 0.9rem;
+    }
+
+    .ph-h1 em {
+      font-style: italic;
+      color: var(--gold-light);
+    }
+
+    .ph-desc {
+      font-family: 'Spectral', serif;
+      font-style: italic;
+      font-size: 1rem;
+      color: #aaa;
+      max-width: 520px;
+      line-height: 1.65;
+    }
+
+    .ph-meta {
+      margin-top: 1.4rem;
+      display: flex;
+      gap: 1.4rem;
+      flex-wrap: wrap;
+    }
+
+    .ph-meta-item {
+      font-size: 0.72rem;
+      color: #666;
+      letter-spacing: 0.06em;
+      text-transform: uppercase;
+    }
+
+    .ph-meta-item strong { color: #999; }
+
+    /* ── GITHUB BANNER ───────────────────────────────── */
+    .github-banner {
+      background: #0d1117;
+      border-left: 4px solid var(--gold);
+      padding: 1.1rem 1.4rem;
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 0;
+    }
+
+    .github-banner .gb-icon { font-size: 1.5rem; flex-shrink: 0; line-height: 1; }
+
+    .github-banner .gb-text { font-size: 0.87rem; color: #ccc; line-height: 1.6; }
+
+    .github-banner .gb-text strong { color: var(--gold-light); }
+
+    /* ── SECTION WRAPPER ─────────────────────────────── */
+    .guide-section {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      margin-bottom: 1.8rem;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .section-toggle {
+      width: 100%;
+      text-align: left;
+      background: none;
+      border: none;
+      padding: 1.1rem 1.4rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      transition: background 0.15s;
+    }
+
+    .section-toggle:hover { background: #faf7f0; }
+
+    .section-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.4rem;
+      font-weight: 900;
+      color: var(--gold);
+      flex-shrink: 0;
+      width: 2.2rem;
+      line-height: 1;
+    }
+
+    .section-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.05rem;
+      font-weight: 900;
+      color: var(--dark);
+      flex: 1;
+      line-height: 1.2;
+    }
+
+    .toggle-icon {
+      font-size: 0.85rem;
+      color: var(--gold);
+      transition: transform 0.2s;
+      flex-shrink: 0;
+    }
+
+    .toggle-icon.open { transform: rotate(90deg); }
+
+    .section-body {
+      padding: 0 1.6rem 1.6rem;
+      border-top: 1px solid var(--border);
+    }
+
+    /* ── HEADINGS ────────────────────────────────────── */
+    h2.sh {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.15rem;
+      font-weight: 900;
+      color: var(--gold);
+      margin: 1.6rem 0 0.5rem;
+    }
+
+    h3.sh {
+      font-family: 'Spectral', serif;
+      font-size: 0.95rem;
+      font-weight: 600;
+      color: var(--dark);
+      margin: 1.3rem 0 0.4rem;
+      letter-spacing: 0.01em;
+    }
+
+    p { margin: 0.5rem 0; }
+
+    /* ── URL BOX ─────────────────────────────────────── */
+    .url-box {
+      background: var(--dark);
+      color: var(--gold-light);
+      font-family: 'Courier New', monospace;
+      font-size: 0.95rem;
+      padding: 0.9rem 1.2rem;
+      border-radius: 4px;
+      margin: 0.8rem 0;
+      word-break: break-all;
+    }
+
+    /* ── ALERT BOXES ─────────────────────────────────── */
+    .box {
+      border-radius: 4px;
+      padding: 0.85rem 1.1rem;
+      margin: 0.9rem 0;
+      font-size: 0.87rem;
+      line-height: 1.6;
+    }
+
+    .box-label {
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      margin-bottom: 0.35rem;
+    }
+
+    .box-info   { background: var(--info-bg);    border-left: 3px solid var(--gold-border); }
+    .box-info   .box-label { color: var(--gold); }
+    .box-warn   { background: var(--warn-bg);    border-left: 3px solid var(--warn-border); }
+    .box-warn   .box-label { color: #a07020; }
+    .box-danger { background: var(--danger-bg);  border-left: 3px solid var(--danger-border); }
+    .box-danger .box-label { color: #c44; }
+    .box-success{ background: var(--success-bg); border-left: 3px solid var(--success-border); }
+    .box-success .box-label { color: #2a7a3a; }
+
+    /* ── STEPS ───────────────────────────────────────── */
+    ol.steps { list-style: none; counter-reset: step-c; margin: 0.9rem 0; }
+
+    ol.steps > li {
+      counter-increment: step-c;
+      display: flex;
+      gap: 1rem;
+      margin-bottom: 0.8rem;
+      align-items: flex-start;
+    }
+
+    ol.steps > li::before {
+      content: counter(step-c);
+      flex-shrink: 0;
+      width: 26px; height: 26px;
+      background: var(--gold);
+      color: #fff;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.75rem;
+      font-weight: 700;
+      margin-top: 0.1rem;
+    }
+
+    ol.steps > li .step-body { flex: 1; }
+    ol.steps > li .step-body strong { color: var(--dark); display: block; margin-bottom: 0.15rem; }
+
+    ul.plain { margin: 0.5rem 0 0.5rem 1.4rem; }
+    ul.plain li { margin-bottom: 0.3rem; }
+
+    /* ── FIELD TABLES ────────────────────────────────── */
+    .field-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.82rem;
+      margin: 0.7rem 0;
+    }
+
+    .field-table th {
+      background: #f0ebe0;
+      color: var(--gold);
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 0.45rem 0.85rem;
+      text-align: left;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .field-table td {
+      padding: 0.45rem 0.85rem;
+      border-bottom: 1px solid #ece7db;
+      vertical-align: top;
+      color: var(--text);
+    }
+
+    .field-table tr:last-child td { border-bottom: none; }
+    .field-table tr:nth-child(even) td { background: #faf7f0; }
+
+    .fn {
+      font-family: 'Courier New', monospace;
+      font-size: 0.8em;
+      background: #ede8dc;
+      padding: 2px 5px;
+      border-radius: 3px;
+      color: #4a3c20;
+      white-space: nowrap;
+    }
+
+    /* ── BADGES ──────────────────────────────────────── */
+    .badge {
+      display: inline-block;
+      font-size: 0.65rem;
+      font-weight: 700;
+      letter-spacing: 0.07em;
+      text-transform: uppercase;
+      padding: 2px 6px;
+      border-radius: 3px;
+      vertical-align: middle;
+    }
+    .badge-fr   { background: #e8f0ff; color: #2244aa; }
+    .badge-en   { background: #f0ffe8; color: #226622; }
+    .badge-both { background: var(--gold-pale); color: var(--gold); border: 1px solid var(--gold-border); }
+    .badge-com  { background: #f0f0f0; color: #666; }
+
+    /* ── SUB-SECTION GROUP ───────────────────────────── */
+    .sub-group {
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      margin: 1rem 0;
+      overflow: hidden;
+    }
+
+    .sg-head {
+      background: var(--dark2);
+      color: var(--warm-white);
+      padding: 0.55rem 1rem;
+      font-family: 'Spectral', serif;
+      font-size: 0.92rem;
+      font-weight: 600;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+
+    .sg-head .sg-icon { color: var(--gold-light); }
+    .sg-body { padding: 0.5rem 0; }
+    .sg-body .field-table { margin: 0; }
+    .sg-body .field-table th { background: #f0ebe0; }
+
+    /* ── WORKFLOW ─────────────────────────────────────── */
+    .workflow {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.4rem;
+      background: #f8f4ed;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      padding: 1.2rem;
+      margin: 1rem 0;
+      flex-wrap: wrap;
+    }
+
+    .wf-step {
+      flex: 1;
+      min-width: 100px;
+      text-align: center;
+      padding: 0.7rem 0.6rem;
+      border-radius: 4px;
+      border: 1px solid var(--border);
+      background: #fff;
+    }
+
+    .wf-step.active {
+      background: var(--gold);
+      border-color: var(--gold);
+      color: #fff;
+    }
+
+    .wf-num {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.3rem;
+      font-weight: 900;
+      color: var(--gold);
+      display: block;
+    }
+
+    .wf-step.active .wf-num { color: rgba(255,255,255,0.8); }
+
+    .wf-label {
+      font-size: 0.78rem;
+      font-weight: 600;
+      display: block;
+      margin-top: 0.2rem;
+    }
+
+    .wf-desc {
+      font-size: 0.68rem;
+      color: var(--muted);
+      margin-top: 0.2rem;
+    }
+
+    .wf-step.active .wf-desc { color: rgba(255,255,255,0.7); }
+
+    .wf-arrow {
+      font-size: 1.2rem;
+      color: var(--gold);
+      padding: 0 0.1rem;
+      align-self: center;
+      flex-shrink: 0;
+    }
+
+    /* ── SCREENSHOT PLACEHOLDER ──────────────────────── */
+    .screenshot {
+      background: #e8e3d8;
+      border: 1px dashed #bbb;
+      border-radius: 4px;
+      padding: 2.5rem 1rem;
+      text-align: center;
+      margin: 0.9rem 0;
+      color: #888;
+    }
+
+    .screenshot .sc-icon { font-size: 2rem; margin-bottom: 0.5rem; }
+    .screenshot .sc-cap { font-size: 0.8rem; font-style: italic; }
+
+    /* ── DIVIDER ─────────────────────────────────────── */
+    .divider {
+      border: none;
+      border-top: 1px solid var(--border);
+      margin: 1.5rem 0;
+    }
+
+    /* ── SIDEBAR SCRIM (mobile) ──────────────────────── */
+    #scrim {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0,0,0,0.5);
+      z-index: 190;
+    }
+
+    /* ── PRINT ───────────────────────────────────────── */
+    @media print {
+      #sidebar, #topbar, #search-bar, .sidebar-pdf-btn, .section-toggle .toggle-icon { display: none !important; }
+      #main { margin-left: 0; }
+      .section-body { display: block !important; padding: 0; }
+      .guide-section { break-inside: avoid; border: none; border-top: 1px solid #ccc; border-radius: 0; margin-bottom: 1rem; }
+      body { font-size: 12px; background: #fff; color: #000; }
+      .section-toggle { pointer-events: none; }
+      .section-num, .section-name { color: #000; }
+      .section-num { color: var(--gold); }
+      .fn, code { background: #f0f0f0; }
+      .box-warn { background: #fffde7; }
+      .box-danger { background: #fff5f5; }
+      h2.sh, h3.sh { color: #000; }
+      .url-box { background: #f0f0f0; color: #000; border: 1px solid #ccc; }
+      .print-header { display: block !important; }
+    }
+
+    .print-header {
+      display: none;
+      text-align: center;
+      padding: 1rem 0 2rem;
+      border-bottom: 2px solid var(--gold);
+      margin-bottom: 2rem;
+    }
+
+    .print-header img { height: 50px; margin-bottom: 0.8rem; }
+    .print-header h1 { font-family: 'Playfair Display', serif; font-size: 1.4rem; }
+    .print-header p { font-size: 0.8rem; color: #666; }
+
+    /* ── RESPONSIVE ──────────────────────────────────── */
+    @media (max-width: 768px) {
+      #sidebar {
+        transform: translateX(-100%);
+        width: 280px;
+      }
+
+      #sidebar.open { transform: translateX(0); }
+
+      #scrim.open { display: block; }
+
+      #topbar { display: flex; }
+
+      #main { margin-left: 0; padding-top: 52px; }
+
+      #search-bar {
+        top: 58px;
+        right: 0.8rem;
+      }
+
+      #search-input { width: 170px; }
+
+      .content-wrap { padding: 1.6rem 1.2rem 3rem; }
+
+      .page-header { padding: 2rem 1.4rem 2rem; }
+
+      .ph-logo { height: 40px; }
+
+      .ph-h1 { font-size: 1.7rem; }
+
+      .workflow { flex-direction: column; }
+
+      .wf-arrow { transform: rotate(90deg); align-self: center; }
+
+      .section-body { padding: 0 1rem 1rem; }
+
+      /* On mobile, sections start collapsed */
+      .section-body.mobile-collapsed { display: none; }
+    }
+
+    @media (min-width: 769px) {
+      /* On desktop, sections start expanded */
+      .section-body { display: block; }
+    }
+
+    /* ── SKIP LINK ───────────────────────────────────── */
+    .skip-link {
+      position: absolute;
+      top: -40px;
+      left: 0;
+      background: var(--gold);
+      color: #fff;
+      padding: 0.4rem 0.8rem;
+      z-index: 9999;
+      font-size: 0.8rem;
+    }
+    .skip-link:focus { top: 0; }
+  </style>
+</head>
+<body>
+
+<a href="#main-content" class="skip-link">Aller au contenu</a>
+
+<!-- ═══════════════════════════════ SIDEBAR ══════════════════════════════ -->
+<aside id="sidebar" aria-label="Navigation du guide">
+  <div class="sidebar-head">
+    <img src="../images/logo-transparent.png" alt="Hôtel Club de Kipé" class="sidebar-logo">
+    <div class="sidebar-title">Guide d'utilisation</div>
+    <div class="sidebar-subtitle">Gestionnaire de contenu</div>
+  </div>
+
+  <nav id="sidebar-nav" aria-label="Sections du guide">
+    <div class="nav-section-label">Sections</div>
+    <a href="#s1" class="nav-link" data-target="s1">01 — Accès</a>
+    <a href="#s2" class="nav-link" data-target="s2">02 — Interface</a>
+    <a href="#s3" class="nav-link" data-target="s3">03 — Tarifs &amp; Coordonnées</a>
+    <a href="#s4" class="nav-link" data-target="s4">04 — Textes du Site</a>
+    <a href="#s4-nav"   class="nav-link sub" data-target="s4-nav">Navigation</a>
+    <a href="#s4-hero"  class="nav-link sub" data-target="s4-hero">Héro</a>
+    <a href="#s4-about" class="nav-link sub" data-target="s4-about">À propos</a>
+    <a href="#s4-rooms" class="nav-link sub" data-target="s4-rooms">Chambres</a>
+    <a href="#s4-svc"   class="nav-link sub" data-target="s4-svc">Services</a>
+    <a href="#s4-gallery" class="nav-link sub" data-target="s4-gallery">Galerie</a>
+    <a href="#s4-reviews" class="nav-link sub" data-target="s4-reviews">Avis</a>
+    <a href="#s4-loc"   class="nav-link sub" data-target="s4-loc">Localisation</a>
+    <a href="#s4-book"  class="nav-link sub" data-target="s4-book">Réservation</a>
+    <a href="#s4-footer" class="nav-link sub" data-target="s4-footer">Pied de page</a>
+    <a href="#s5" class="nav-link" data-target="s5">05 — Photos</a>
+    <a href="#s6" class="nav-link" data-target="s6">06 — Publier</a>
+    <a href="#s7" class="nav-link" data-target="s7">07 — Problèmes</a>
+    <div class="nav-section-label" style="margin-top:0.8rem;">Liens</div>
+    <a href="https://hotelclubdekipe.com/admin/" target="_blank" rel="noopener" style="color:#777;">Ouvrir le gestionnaire ↗</a>
+    <a href="/" style="color:#777;">Retour au site ↗</a>
+  </nav>
+
+  <button class="sidebar-pdf-btn" onclick="window.print()">&#8595; Télécharger en PDF</button>
+</aside>
+
+<!-- ═══════════════════════════════ TOPBAR (mobile) ══════════════════════ -->
+<div id="topbar" role="banner" aria-label="En-tête mobile">
+  <button id="menu-btn" aria-label="Ouvrir le menu" aria-expanded="false" aria-controls="sidebar">&#9776;</button>
+  <img src="../images/logo-transparent.png" alt="" class="topbar-logo" aria-hidden="true">
+  <span class="topbar-title">Guide d'utilisation</span>
+  <button class="sidebar-pdf-btn" onclick="window.print()" style="margin:0;padding:0.4rem 0.7rem;font-size:0.72rem;width:auto;">PDF</button>
+</div>
+<div id="scrim" aria-hidden="true"></div>
+
+<!-- ═══════════════════════════════ SEARCH ═══════════════════════════════ -->
+<div id="search-bar" role="search" aria-label="Recherche dans le guide">
+  <input type="search" id="search-input" placeholder="Rechercher… (/ ou Ctrl+F)" aria-label="Rechercher dans le guide">
+  <button id="search-clear" aria-label="Effacer la recherche">&#10005;</button>
+  <span id="search-count" aria-live="polite"></span>
+</div>
+
+<!-- ═══════════════════════════════ PRINT HEADER ═════════════════════════ -->
+<div class="print-header">
+  <img src="../images/logo-transparent.png" alt="Hôtel Club de Kipé">
+  <h1>Guide d'utilisation — Gestionnaire de contenu</h1>
+  <p>Hôtel Club de Kipé &nbsp;·&nbsp; Imprimé le <span id="print-date"></span></p>
+</div>
+
+<!-- ═══════════════════════════════ MAIN ═════════════════════════════════ -->
+<div id="main">
+
+  <!-- PAGE HEADER -->
+  <header class="page-header">
+    <div class="ph-inner">
+      <img src="../images/logo-transparent.png" alt="Hôtel Club de Kipé" class="ph-logo">
+      <p class="ph-eyebrow">Personnel — Usage interne</p>
+      <h1 class="ph-h1">Guide d'utilisation<br><em>du gestionnaire de contenu</em></h1>
+      <p class="ph-desc">Tout ce que vous devez savoir pour mettre à jour les textes, tarifs et photos du site. Aucune connaissance technique requise.</p>
+      <div class="ph-meta">
+        <span class="ph-meta-item">Version <strong>2026</strong></span>
+        <span class="ph-meta-item">Langue <strong>Français</strong></span>
+        <span class="ph-meta-item">Niveau <strong>Débutant</strong></span>
+      </div>
+    </div>
+  </header>
+
+  <!-- GITHUB REQUIRED BANNER -->
+  <div class="github-banner">
+    <span class="gb-icon">&#9888;</span>
+    <div class="gb-text">
+      <strong>Pré-requis : un compte GitHub est obligatoire.</strong> Le gestionnaire de contenu utilise GitHub pour héberger les fichiers du site. Vous devez disposer d'un compte GitHub autorisé avant de pouvoir vous connecter. Si vous n'en avez pas encore, contactez le développeur du site pour obtenir un accès.
+    </div>
+  </div>
+
+  <main id="main-content">
+  <div class="content-wrap">
+
+    <!-- ══════════════════ SECTION 1 ══════════════════ -->
+    <div class="guide-section" id="s1">
+      <button class="section-toggle" aria-expanded="true" aria-controls="s1-body">
+        <span class="section-num">01</span>
+        <span class="section-name">Accès au gestionnaire de contenu</span>
+        <span class="toggle-icon open" aria-hidden="true">&#9658;</span>
+      </button>
+      <div class="section-body" id="s1-body">
+
+        <h2 class="sh">Adresse du gestionnaire</h2>
+        <p>Ouvrez votre navigateur internet et tapez l'adresse suivante dans la barre d'adresse :</p>
+        <div class="url-box">https://hotelclubdekipe.com/admin/</div>
+        <div class="box box-info">
+          <div class="box-label">Conseil</div>
+          Ajoutez cette adresse à vos favoris pour y accéder en un clic.
+        </div>
+
+        <div class="screenshot">
+          <div class="sc-icon">&#128247;</div>
+          <div class="sc-cap">Capture d'écran : page d'accueil du gestionnaire avec bouton "Login with GitHub"</div>
+        </div>
+
+        <h2 class="sh">Connexion via GitHub</h2>
+        <p>La connexion se fait par GitHub, la plateforme qui héberge les fichiers du site. Suivez ces étapes :</p>
+        <ol class="steps">
+          <li>
+            <div class="step-body">
+              <strong>Ouvrez l'adresse du gestionnaire</strong>
+              Vous verrez la page de connexion avec un bouton bleu "Login with GitHub".
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Cliquez sur "Login with GitHub"</strong>
+              Une fenêtre GitHub s'ouvre dans votre navigateur.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Entrez vos identifiants GitHub</strong>
+              Si vous n'êtes pas encore connecté, saisissez le nom d'utilisateur et le mot de passe du compte GitHub autorisé. Demandez ces identifiants au développeur ou au responsable du site.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Autorisez l'accès si demandé</strong>
+              GitHub peut vous demander de confirmer l'accès au dépôt du site. Cliquez sur "Authorize" (Autoriser).
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Vous êtes connecté</strong>
+              Après quelques secondes, l'interface principale du gestionnaire s'affiche.
+            </div>
+          </li>
+        </ol>
+
+        <div class="box box-warn">
+          <div class="box-label">Problème de connexion ?</div>
+          Si la fenêtre GitHub reste ouverte sans se fermer : vérifiez que les cookies ne sont pas bloqués dans votre navigateur. Utilisez de préférence Google Chrome ou Mozilla Firefox.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════ SECTION 2 ══════════════════ -->
+    <div class="guide-section" id="s2">
+      <button class="section-toggle" aria-expanded="true" aria-controls="s2-body">
+        <span class="section-num">02</span>
+        <span class="section-name">Interface principale et navigation</span>
+        <span class="toggle-icon open" aria-hidden="true">&#9658;</span>
+      </button>
+      <div class="section-body" id="s2-body">
+
+        <h2 class="sh">Vue d'ensemble de l'interface</h2>
+        <p>Une fois connecté, l'interface se divise en trois zones :</p>
+        <ul class="plain">
+          <li><strong>Menu gauche</strong> — liste des collections (types de contenu) disponibles.</li>
+          <li><strong>Zone centrale</strong> — formulaire de modification du contenu sélectionné.</li>
+          <li><strong>Barre haute</strong> — onglet <em>Media</em> pour gérer les photos, et bouton de publication.</li>
+        </ul>
+
+        <div class="screenshot">
+          <div class="sc-icon">&#128247;</div>
+          <div class="sc-cap">Capture d'écran : interface principale avec menu gauche, zone centrale et barre haute</div>
+        </div>
+
+        <h2 class="sh">Collections disponibles</h2>
+        <p>Le menu gauche affiche trois collections :</p>
+
+        <table class="field-table">
+          <thead>
+            <tr><th>Collection</th><th>Ce qu'elle contient</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="fn">Coordonnées et Tarifs des Chambres</span></td>
+              <td>Téléphone, e-mail, WhatsApp et prix des chambres</td>
+            </tr>
+            <tr>
+              <td><span class="fn">Textes du Site (FR / EN)</span></td>
+              <td>Tous les textes visibles sur le site (plus de 70 champs)</td>
+            </tr>
+          </tbody>
+        </table>
+
+        <h2 class="sh">Comment modifier un contenu</h2>
+        <ol class="steps">
+          <li>
+            <div class="step-body">
+              <strong>Cliquez sur une collection dans le menu gauche</strong>
+              La liste des entrées de cette collection s'affiche.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Cliquez sur l'entrée</strong>
+              Il n'y en a généralement qu'une. Le formulaire s'ouvre avec tous les champs.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Modifiez les champs souhaités</strong>
+              Le gestionnaire sauvegarde automatiquement votre travail en brouillon au fur et à mesure.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Publiez la modification</strong>
+              Cliquez sur "Publish" en haut à droite pour rendre les changements visibles sur le site. Voir <a href="#s6">section 6</a> pour le détail.
+            </div>
+          </li>
+        </ol>
+
+        <div class="box box-info">
+          <div class="box-label">Sauvegarde automatique</div>
+          Le gestionnaire enregistre vos modifications en brouillon (<em>Draft</em>) au fur et à mesure que vous tapez. Vous ne risquez pas de perdre votre travail si vous changez d'onglet accidentellement. La publication est une étape séparée et volontaire.
+        </div>
+
+        <h2 class="sh">La médiathèque (onglet Media)</h2>
+        <p>En haut de l'interface, l'onglet <strong>Media</strong> (ou une icône d'image) donne accès à la médiathèque. C'est là que vous pouvez importer de nouvelles photos pour le site. Les photos sont rangées dans le dossier <strong>Photos du Hotel et Club</strong>.</p>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════ SECTION 3 ══════════════════ -->
+    <div class="guide-section" id="s3">
+      <button class="section-toggle" aria-expanded="true" aria-controls="s3-body">
+        <span class="section-num">03</span>
+        <span class="section-name">Modifier les tarifs et coordonnées</span>
+        <span class="toggle-icon open" aria-hidden="true">&#9658;</span>
+      </button>
+      <div class="section-body" id="s3-body">
+
+        <p>Cette section vous permet de mettre à jour les informations de contact et les prix affichés sur le site.</p>
+
+        <h2 class="sh">Accéder à ce formulaire</h2>
+        <ol class="steps">
+          <li><div class="step-body"><strong>Dans le menu gauche, cliquez sur "Coordonnées et Tarifs des Chambres"</strong></div></li>
+          <li><div class="step-body"><strong>Cliquez sur l'entrée qui apparaît</strong> Le formulaire s'ouvre.</div></li>
+        </ol>
+
+        <h2 class="sh">Coordonnées de contact</h2>
+
+        <table class="field-table">
+          <thead>
+            <tr><th>Champ CMS</th><th>Ce qu'il contrôle</th><th>Format attendu</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="fn">phone</span></td>
+              <td>Numéro de téléphone principal affiché sur le site</td>
+              <td>Ex. : <code>+224 624 00 00 00</code></td>
+            </tr>
+            <tr>
+              <td><span class="fn">whatsapp</span></td>
+              <td>Numéro WhatsApp pour les réservations</td>
+              <td>Format international sans espaces : <code>224624000000</code></td>
+            </tr>
+            <tr>
+              <td><span class="fn">email</span></td>
+              <td>Adresse e-mail de contact affichée sur le site</td>
+              <td>Ex. : <code>contact@hotelclubdekipe.com</code></td>
+            </tr>
+            <tr>
+              <td><span class="fn">address</span></td>
+              <td>Adresse physique de l'hôtel</td>
+              <td>Texte libre, ex. : <code>Kipé Dadyah, Conakry, Guinée</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="box box-danger">
+          <div class="box-label">Attention — Format WhatsApp</div>
+          Le numéro WhatsApp doit être en format international, sans le signe <code>+</code>, sans espaces et sans tirets. Un format mal saisi empêche le lien de fonctionner sur les téléphones des visiteurs. Exemple correct : <code>224669699999</code>
+        </div>
+
+        <h2 class="sh">Tarifs des chambres</h2>
+        <p>Le site propose quatre types de chambres. Chaque chambre a son propre champ de prix.</p>
+
+        <table class="field-table">
+          <thead>
+            <tr><th>Champ CMS</th><th>Type de chambre</th><th>Format attendu</th></tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><span class="fn">price_standard</span></td>
+              <td>Chambre Standard</td>
+              <td>Chiffre uniquement, ex. : <code>150000</code></td>
+            </tr>
+            <tr>
+              <td><span class="fn">price_superior</span></td>
+              <td>Chambre Supérieure</td>
+              <td>Chiffre uniquement, ex. : <code>200000</code></td>
+            </tr>
+            <tr>
+              <td><span class="fn">price_deluxe</span></td>
+              <td>Chambre Deluxe</td>
+              <td>Chiffre uniquement, ex. : <code>300000</code></td>
+            </tr>
+            <tr>
+              <td><span class="fn">price_suite</span></td>
+              <td>Suite</td>
+              <td>Chiffre uniquement, ex. : <code>500000</code></td>
+            </tr>
+          </tbody>
+        </table>
+
+        <div class="box box-warn">
+          <div class="box-label">Format des prix</div>
+          Saisissez uniquement les chiffres, sans espace, sans virgule et sans devise. Ne tapez pas <code>150 000</code> ni <code>150,000</code>. Le site ajoute automatiquement la devise et le format d'affichage.
+        </div>
+
+        <h2 class="sh">Exemple : modifier un tarif</h2>
+        <p>Vous souhaitez passer le prix de la chambre Standard de 150 000 GNF à 175 000 GNF :</p>
+        <ol class="steps">
+          <li><div class="step-body"><strong>Trouvez le champ <code>price_standard</code></strong> Il affiche actuellement <code>150000</code>.</div></li>
+          <li><div class="step-body"><strong>Effacez la valeur et tapez <code>175000</code></strong> Vérifiez qu'il n'y a ni espace ni symbole.</div></li>
+          <li><div class="step-body"><strong>Publiez la modification</strong> Suivez les étapes de la <a href="#s6">section 6</a>.</div></li>
+        </ol>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════ SECTION 4 ══════════════════ -->
+    <div class="guide-section" id="s4">
+      <button class="section-toggle" aria-expanded="true" aria-controls="s4-body">
+        <span class="section-num">04</span>
+        <span class="section-name">Modifier les textes du site (FR / EN)</span>
+        <span class="toggle-icon open" aria-hidden="true">&#9658;</span>
+      </button>
+      <div class="section-body" id="s4-body">
+
+        <p>Cette collection regroupe tous les textes visibles sur le site. Elle contient plus de 70 champs, organisés par section.</p>
+
+        <div class="box box-danger">
+          <div class="box-label">Règle absolue — Bilingue obligatoire</div>
+          Le site est affiché en <strong>français et en anglais</strong>. Chaque texte existe en deux versions : un champ <code>_fr</code> (français) et un champ <code>_en</code> (anglais). <strong>Lorsque vous modifiez un texte en français, vous devez impérativement mettre à jour la version anglaise correspondante</strong>, et vice versa. Un visiteur anglophone qui voit un texte non traduit donne une mauvaise image de l'établissement.
+        </div>
+
+        <div class="box box-info">
+          <div class="box-label">Pas de traducteur disponible ?</div>
+          Utilisez DeepL (<code>deepl.com</code>) ou Google Traduction pour obtenir une traduction correcte, puis relisez-la avant de publier.
+        </div>
+
+        <h2 class="sh">Accéder aux textes</h2>
+        <ol class="steps">
+          <li><div class="step-body"><strong>Dans le menu gauche, cliquez sur "Textes du Site (FR / EN)"</strong></div></li>
+          <li><div class="step-body"><strong>Cliquez sur l'entrée unique qui apparaît</strong> Le formulaire s'ouvre avec toutes les sections.</div></li>
+          <li><div class="step-body"><strong>Faites défiler vers la section souhaitée</strong> Les sections suivent l'ordre visuel du site, de haut en bas.</div></li>
+        </ol>
+
+        <h2 class="sh">Guide par section</h2>
+
+        <!-- Navigation -->
+        <div class="sub-group" id="s4-nav">
+          <div class="sg-head"><span class="sg-icon">&#9776;</span> Navigation</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Liens du menu de navigation en haut de chaque page.</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">nav_home_fr</span> / <span class="fn">nav_home_en</span></td><td>Lien "Accueil"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">nav_about_fr</span> / <span class="fn">nav_about_en</span></td><td>Lien "À propos"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">nav_rooms_fr</span> / <span class="fn">nav_rooms_en</span></td><td>Lien "Chambres"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">nav_svc_fr</span> / <span class="fn">nav_svc_en</span></td><td>Lien "Services"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">nav_gallery_fr</span> / <span class="fn">nav_gallery_en</span></td><td>Lien "Galerie"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">nav_book_fr</span> / <span class="fn">nav_book_en</span></td><td>Bouton "Réserver"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Héro -->
+        <div class="sub-group" id="s4-hero">
+          <div class="sg-head"><span class="sg-icon">&#127968;</span> Section Héro (page d'accueil)</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Textes visibles en grand sur l'image principale de la page d'accueil.</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">hero_sub_fr</span> / <span class="fn">hero_sub_en</span></td><td>Sous-titre sous le nom de l'hôtel</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">hero_since_fr</span> / <span class="fn">hero_since_en</span></td><td>Texte "Depuis 2019"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">hero_book_fr</span> / <span class="fn">hero_book_en</span></td><td>Texte du bouton de réservation dans le héro</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">hero_explore_fr</span> / <span class="fn">hero_explore_en</span></td><td>Bouton secondaire "Explorer"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">scroll_lbl_fr</span> / <span class="fn">scroll_lbl_en</span></td><td>Label "Défiler" sur l'indicateur de défilement</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">statement_fr</span> / <span class="fn">statement_en</span></td><td>Phrase d'accroche en bandeau ("Un refuge discret…")</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- À propos -->
+        <div class="sub-group" id="s4-about">
+          <div class="sg-head"><span class="sg-icon">&#9829;</span> Section À propos</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Textes de la section "Notre histoire" visible juste après l'image principale.</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">about_ey_fr</span> / <span class="fn">about_ey_en</span></td><td>Petit texte d'entête ("Notre histoire")</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">about_h2_fr</span> / <span class="fn">about_h2_en</span></td><td>Titre principal de la section</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">about_p1_fr</span> / <span class="fn">about_p1_en</span></td><td>Premier paragraphe</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">about_p2_fr</span> / <span class="fn">about_p2_en</span></td><td>Deuxième paragraphe</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">about_quote_fr</span> / <span class="fn">about_quote_en</span></td><td>Citation mise en avant</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">about_attr_fr</span> / <span class="fn">about_attr_en</span></td><td>Attribution de la citation</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Chambres -->
+        <div class="sub-group" id="s4-rooms">
+          <div class="sg-head"><span class="sg-icon">&#127963;</span> Section Chambres</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Textes d'introduction de la section chambres. Les prix sont dans la collection Coordonnées et Tarifs.</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">rooms_ey_fr</span> / <span class="fn">rooms_ey_en</span></td><td>Petit texte d'entête ("Nos hébergements")</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">rooms_h2_fr</span> / <span class="fn">rooms_h2_en</span></td><td>Titre de la section</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">rooms_note_fr</span> / <span class="fn">rooms_note_en</span></td><td>Note sous le titre ("Climatisation - Wi-Fi…")</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">btn_bk_fr</span> / <span class="fn">btn_bk_en</span></td><td>Texte du bouton "Réserver" sur chaque chambre</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">cur_fr</span> / <span class="fn">cur_en</span></td><td>Libellé de la devise (ex. "FG")</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">pn_fr</span> / <span class="fn">pn_en</span></td><td>Libellé "/ nuit"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Services -->
+        <div class="sub-group" id="s4-svc">
+          <div class="sg-head"><span class="sg-icon">&#10024;</span> Section Services</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Textes de la section présentant les services de l'hôtel (piscine, restaurant, bar…).</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">svc_ey_fr</span> / <span class="fn">svc_ey_en</span></td><td>Petit texte d'entête ("Ce que nous offrons")</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">svc_h2_fr</span> / <span class="fn">svc_h2_en</span></td><td>Titre de la section</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">svc1_title_fr</span> / <span class="fn">svc1_title_en</span></td><td>Titre du premier service (piscine)</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">svc1_desc_fr</span> / <span class="fn">svc1_desc_en</span></td><td>Description du premier service</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">svc2_title_fr</span> / <span class="fn">svc2_title_en</span></td><td>Titre du deuxième service (restaurant)</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">svc2_desc_fr</span> / <span class="fn">svc2_desc_en</span></td><td>Description du deuxième service</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">svc3_title_fr</span> / <span class="fn">svc3_title_en</span></td><td>Titre du troisième service (bar)</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">svc3_desc_fr</span> / <span class="fn">svc3_desc_en</span></td><td>Description du troisième service</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Galerie -->
+        <div class="sub-group" id="s4-gallery">
+          <div class="sg-head"><span class="sg-icon">&#128444;</span> Section Galerie</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Titres et légendes de la section galerie. Les photos elles-mêmes sont gérées via la médiathèque (voir <a href="#s5">section 5</a>).</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">gallery_ey_fr</span> / <span class="fn">gallery_ey_en</span></td><td>Petit texte d'entête</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">gallery_h2_fr</span> / <span class="fn">gallery_h2_en</span></td><td>Titre de la section galerie</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">gallery_caption_*_fr</span> / <span class="fn">gallery_caption_*_en</span></td><td>Légendes des photos de la galerie (remplacez * par le numéro)</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Avis -->
+        <div class="sub-group" id="s4-reviews">
+          <div class="sg-head"><span class="sg-icon">&#11088;</span> Section Avis clients</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Textes des témoignages clients affichés sur le site.</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">rev_ey_fr</span> / <span class="fn">rev_ey_en</span></td><td>Petit texte d'entête</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">rev_h2_fr</span> / <span class="fn">rev_h2_en</span></td><td>Titre de la section avis</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">r1_fr</span> / <span class="fn">r1_en</span></td><td>Texte du premier avis client</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">r1a_fr</span> / <span class="fn">r1a_en</span></td><td>Nom/attribution du premier avis</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">r2_fr</span> / <span class="fn">r2_en</span></td><td>Texte du deuxième avis</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">r2a_fr</span> / <span class="fn">r2a_en</span></td><td>Nom/attribution du deuxième avis</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">r3_fr</span> / <span class="fn">r3_en</span></td><td>Texte du troisième avis</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">r3a_fr</span> / <span class="fn">r3a_en</span></td><td>Nom/attribution du troisième avis</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Localisation -->
+        <div class="sub-group" id="s4-loc">
+          <div class="sg-head"><span class="sg-icon">&#128205;</span> Section Localisation</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Textes de la section carte / localisation de l'hôtel.</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">loc_ey_fr</span> / <span class="fn">loc_ey_en</span></td><td>Petit texte d'entête</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">loc_h2_fr</span> / <span class="fn">loc_h2_en</span></td><td>Titre de la section localisation</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">loc_desc_fr</span> / <span class="fn">loc_desc_en</span></td><td>Description de l'emplacement</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Réservation -->
+        <div class="sub-group" id="s4-book">
+          <div class="sg-head"><span class="sg-icon">&#128222;</span> Section Réservation</div>
+          <div class="sg-body">
+            <div style="padding:0.5rem 0.85rem;font-size:0.83rem;color:#555;">Textes de la section contact et formulaire de réservation.</div>
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">booking_title_fr</span> / <span class="fn">booking_title_en</span></td><td>Titre de la section Réservation</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">booking_subtitle_fr</span> / <span class="fn">booking_subtitle_en</span></td><td>Sous-titre ou invitation à réserver</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">fl_name_fr</span> / <span class="fn">fl_name_en</span></td><td>Libellé du champ "Nom" dans le formulaire</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">fl_checkin_fr</span> / <span class="fn">fl_checkin_en</span></td><td>Libellé "Date d'arrivée"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">fl_checkout_fr</span> / <span class="fn">fl_checkout_en</span></td><td>Libellé "Date de départ"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">fl_room_fr</span> / <span class="fn">fl_room_en</span></td><td>Libellé "Type de chambre"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">fl_sub_fr</span> / <span class="fn">fl_sub_en</span></td><td>Texte du bouton d'envoi du formulaire</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">fl_note_fr</span> / <span class="fn">fl_note_en</span></td><td>Note "Confirmation sous 24 heures"</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">booking_whatsapp_label_fr</span> / <span class="fn">booking_whatsapp_label_en</span></td><td>Libellé du bouton WhatsApp</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <!-- Pied de page -->
+        <div class="sub-group" id="s4-footer">
+          <div class="sg-head"><span class="sg-icon">&#9654;</span> Pied de page</div>
+          <div class="sg-body">
+            <table class="field-table">
+              <thead><tr><th>Champ</th><th>Rôle</th><th>Langue</th></tr></thead>
+              <tbody>
+                <tr><td><span class="fn">footer_tagline_fr</span> / <span class="fn">footer_tagline_en</span></td><td>Phrase d'accroche dans le pied de page</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+                <tr><td><span class="fn">footer_copyright</span></td><td>Texte de droits d'auteur (ex. : "© 2026 Hôtel Club de Kipé")</td><td><span class="badge badge-com">Commun</span></td></tr>
+                <tr><td><span class="fn">footer_links_title_fr</span> / <span class="fn">footer_links_title_en</span></td><td>Titre du bloc de liens dans le pied de page</td><td><span class="badge badge-both">FR + EN</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+        <div class="box box-success">
+          <div class="box-label">Bonne pratique</div>
+          Après avoir modifié un texte, relisez-le comme si vous étiez un visiteur qui ne connaît pas l'hôtel. Le texte est-il clair ? Professionnel ? Correspond-il à l'image que l'hôtel souhaite donner ?
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════ SECTION 5 ══════════════════ -->
+    <div class="guide-section" id="s5">
+      <button class="section-toggle" aria-expanded="true" aria-controls="s5-body">
+        <span class="section-num">05</span>
+        <span class="section-name">Gérer les photos</span>
+        <span class="toggle-icon open" aria-hidden="true">&#9658;</span>
+      </button>
+      <div class="section-body" id="s5-body">
+
+        <p>Les photos du site sont stockées dans la médiathèque du gestionnaire. Elles sont organisées dans un dossier dédié : <strong>Photos du Hotel et Club</strong>.</p>
+
+        <h2 class="sh">Accéder à la médiathèque</h2>
+        <ol class="steps">
+          <li>
+            <div class="step-body">
+              <strong>Cliquez sur l'onglet "Media" dans le menu du haut</strong>
+              (Ou sur l'icône représentant une image, selon la version de l'interface.)
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Naviguez vers le dossier "Photos du Hotel et Club"</strong>
+              Toutes les photos du site se trouvent dans ce dossier.
+            </div>
+          </li>
+        </ol>
+
+        <div class="screenshot">
+          <div class="sc-icon">&#128247;</div>
+          <div class="sc-cap">Capture d'écran : médiathèque avec le dossier "Photos du Hotel et Club" visible</div>
+        </div>
+
+        <h2 class="sh">Importer une nouvelle photo</h2>
+        <ol class="steps">
+          <li><div class="step-body"><strong>Dans la médiathèque, cliquez sur "Upload" ou "Importer"</strong></div></li>
+          <li><div class="step-body"><strong>Sélectionnez la photo sur votre ordinateur</strong> Vérifiez le format et la taille avant d'importer.</div></li>
+          <li><div class="step-body"><strong>Attendez la fin du chargement</strong> Une barre de progression s'affiche.</div></li>
+          <li><div class="step-body"><strong>La photo apparaît dans la médiathèque</strong> Elle est maintenant disponible pour le site.</div></li>
+        </ol>
+
+        <h2 class="sh">Remplacer une photo existante</h2>
+        <p>Si vous souhaitez changer une photo déjà utilisée sur le site (par exemple, la photo de la chambre Standard), deux approches sont possibles :</p>
+        <ul class="plain">
+          <li><strong>Méthode recommandée :</strong> importez la nouvelle photo avec exactement le même nom de fichier que l'ancienne. Le site utilisera automatiquement la nouvelle image sans qu'il soit nécessaire de modifier le code.</li>
+          <li><strong>Méthode alternative :</strong> importez la nouvelle photo sous un nouveau nom, puis demandez au développeur de mettre à jour la référence dans le code du site.</li>
+        </ul>
+
+        <h2 class="sh">Règles pour les photos</h2>
+
+        <table class="field-table">
+          <thead><tr><th>Règle</th><th>Valeur recommandée</th></tr></thead>
+          <tbody>
+            <tr><td>Largeur minimale</td><td>1 200 pixels</td></tr>
+            <tr><td>Taille maximale par fichier</td><td>3 Mo</td></tr>
+            <tr><td>Format recommandé (photos)</td><td>JPEG</td></tr>
+            <tr><td>Format recommandé (logos, transparence)</td><td>PNG</td></tr>
+            <tr><td>Nom de fichier</td><td>Lettres minuscules, chiffres, tirets uniquement. Pas d'espace, pas d'accent, pas de caractère spécial.</td></tr>
+          </tbody>
+        </table>
+
+        <div class="box box-danger">
+          <div class="box-label">Ne jamais supprimer une photo sans vérification</div>
+          Ne supprimez jamais une photo de la médiathèque sans vous assurer qu'elle n'est plus utilisée sur le site. Supprimer une image utilisée provoque l'apparition d'un espace vide ou d'une icône cassée sur la page.
+        </div>
+
+        <div class="box box-warn">
+          <div class="box-label">Photos trop petites ou trop lourdes</div>
+          Une photo trop petite (moins de 1 200 px de large) apparaît floue. Une photo trop lourde (plus de 3 Mo) peut faire échouer l'importation et ralentit l'affichage du site pour les visiteurs.
+        </div>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════ SECTION 6 ══════════════════ -->
+    <div class="guide-section" id="s6">
+      <button class="section-toggle" aria-expanded="true" aria-controls="s6-body">
+        <span class="section-num">06</span>
+        <span class="section-name">Sauvegarder et publier</span>
+        <span class="toggle-icon open" aria-hidden="true">&#9658;</span>
+      </button>
+      <div class="section-body" id="s6-body">
+
+        <p>Le processus de publication comporte trois étapes distinctes. Comprendre la différence entre <em>brouillon</em> et <em>publié</em> est essentiel pour ne pas diffuser des informations incomplètes.</p>
+
+        <div class="workflow">
+          <div class="wf-step">
+            <span class="wf-num">1</span>
+            <span class="wf-label">Modifier</span>
+            <div class="wf-desc">Saisir les changements dans les champs</div>
+          </div>
+          <div class="wf-arrow">&#8594;</div>
+          <div class="wf-step active">
+            <span class="wf-num">2</span>
+            <span class="wf-label">Brouillon</span>
+            <div class="wf-desc">Sauvegardé automatiquement, pas encore visible</div>
+          </div>
+          <div class="wf-arrow">&#8594;</div>
+          <div class="wf-step">
+            <span class="wf-num">3</span>
+            <span class="wf-label">Publié</span>
+            <div class="wf-desc">Visible sur le site public</div>
+          </div>
+        </div>
+
+        <h2 class="sh">Comprendre Draft et Publish</h2>
+
+        <table class="field-table">
+          <thead><tr><th>Statut</th><th>Ce que ça signifie</th><th>Visible par les visiteurs ?</th></tr></thead>
+          <tbody>
+            <tr><td><strong>Draft</strong> (Brouillon)</td><td>Vos modifications sont sauvegardées mais pas encore en ligne</td><td>Non</td></tr>
+            <tr><td><strong>Published</strong> (Publié)</td><td>Vos modifications sont visibles sur le site public</td><td>Oui</td></tr>
+          </tbody>
+        </table>
+
+        <h2 class="sh">Étapes pour publier</h2>
+        <ol class="steps">
+          <li>
+            <div class="step-body">
+              <strong>Vérifiez vos modifications</strong>
+              Relisez tous les champs modifiés. Vérifiez que la version anglaise a bien été mise à jour si vous avez modifié un texte en français.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Cliquez sur le bouton "Publish" en haut à droite</strong>
+              Le bouton peut afficher une flèche déroulante. Si c'est le cas, sélectionnez "Publish now" (Publier maintenant).
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Confirmez si une boîte de dialogue s'affiche</strong>
+              Certaines versions du gestionnaire demandent une confirmation. Cliquez sur "Publish" pour valider.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Attendez quelques minutes</strong>
+              Le gestionnaire envoie les changements à GitHub, et le site se met à jour automatiquement. Le délai habituel est de 2 à 5 minutes.
+            </div>
+          </li>
+          <li>
+            <div class="step-body">
+              <strong>Vérifiez le résultat sur le site</strong>
+              Ouvrez <a href="https://hotelclubdekipe.com" target="_blank" rel="noopener">hotelclubdekipe.com</a> dans un nouvel onglet. Si vous ne voyez pas les changements, actualisez la page (Ctrl + F5 ou Cmd + Shift + R).
+            </div>
+          </li>
+        </ol>
+
+        <div class="screenshot">
+          <div class="sc-icon">&#128247;</div>
+          <div class="sc-cap">Capture d'écran : bouton "Publish" en haut à droite de l'interface du gestionnaire</div>
+        </div>
+
+        <div class="box box-info">
+          <div class="box-label">Vous avez un doute ?</div>
+          Sauvegardez en brouillon (les modifications sont déjà enregistrées automatiquement) et demandez une validation à votre responsable avant de publier. Vous ne risquez rien tant que vous n'appuyez pas sur "Publish".
+        </div>
+
+        <h2 class="sh">Annuler une modification publiée</h2>
+        <p>Si vous avez publié une erreur par inadvertance, il est possible de revenir à une version précédente. Contactez le développeur du site qui dispose de l'historique complet des versions via GitHub.</p>
+
+      </div>
+    </div>
+
+    <!-- ══════════════════ SECTION 7 ══════════════════ -->
+    <div class="guide-section" id="s7">
+      <button class="section-toggle" aria-expanded="true" aria-controls="s7-body">
+        <span class="section-num">07</span>
+        <span class="section-name">En cas de problème</span>
+        <span class="toggle-icon open" aria-hidden="true">&#9658;</span>
+      </button>
+      <div class="section-body" id="s7-body">
+
+        <p>La plupart des problèmes que vous pourriez rencontrer ont une solution simple. Voici les situations les plus courantes.</p>
+
+        <h2 class="sh">Problème de connexion GitHub</h2>
+        <ul class="plain">
+          <li>Vérifiez que vous utilisez bien un compte GitHub autorisé à accéder au dépôt du site.</li>
+          <li>Si GitHub demande une vérification en deux étapes, suivez les instructions sur votre téléphone ou votre application d'authentification.</li>
+          <li>Essayez d'effacer les cookies de votre navigateur et de recommencer la connexion.</li>
+          <li>Utilisez de préférence Google Chrome ou Mozilla Firefox.</li>
+        </ul>
+
+        <h2 class="sh">Les modifications ne s'affichent pas sur le site</h2>
+        <ul class="plain">
+          <li>Vérifiez que vous avez bien cliqué sur "Publish" (et non pas simplement sauvegardé en brouillon).</li>
+          <li>Attendez 5 minutes — la mise à jour du site peut prendre quelques minutes.</li>
+          <li>Actualisez la page du site avec Ctrl + F5 (Windows) ou Cmd + Shift + R (Mac).</li>
+          <li>Essayez depuis un autre appareil ou en navigation privée pour éliminer le cache.</li>
+        </ul>
+
+        <h2 class="sh">Une photo n'apparaît pas ou est cassée</h2>
+        <ul class="plain">
+          <li>Vérifiez que le nom de fichier de la photo est identique à celui utilisé dans le code (sensible à la casse, pas d'espace).</li>
+          <li>Vérifiez que la photo a bien été importée dans le dossier <strong>Photos du Hotel et Club</strong> de la médiathèque.</li>
+          <li>Contactez le développeur si le problème persiste après vérification du nom.</li>
+        </ul>
+
+        <h2 class="sh">Le bouton "Publish" ne répond pas</h2>
+        <ul class="plain">
+          <li>Rechargez la page du gestionnaire et reconnectez-vous.</li>
+          <li>Vérifiez votre connexion internet.</li>
+          <li>Contactez le développeur si le problème persiste.</li>
+        </ul>
+
+        <h2 class="sh">Contacter le développeur</h2>
+        <div class="box box-info">
+          <div class="box-label">Assistance technique</div>
+          Pour tout problème technique que vous ne parvenez pas à résoudre seul, contactez le développeur responsable du site. Il dispose de l'accès complet au code, aux serveurs et à l'historique des versions pour corriger tout incident rapidement.
+        </div>
+
+        <h2 class="sh">Règles de sécurité</h2>
+        <div class="box box-danger">
+          <div class="box-label">Important</div>
+          <ul class="plain" style="margin-top:0.4rem;">
+            <li>Ne partagez jamais les identifiants GitHub avec des personnes non autorisées.</li>
+            <li>Ne supprimez pas de fichiers dans la médiathèque sans avoir vérifié qu'ils ne sont plus utilisés sur le site.</li>
+            <li>En cas de doute sur une modification, sauvegardez en brouillon et demandez une validation avant de publier.</li>
+            <li>Si vous pensez avoir fait une erreur, ne tentez pas de la corriger sans aide — contactez le développeur immédiatement.</li>
+          </ul>
+        </div>
+
+      </div>
+    </div>
+
+    <!-- FOOTER -->
+    <footer style="text-align:center;padding:2.5rem 0 1rem;font-size:0.78rem;color:var(--muted);border-top:1px solid var(--border);margin-top:1rem;">
+      <img src="../images/logo-transparent.png" alt="" style="height:30px;opacity:0.4;margin-bottom:0.6rem;display:block;margin-left:auto;margin-right:auto;">
+      <strong style="color:var(--gold);">Hôtel Club de Kipé</strong> &nbsp;·&nbsp; Guide d'utilisation du gestionnaire de contenu<br>
+      Usage interne — Personnel autorisé uniquement &nbsp;·&nbsp; <a href="/">Retour au site</a>
+    </footer>
+
+  </div><!-- .content-wrap -->
+  </main>
+</div><!-- #main -->
+
+<script>
+(function() {
+  'use strict';
+
+  /* ── PRINT DATE ───────────────────────────────── */
+  const pd = document.getElementById('print-date');
+  if (pd) pd.textContent = new Date().toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' });
+
+  /* ── MOBILE SIDEBAR ───────────────────────────── */
+  const sidebar = document.getElementById('sidebar');
+  const scrim   = document.getElementById('scrim');
+  const menuBtn = document.getElementById('menu-btn');
+
+  function openSidebar() {
+    sidebar.classList.add('open');
+    scrim.classList.add('open');
+    menuBtn.setAttribute('aria-expanded', 'true');
+    scrim.removeAttribute('aria-hidden');
+  }
+
+  function closeSidebar() {
+    sidebar.classList.remove('open');
+    scrim.classList.remove('open');
+    menuBtn.setAttribute('aria-expanded', 'false');
+    scrim.setAttribute('aria-hidden', 'true');
+  }
+
+  if (menuBtn) menuBtn.addEventListener('click', openSidebar);
+  if (scrim)   scrim.addEventListener('click', closeSidebar);
+
+  /* Close sidebar on nav link click (mobile) */
+  document.querySelectorAll('#sidebar-nav a').forEach(function(a) {
+    a.addEventListener('click', function() {
+      if (window.innerWidth <= 768) closeSidebar();
+    });
+  });
+
+  /* ── ACCORDION TOGGLES ────────────────────────── */
+  var isMobile = window.innerWidth <= 768;
+
+  document.querySelectorAll('.section-toggle').forEach(function(btn) {
+    var bodyId = btn.getAttribute('aria-controls');
+    var body   = document.getElementById(bodyId);
+    var icon   = btn.querySelector('.toggle-icon');
+
+    if (!body) return;
+
+    /* On mobile: collapse by default */
+    if (isMobile) {
+      body.style.display = 'none';
+      btn.setAttribute('aria-expanded', 'false');
+      if (icon) icon.classList.remove('open');
+    }
+
+    btn.addEventListener('click', function() {
+      var expanded = btn.getAttribute('aria-expanded') === 'true';
+      body.style.display = expanded ? 'none' : 'block';
+      btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+      if (icon) icon.classList.toggle('open', !expanded);
+    });
+  });
+
+  /* ── INTERSECTION OBSERVER (active nav) ───────── */
+  var targets = document.querySelectorAll('[id^="s"]');
+  var navLinks = document.querySelectorAll('#sidebar-nav a.nav-link');
+
+  var observer = new IntersectionObserver(function(entries) {
+    entries.forEach(function(entry) {
+      if (entry.isIntersecting) {
+        var id = entry.target.id;
+        navLinks.forEach(function(a) {
+          a.classList.toggle('active', a.getAttribute('data-target') === id);
+        });
+      }
+    });
+  }, { rootMargin: '-20% 0px -70% 0px', threshold: 0 });
+
+  targets.forEach(function(t) { observer.observe(t); });
+
+  /* ── SEARCH ───────────────────────────────────── */
+  var searchInput = document.getElementById('search-input');
+  var searchClear = document.getElementById('search-clear');
+  var searchCount = document.getElementById('search-count');
+  var mainContent = document.getElementById('main-content');
+
+  /* Keyboard shortcut: / or Ctrl+F */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '/' && document.activeElement !== searchInput) {
+      e.preventDefault();
+      searchInput.focus();
+    }
+    if (e.key === 'Escape' && document.activeElement === searchInput) {
+      clearSearch();
+    }
+  });
+
+  /* Store original HTML for reset */
+  var originalHTML = mainContent ? mainContent.innerHTML : '';
+
+  var currentMatches = [];
+  var currentIdx = 0;
+
+  function clearSearch() {
+    searchInput.value = '';
+    if (searchClear) searchClear.style.display = 'none';
+    if (searchCount) searchCount.textContent = '';
+    if (mainContent) mainContent.innerHTML = originalHTML;
+    /* Re-bind toggles after innerHTML restore */
+    rebindToggles();
+    currentMatches = [];
+    currentIdx = 0;
+  }
+
+  function doSearch(term) {
+    if (!term) { clearSearch(); return; }
+    if (mainContent) mainContent.innerHTML = originalHTML;
+    rebindToggles();
+
+    var walker = document.createTreeWalker(mainContent, NodeFilter.SHOW_TEXT, null, false);
+    var nodes = [];
+    var node;
+    while ((node = walker.nextNode())) nodes.push(node);
+
+    var regex = new RegExp('(' + term.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + ')', 'gi');
+    var count = 0;
+
+    nodes.forEach(function(textNode) {
+      if (!regex.test(textNode.textContent)) return;
+      regex.lastIndex = 0;
+      var parts = textNode.textContent.split(regex);
+      if (parts.length <= 1) return;
+      var frag = document.createDocumentFragment();
+      parts.forEach(function(part) {
+        if (regex.test(part)) {
+          regex.lastIndex = 0;
+          var mark = document.createElement('mark');
+          mark.className = 'search-highlight';
+          mark.textContent = part;
+          frag.appendChild(mark);
+          count++;
+        } else {
+          frag.appendChild(document.createTextNode(part));
+        }
+      });
+      textNode.parentNode.replaceChild(frag, textNode);
+    });
+
+    currentMatches = Array.from(mainContent.querySelectorAll('.search-highlight'));
+    currentIdx = 0;
+
+    if (searchCount) {
+      searchCount.textContent = count > 0 ? count + ' résultat' + (count > 1 ? 's' : '') : 'Aucun résultat';
+    }
+
+    /* Expand sections containing matches and scroll to first */
+    if (currentMatches.length > 0) {
+      /* Expand all sections that have a match */
+      currentMatches.forEach(function(mark) {
+        var body = mark.closest('[id$="-body"]');
+        if (body && body.style.display === 'none') {
+          body.style.display = 'block';
+          var btn = body.previousElementSibling;
+          if (btn) {
+            btn.setAttribute('aria-expanded', 'true');
+            var icon = btn.querySelector('.toggle-icon');
+            if (icon) icon.classList.add('open');
+          }
+        }
+      });
+      currentMatches[0].scrollIntoView({ behavior: 'smooth', block: 'center' });
+    }
+  }
+
+  function rebindToggles() {
+    document.querySelectorAll('.section-toggle').forEach(function(btn) {
+      var bodyId = btn.getAttribute('aria-controls');
+      var body   = document.getElementById(bodyId);
+      var icon   = btn.querySelector('.toggle-icon');
+      if (!body) return;
+      btn.onclick = function() {
+        var expanded = btn.getAttribute('aria-expanded') === 'true';
+        body.style.display = expanded ? 'none' : 'block';
+        btn.setAttribute('aria-expanded', expanded ? 'false' : 'true');
+        if (icon) icon.classList.toggle('open', !expanded);
+      };
+    });
+  }
+
+  var searchTimer;
+  if (searchInput) {
+    searchInput.addEventListener('input', function() {
+      clearTimeout(searchTimer);
+      var val = searchInput.value.trim();
+      if (searchClear) searchClear.style.display = val ? 'inline' : 'none';
+      searchTimer = setTimeout(function() { doSearch(val); }, 200);
+    });
+
+    searchInput.addEventListener('keydown', function(e) {
+      if (e.key === 'Enter' && currentMatches.length > 0) {
+        currentIdx = (currentIdx + 1) % currentMatches.length;
+        currentMatches[currentIdx].scrollIntoView({ behavior: 'smooth', block: 'center' });
+      }
+    });
+  }
+
+  if (searchClear) searchClear.addEventListener('click', clearSearch);
+
+})();
+</script>
+</body>
+</html>
