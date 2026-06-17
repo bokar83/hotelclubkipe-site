@@ -350,7 +350,7 @@
         <p><a href="https://wa.me/224669000999" target="_blank" rel="noopener">WhatsApp: +224 669 00 09 99</a></p>
       </div>
     </div>
-  
+
     <div class="container ft-bottom"><p>&copy; 2026 Hotel Club de Kipe. Tous droits reserves.</p><p class="cw-credit-pub">Built by <a href="https://catalystworks.ai" target="_blank" rel="noopener">Catalyst Works</a></p><a href='/staff/' class='staff-portal-link' aria-label='Personnel'>&#8226;</a></div></footer>
 
 
@@ -359,9 +359,19 @@
   </a>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/ScrollTrigger.min.js"></script>
+  <script>
+/* site.json runtime injection -- DOM order for .rpn: price_std1, price_std2, price_mini, price_suite, price_suite */
+!function(){fetch('_data/site.json').then(function(r){return r.json()}).then(function(d){
+  document.querySelectorAll('a[href^="tel:"]').forEach(function(a){
+    if(a.textContent.trim().match(/^\+/)){a.textContent=d.phone;a.href='tel:'+d.phone.replace(/\D/g,'')}
+  });
+  document.querySelectorAll('a[href*="wa.me"]').forEach(function(a){
+    if(a.textContent.trim().match(/^\+/)){a.textContent=d.whatsapp;a.href='https://wa.me/'+d.whatsapp.replace(/\D/g,'')}
+  });
+  var pk=['price_std1','price_std2','price_mini','price_suite','price_suite'];
+  document.querySelectorAll('.rpn').forEach(function(el,i){if(pk[i]&&d[pk[i]])el.textContent=d[pk[i]]});
+}).catch(function(){})}();
+</script>
   <script src="script.js?v=20260613"></script>
 </body>
 </html>
-
-
-
