@@ -1,0 +1,51 @@
+backend:
+  name: github
+  repo: bokar83/hotelclubkipe-site
+  branch: master
+  # One-time setup: create a GitHub OAuth App + deploy auth proxy.
+  # Deploy: https://github.com/sveltia/sveltia-cms-auth (Cloudflare Pages, free)
+  # Replace YOUR_AUTH_PROXY_URL with your deployed URL.
+  base_url: https://YOUR_AUTH_PROXY_URL
+
+media_folder: "Photos du Hotel et Club"
+public_folder: "Photos du Hotel et Club"
+
+publish_mode: editorial_workflow
+
+collections:
+  - name: "site"
+    label: "Site Content"
+    files:
+      - name: "settings"
+        label: "Contact & Room Prices"
+        file: "_data/site.json"
+        format: json
+        fields:
+          - label: "Phone Number"
+            name: "phone"
+            widget: "string"
+            hint: "e.g. +224 669 69 99 99"
+          - label: "WhatsApp Number"
+            name: "whatsapp"
+            widget: "string"
+            hint: "e.g. +224 669 00 09 99"
+          - label: "Standard Room - Floor 1 Price"
+            name: "price_std1"
+            widget: "string"
+            hint: "e.g. 600 000"
+          - label: "Standard Room - Floor 2 & 3 Price"
+            name: "price_std2"
+            widget: "string"
+            hint: "e.g. 800 000"
+          - label: "Mini Suite Price"
+            name: "price_mini"
+            widget: "string"
+            hint: "e.g. 1 000 000"
+          - label: "Suite Price"
+            name: "price_suite"
+            widget: "string"
+            hint: "e.g. 1 200 000"
+          - label: "Currency"
+            name: "currency"
+            widget: "string"
+            hint: "e.g. FG"
