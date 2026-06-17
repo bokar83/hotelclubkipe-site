@@ -1,114 +1,17 @@
 /* =====================================================
    HOTEL CLUB DE KIPE v4
-   FR fires immediately. Geo async. Safe DOM only.
+   FR fires immediately. Strings loaded from _data/strings.json.
    ===================================================== */
 'use strict';
 
+/* T is populated by loadStrings() before DOM is used.
+   Fallback inline FR ensures text is never blank if fetch fails. */
 var T = {
-  fr:{
+  fr: {
     nav_about:'A propos',nav_rooms:'Chambres',nav_svc:'Services',nav_gallery:'Galerie',nav_book:'Reserver',
-    hero_since:'Depuis 2019',hero_loc:'Conakry, Guinee',
-    hw1:'Hotel',hw2:'Club',hw3:'de Kipe',
-    hero_sub:'Votre refuge prive au coeur de Kipe',
-    hero_explore:'Decouvrir',hero_book:'Reserver',scroll_lbl:'Defiler',
-    about_ey:'Notre histoire',about_h2:'Un havre de paix, discret et chaleureux',
-    about_p1:"Niche dans le quartier residentiel de Kipe, un refuge pour ceux qui recherchent l'intimite, le confort et la discretion.",
-    about_p2:"Nos 13 chambres sur trois niveaux combinent l'hospitalite guineenne avec des equipements modernes: climatisation, Wi-Fi, restaurant, piscine, bar.",
-    st_rooms:'Chambres',st_floors:'Niveaux',st_since:'Depuis',
-    about_pull:"Une maison, pas un hotel. Treize chambres ouvertes depuis 2019 sur les jardins de Kipe.",
-    about_attr:"Hotel Club de Kipe, Conakry",
-    spot_h2a:'Notre chambre',spot_h2b:'signature',
-    rooms_ey:'Nos hebergements',rooms_h2:'Choisissez votre chambre',
-    rooms_note:'Climatisation - Wi-Fi gratuit - Salle de bain privee',
-    b_std:'Standard',b_mini:'Mini Suite',b_suite:'Suite',
-    r_std:'Chambre Standard',r_mini:'Mini Suite',r_suite:'Suite',
-    f_ac:'Climatisation',f_wifi:'Wi-Fi',f_bath:'Bain prive',f_tv:'Television',f_sitting:'Coin salon',f_desk:'Bureau',
-    cur:'FG',pn:'/ nuit',btn_bk:'Reserver',
-    sf_ey:"L art du detail",sf_h2:'Un confort pense dans les moindres details',
-    sf_p:"Chaque chambre est equipee d une salle de bain privee, d une climatisation silencieuse et d une literie soignee.",
-    sf_cta:'Voir les chambres',
-    svc_ey:'Ce que nous offrons',svc_h2:'Nos services',
-    svc_pool:'Piscine',svc_pool_d:'Detente dans un cadre verdoyant et prive.',
-    svc_resto:'Restaurant',svc_resto_d:'Cuisine guineenne et internationale.',
-    svc_bar:'Bar',svc_bar_d:'Cocktails et boissons fraiches en soiree.',
-    svc_wifi:'Wi-Fi Gratuit',svc_wifi_d:'Connexion haut debit partout.',
-    svc_park:'Parking Prive',svc_park_d:'Securise et gratuit pour tous.',
-    svc_priv:'Discretion totale',svc_priv_d:'Un cadre prive, loin du tumulte.',
-    gal_ey:'Nos espaces',gal_h2:'Galerie',gal_more:'Voir les 21 photos',gal_less:'Reduire',
-    rev_ey:'Avis clients',
-    r1:'Un endroit magnifique. Tres propre, calme, personnel accueillant. La piscine est parfaite. Je reviendrai.',
-    r1a:'Mamadou D.',r1l:'Conakry, Guinee',
-    r2:'Sejour parfait pour un voyage affaires. Chambre confortable, Wi-Fi fiable, restaurant excellent.',
-    r2a:'Ibrahim K.',r2l:'Dakar, Senegal',
-    r3:'La meilleure adresse a Kipe. Discretion totale, espace prive. Le bar en soiree est une vraie surprise.',
-    r3a:'Fatoumata B.',r3l:'Conakry, Guinee',
-    pq:'Intimite - Confort - Discretion - Kipe - Conakry',
-    map_ey:'Nous trouver',map_h2:'Ou nous sommes',
-    mi_addr:'Adresse',mi_tel:'Telephone',mi_hrs:'Horaires',mi_hrs_v:'Reception 24h/24',
-    map_open:'Ouvrir dans Google Maps',
-    bk_ey:'Reserver',bk_h2:'Planifiez votre sejour',
-    bk_desc:'Remplissez le formulaire ou ecrivez sur WhatsApp. Reponse sous 24 heures.',
-    wa_cta:'Reserver via WhatsApp',
-    fl_name:'Nom complet',fl_phone:'Telephone / WhatsApp',fl_ci:'Arrivee',fl_co:'Depart',
-    fl_room:'Chambre',fl_ph:'Choisir',
-    o_std1:'Standard 1er etage - 600 000 FG',o_std2:'Standard 2e/3e etage - 800 000 FG',
-    o_mini:'Mini Suite - 1 000 000 FG',o_suite:'Suite - 1 200 000 FG',
-    fl_notes:'Message (optionnel)',fl_sub:'Envoyer la demande',fl_note:'Confirmation sous 24 heures.',
-    ft_tag:'Votre refuge elegant a Conakry.',ft_maps:'Voir sur Google Maps',statement:"Un refuge discret pour ceux qui savent.",
-    ft_rights:'Tous droits reserves.'
+    hero_sub:'Votre refuge prive au coeur de Kipe',hero_explore:'Decouvrir',hero_book:'Reserver',scroll_lbl:'Defiler'
   },
-  en:{
-    nav_about:'About',nav_rooms:'Rooms',nav_svc:'Services',nav_gallery:'Gallery',nav_book:'Book Now',
-    hero_since:'Est. 2019',hero_loc:'Conakry, Guinea',
-    hw1:'Hotel',hw2:'Club',hw3:'de Kipe',
-    hero_sub:'Your private retreat in the heart of Kipe',
-    hero_explore:'Discover',hero_book:'Book a Room',scroll_lbl:'Scroll',
-    about_ey:'Our story',about_h2:'A peaceful haven, private and warm',
-    about_p1:'Nestled in the quiet neighbourhood of Kipe in Conakry, a retreat for those who seek intimacy, comfort, and discretion.',
-    about_p2:'Our 13 rooms across three floors blend Guinean hospitality with modern amenities: air conditioning, Wi-Fi, restaurant, pool, bar.',
-    st_rooms:'Rooms',st_floors:'Floors',st_since:'Est.',
-    about_pull:"A home, not a hotel. Thirteen rooms open since 2019 among the gardens of Kipe.",
-    about_attr:"Hotel Club de Kipe, Conakry",
-    spot_h2a:'Our signature',spot_h2b:'suite',
-    rooms_ey:'Our accommodations',rooms_h2:'Choose your room',
-    rooms_note:'Air conditioning - Free Wi-Fi - Private bathroom',
-    b_std:'Standard',b_mini:'Mini Suite',b_suite:'Suite',
-    r_std:'Standard Room',r_mini:'Mini Suite',r_suite:'Suite',
-    f_ac:'Air conditioning',f_wifi:'Wi-Fi',f_bath:'Private bathroom',f_tv:'Television',f_sitting:'Sitting area',f_desk:'Work desk',
-    cur:'GNF',pn:'/ night',btn_bk:'Book',
-    sf_ey:'The art of detail',sf_h2:'Comfort crafted down to the finest details',
-    sf_p:'Every room features a private tiled bathroom, silent air conditioning, and carefully chosen bedding.',
-    sf_cta:'View rooms',
-    svc_ey:'What we offer',svc_h2:'Our services',
-    svc_pool:'Swimming Pool',svc_pool_d:'Relax by the water in a lush, private setting.',
-    svc_resto:'Restaurant',svc_resto_d:'Authentic Guinean and international cuisine.',
-    svc_bar:'Bar',svc_bar_d:'Cocktails and fresh drinks in the evening.',
-    svc_wifi:'Free Wi-Fi',svc_wifi_d:'High-speed connection throughout.',
-    svc_park:'Private Parking',svc_park_d:'Secure, free parking for all guests.',
-    svc_priv:'Total discretion',svc_priv_d:'A private setting, far from the city noise.',
-    gal_ey:'Our spaces',gal_h2:'Gallery',gal_more:'View all 21 photos',gal_less:'Collapse',
-    rev_ey:'Guest reviews',
-    r1:'A magnificent place. Very clean, calm, wonderfully welcoming. The pool is perfect. I will return.',
-    r1a:'Mamadou D.',r1l:'Conakry, Guinea',
-    r2:'Perfect stay for a business trip. Comfortable room, reliable Wi-Fi, excellent restaurant.',
-    r2a:'Ibrahim K.',r2l:'Dakar, Senegal',
-    r3:'The best address in Kipe. Total discretion, private space. The bar in the evening is a real surprise.',
-    r3a:'Fatoumata B.',r3l:'Conakry, Guinea',
-    pq:'Intimacy - Comfort - Discretion - Kipe - Conakry',
-    map_ey:'Find us',map_h2:'Where we are',
-    mi_addr:'Address',mi_tel:'Phone',mi_hrs:'Hours',mi_hrs_v:'Reception 24/7',
-    map_open:'Open in Google Maps',
-    bk_ey:'Book',bk_h2:'Plan your stay',
-    bk_desc:'Fill in the form or message us on WhatsApp. We respond within 24 hours.',
-    wa_cta:'Book via WhatsApp',
-    fl_name:'Full name',fl_phone:'Phone / WhatsApp',fl_ci:'Check-in',fl_co:'Check-out',
-    fl_room:'Room type',fl_ph:'Select',
-    o_std1:'Standard 1st floor - 600 000 GNF',o_std2:'Standard 2nd/3rd floor - 800 000 GNF',
-    o_mini:'Mini Suite - 1 000 000 GNF',o_suite:'Suite - 1 200 000 GNF',
-    fl_notes:'Message (optional)',fl_sub:'Send request',fl_note:'Confirmation within 24 hours.',
-    ft_tag:'Your elegant retreat in Conakry.',ft_maps:'View on Google Maps',statement:"A private retreat for those who know.",
-    ft_rights:'All rights reserved.'
-  }
+  en: {}
 };
 
 var lang = 'fr';
@@ -116,7 +19,7 @@ var lang = 'fr';
 function applyLang(l) {
   lang = l;
   document.documentElement.lang = l;
-  var t = T[l];
+  var t = T[l] || T['fr'];
   document.querySelectorAll('[data-i18n]').forEach(function(el) {
     var k = el.dataset.i18n;
     if (t[k] !== undefined) el.textContent = t[k];
@@ -131,7 +34,55 @@ function applyLang(l) {
   if (en) { en.classList.toggle('active', l === 'en'); en.setAttribute('aria-pressed', String(l === 'en')); }
 }
 
-document.addEventListener('DOMContentLoaded', function() { applyLang('fr'); });
+function loadStrings(callback) {
+  fetch('_data/strings.json')
+    .then(function(r) { return r.json(); })
+    .then(function(data) {
+      T = data;
+      callback();
+    })
+    .catch(function() {
+      /* strings.json unreachable -- fallback T already set above */
+      callback();
+    });
+}
+
+document.addEventListener('DOMContentLoaded', function() {
+  loadStrings(function() {
+    applyLang('fr');
+
+    var frBtn = document.getElementById('fr-btn');
+    var enBtn = document.getElementById('en-btn');
+    if (frBtn) frBtn.addEventListener('click', function() { applyLang('fr'); });
+    if (enBtn) enBtn.addEventListener('click', function() { applyLang('en'); });
+
+    initCursor();
+    initNav();
+    initHero();
+    initReveal();
+    initGallery();
+    initLightbox();
+    initReviews();
+    initBooking();
+    detectLangAsync();
+
+    if (typeof gsap !== 'undefined') {
+      initMagnetic();
+      if (typeof ScrollTrigger !== 'undefined') {
+        gsap.registerPlugin(ScrollTrigger);
+        initParallax();
+      }
+    } else {
+      window.addEventListener('load', function() {
+        if (typeof gsap !== 'undefined') initMagnetic();
+        if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
+          gsap.registerPlugin(ScrollTrigger);
+          initParallax();
+        }
+      });
+    }
+  });
+});
 
 function detectLangAsync() {
   var frCodes = ['GN','FR','BE','CH','CI','SN','ML','CM','GW','CD','CG','TG','BJ','BF','NE','GA','DJ','MG','MA','TN','RW'];
@@ -399,38 +350,6 @@ function initBooking() {
   }
 }
 
-document.addEventListener('DOMContentLoaded', function() {
-  var frBtn = document.getElementById('fr-btn');
-  var enBtn = document.getElementById('en-btn');
-  if (frBtn) frBtn.addEventListener('click', function() { applyLang('fr'); });
-  if (enBtn) enBtn.addEventListener('click', function() { applyLang('en'); });
-
-  initCursor();
-  initNav();
-  initHero();
-  initReveal();
-  initGallery();
-  initLightbox();
-  initReviews();
-  initBooking();
-  detectLangAsync();
-
-  if (typeof gsap !== 'undefined') {
-    initMagnetic();
-    if (typeof ScrollTrigger !== 'undefined') {
-      gsap.registerPlugin(ScrollTrigger);
-      initParallax();
-    }
-  } else {
-    window.addEventListener('load', function() {
-      if (typeof gsap !== 'undefined') initMagnetic();
-      if (typeof gsap !== 'undefined' && typeof ScrollTrigger !== 'undefined') {
-        gsap.registerPlugin(ScrollTrigger);
-        initParallax();
-      }
-    });
-  }
-});
 
 
 /* === Parallax scroll ================================== */
