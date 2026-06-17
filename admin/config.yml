@@ -3,7 +3,7 @@ backend:
   repo: bokar83/hotelclubkipe-site
   branch: master
   auth_type: pkce
-  client_id: Ov23lizFiHKZLT6d7rOk
+  app_id: Ov23lizFiHKZLT6d7rOk
 
 media_folder: "Photos du Hotel et Club"
 public_folder: "Photos du Hotel et Club"
