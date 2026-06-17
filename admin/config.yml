@@ -2,8 +2,7 @@ backend:
   name: github
   repo: bokar83/hotelclubkipe-site
   branch: master
-  auth_type: pkce
-  app_id: Ov23lizFiHKZLT6d7rOk
+  base_url: https://sveltia-oauth.bokar83.workers.dev
 
 media_folder: "Photos du Hotel et Club"
 public_folder: "Photos du Hotel et Club"
