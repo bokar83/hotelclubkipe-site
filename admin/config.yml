@@ -3,11 +3,7 @@ backend:
   repo: bokar83/hotelclubkipe-site
   branch: master
   auth_type: pkce
-  # One-time setup (2 min, free):
-  # 1. Go to github.com/settings/developers -> OAuth Apps -> New OAuth App
-  # 2. Authorization callback URL: https://hotelclubdekipe.com/admin/
-  # 3. Copy the Client ID and replace YOUR_GITHUB_CLIENT_ID below
-  client_id: YOUR_GITHUB_CLIENT_ID
+  client_id: Ov23lizFiHKZLT6d7rOk
 
 media_folder: "Photos du Hotel et Club"
 public_folder: "Photos du Hotel et Club"
